@@ -1,0 +1,2 @@
+rootProject.name='Manna'
+include ':app'
