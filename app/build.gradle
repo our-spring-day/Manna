@@ -35,12 +35,18 @@ dependencies {
     implementation "com.google.android.material:material:$materialVersion"
     implementation "androidx.fragment:fragment:$fragmentVersion"
 
-    //RxJava3 : https://github.com/ReactiveX/RxJava
-    implementation "io.reactivex.rxjava3:rxjava:$rxJavaVersion"
-    implementation "io.reactivex.rxjava3:rxandroid:$rxAndroidVersion"
+    //RxJava2 : https://github.com/ReactiveX/RxJava
+    implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
+    implementation "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion"
 
     //Koin lib : https://github.com/InsertKoinIO/koin
     implementation "org.koin:koin-androidx-scope:$koinVersion"
     implementation "org.koin:koin-androidx-viewmodel:$koinVersion"
     implementation "org.koin:koin-androidx-ext:$koinVersion"
+
+    //Retrofit
+    implementation "com.google.code.gson:gson:$gsonVersion"
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion"
 }
