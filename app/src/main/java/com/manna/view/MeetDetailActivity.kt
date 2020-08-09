@@ -1,7 +1,6 @@
 package com.manna.view
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -10,6 +9,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCa
 import com.manna.R
 import com.manna.ext.ViewUtil
 import kotlinx.android.synthetic.main.activity_meet_detail.*
+
 
 class MeetDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,7 +25,7 @@ class MeetDetailActivity : AppCompatActivity() {
         }
 
         btn_menu.setOnClickListener {
-
+            drawer.openDrawer(side_panel)
         }
 
         BottomSheetBehavior.from(bottom_sheet)
