@@ -8,7 +8,7 @@ import io.reactivex.Single
 
 class AddressRemoteDataSourceImpl(private val addressApi: AddressApi) : AddressRemoteDataSource {
 
-    private val authorization = "KakaoAK ${BuildConfig.BUILD_TYPE}"
+    private val authorization = "KakaoAK ${BuildConfig.KAKAO_KEY}"
 
     override fun getAddress(latitude: Double, longitude: Double): Single<CoordAddressResponse> {
         return addressApi.getCoordAddress(authorization, latitude, longitude)
