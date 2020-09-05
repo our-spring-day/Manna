@@ -17,6 +17,11 @@ class SettingActivity : AppCompatActivity() {
             back.setOnClickListener {
                 finish()
             }
+
+            dateNotationPanel.setOnClickListener {
+                val dialog = DateNotationDialog()
+                dialog.show(supportFragmentManager, "")
+            }
         }
     }
 
