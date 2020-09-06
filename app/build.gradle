@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-
+apply plugin: 'kotlin-kapt'
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
@@ -21,12 +21,35 @@ android {
     }
 
     buildTypes {
+
+        def STRING = "String"
+        def KAKAO_KEY = "KAKAO_KEY"
+        def KAKAO_KEY_RELEASE = "\"830ccadff66e5e1e978234df2c24b439\""
+
+        def NAVER_KEY = "NAVER_KEY"
+        def NAVER_KEY_RELEASE = "\"KQhgkdup9nX6uAf7L3kKpC7510EaZxdwwu0SOLtR\""
+
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            buildConfigField STRING, KAKAO_KEY, KAKAO_KEY_RELEASE
+            buildConfigField STRING, NAVER_KEY, NAVER_KEY_RELEASE
+        }
+
+        debug {
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            buildConfigField STRING, KAKAO_KEY, KAKAO_KEY_RELEASE
+            buildConfigField STRING, NAVER_KEY, NAVER_KEY_RELEASE
         }
     }
 
+    buildFeatures.dataBinding = true
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
 }
 
 dependencies {
@@ -53,4 +76,6 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
     implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
     implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion"
+
+    implementation "com.naver.maps:map-sdk:$naverMapVersion"
 }

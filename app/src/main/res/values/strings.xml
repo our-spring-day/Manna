@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Manna</string>
+
+    <string name="naver_client_id">djbet5rxjp</string>
 </resources>

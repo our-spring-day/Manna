@@ -21,6 +21,9 @@ allprojects {
         google()
         jcenter()
 
+        maven {
+            url 'https://navercorp.bintray.com/maps'
+        }
     }
 }
 
@@ -39,4 +42,6 @@ ext {
     koinVersion = '2.0.1'
     gsonVersion = '2.8.5'
     retrofitVersion = '2.3.0'
+
+    naverMapVersion = '3.8.0'
 }
