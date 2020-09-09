@@ -64,17 +64,39 @@
             app:behavior_peekHeight="200dp"
             app:layout_behavior="@string/bottom_sheet_behavior">
 
-            <TextView
-                android:id="@+id/bottom_sheet_state"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
+<!--            <TextView-->
+<!--                android:id="@+id/bottom_sheet_state"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:textColor="@color/black"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="parent"-->
+<!--                app:layout_constraintVertical_bias=".2"-->
+<!--                tools:text="STATE" />-->
+
+            <ImageView
+                android:src="@drawable/test_1"
+                android:id="@+id/iv_test_1"
+                app:layout_constraintVertical_bias=".2"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/iv_test_2"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                android:layout_width="60dp"
+                android:layout_height="60dp"/>
+
+            <ImageView
+                android:src="@drawable/test_2"
+                android:id="@+id/iv_test_2"
                 app:layout_constraintVertical_bias=".2"
-                tools:text="STATE" />
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/iv_test_1"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_width="60dp"
+                android:layout_height="60dp"/>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
