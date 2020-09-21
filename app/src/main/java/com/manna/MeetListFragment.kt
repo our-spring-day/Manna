@@ -1,5 +1,6 @@
 package com.manna
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +8,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.manna.databinding.FragmentMeetListBinding
+import com.manna.view.MeetDetailActivity
 
 class MeetListFragment : Fragment() {
 
@@ -24,6 +26,10 @@ class MeetListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.meetDetail.setOnClickListener {
+            startActivity(Intent(requireContext(), MeetDetailActivity::class.java))
+        }
     }
 
     companion object {
