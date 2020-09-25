@@ -13,12 +13,4 @@ class MannaApp : Application() {
         super.onCreate()
         NaverMapSdk.getInstance(this).client = NaverCloudPlatformClient(getString(R.string.naver_client_id))
     }
-
-    /**
-     * viewmodel
-     * repository
-     * remote datasource
-     * api
-     * */
-
 }
