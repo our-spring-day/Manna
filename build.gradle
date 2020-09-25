@@ -39,7 +39,6 @@ ext {
     fragmentVersion = '1.2.5'
     rxAndroidVersion = '2.1.1'
     rxJavaVersion = '2.2.15'
-    koinVersion = '2.0.1'
     gsonVersion = '2.8.5'
     retrofitVersion = '2.3.0'
 
