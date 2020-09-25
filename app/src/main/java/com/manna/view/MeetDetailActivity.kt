@@ -3,18 +3,25 @@ package com.manna.view
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import com.manna.R
 import com.manna.ext.ViewUtil
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_meet_detail.*
 
-
+@AndroidEntryPoint
 class MeetDetailActivity : AppCompatActivity() {
+
+    private val viewModel: MeetDetailViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_meet_detail)
+
+        viewModel.getPlaceDetail()
 
         ViewUtil.setStatusBarTransparent(this)
 

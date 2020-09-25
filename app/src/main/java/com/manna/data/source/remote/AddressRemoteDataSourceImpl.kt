@@ -5,8 +5,9 @@ import com.manna.network.api.AddressApi
 import com.manna.network.model.coord_address.CoordAddressResponse
 import com.manna.network.model.search_address.SearchAddressResponse
 import io.reactivex.Single
+import javax.inject.Inject
 
-class AddressRemoteDataSourceImpl(private val addressApi: AddressApi) : AddressRemoteDataSource {
+class AddressRemoteDataSourceImpl @Inject constructor(private val addressApi: AddressApi) : AddressRemoteDataSource {
 
     private val authorization = "KakaoAK ${BuildConfig.KAKAO_KEY}"
 
