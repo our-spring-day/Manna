@@ -41,6 +41,6 @@ ext {
     rxJavaVersion = '2.2.15'
     gsonVersion = '2.8.5'
     retrofitVersion = '2.6.0'
-
     naverMapVersion = '3.8.0'
+    glideVersion = '4.10.0'
 }
