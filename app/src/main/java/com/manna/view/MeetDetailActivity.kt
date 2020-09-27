@@ -2,7 +2,6 @@ package com.manna.view
 
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -13,14 +12,21 @@ import com.manna.ext.ViewUtil
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
 import com.naver.maps.map.overlay.Marker
+import com.naver.maps.map.util.FusedLocationSource
 import com.naver.maps.map.util.MarkerIcons
 import kotlinx.android.synthetic.main.activity_meet_detail.*
 
 
-class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback{
+class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
+    private lateinit var locationSource: FusedLocationSource
+    private lateinit var naverMap: NaverMap
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_meet_detail)
+
+        locationSource =
+            FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE)
 
         ViewUtil.setStatusBarTransparent(this)
 
@@ -73,7 +79,36 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback{
             }
         }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if (locationSource.onRequestPermissionsResult(
+                requestCode, permissions,
+                grantResults
+            )
+        ) {
+            if (!locationSource.isActivated) { // 권한 거부됨
+                naverMap.locationTrackingMode = LocationTrackingMode.None
+            }
+            return
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
     override fun onMapReady(naverMap: NaverMap) {
+        this.naverMap = naverMap
+        naverMap.locationSource = locationSource
+        naverMap.locationTrackingMode = LocationTrackingMode.Face
+        naverMap.isIndoorEnabled = true
+
+        val uiSettings = naverMap.uiSettings
+        uiSettings.isIndoorLevelPickerEnabled = true
+        uiSettings.isLocationButtonEnabled = true
+        uiSettings.isCompassEnabled = false
+        uiSettings.isScaleBarEnabled = false
+
         val marker = Marker()
         val meetPlaceMarker = Marker()
         meetPlaceMarker.position = LatLng(37.5670135, 126.9783740)
@@ -96,5 +131,9 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback{
             val cameraUpdate = CameraUpdate.scrollAndZoomTo(marker.position, 16.0)
             naverMap.moveCamera(cameraUpdate)
         }
+    }
+
+    companion object {
+        private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
     }
 }

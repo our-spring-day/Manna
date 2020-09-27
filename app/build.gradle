@@ -78,4 +78,6 @@ dependencies {
     implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion"
 
     implementation "com.naver.maps:map-sdk:$naverMapVersion"
+
+    implementation 'com.google.android.gms:play-services-location:16.0.0'
 }
