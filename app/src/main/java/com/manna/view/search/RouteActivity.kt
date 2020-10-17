@@ -1,59 +1,104 @@
-package com.manna.view
+package com.manna.view.search
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.graphics.Color
+import android.location.Location
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.widget.TextView
-import androidx.activity.viewModels
 import androidx.annotation.UiThread
-import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.library.baseAdapters.BR
+import com.google.android.gms.location.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import com.manna.Logger
 import com.manna.R
+import com.manna.common.BaseActivity
+import com.manna.common.BaseRecyclerViewAdapter
+import com.manna.common.BaseRecyclerViewHolder
+import com.manna.databinding.ActivityRouteBinding
+import com.manna.databinding.ItemRouteBinding
 import com.manna.di.ApiModule
 import com.manna.ext.ViewUtil
+import com.manna.view.WayPoint
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
+import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.MultipartPathOverlay
-import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_meet_detail.*
 
-enum class WayMode(val type: String) {
-    WALKING("Walking"),
-    TRANSIT("Transit")
-}
+class RouteActivity : BaseActivity<ActivityRouteBinding>(R.layout.activity_route),
+    OnMapReadyCallback {
 
-data class WayPoint(
-    val point: LatLng,
-    val mode: String,
-    val titles: List<String> = emptyList()
-) {
 
-    fun getPoint(): String = "${point.latitude},${point.longitude}"
-}
+    var currentLocation: Location? = null
+    var currentPosition: LatLng? = null
 
-@AndroidEntryPoint
-class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
-    private val viewModel: MeetDetailViewModel by viewModels()
+    private var mFusedLocationClient: FusedLocationProviderClient? = null
 
-    @SuppressLint("CheckResult")
+    private var location: Location? = null
+
+    private val locationRequest by lazy {
+        LocationRequest().setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+            .setInterval(UPDATE_INTERVAL_MS)
+            .setFastestInterval(FASTEST_UPDATE_INTERVAL_MS)
+    }
+
+    private val locationCallback: LocationCallback = object : LocationCallback() {
+        override fun onLocationResult(locationResult: LocationResult) {
+            super.onLocationResult(locationResult)
+            val locationList: List<Location> = locationResult.locations
+            if (locationList.isNotEmpty()) {
+                location = locationList[locationList.size - 1]
+
+                location?.let {
+                    Logger.d("${it.latitude}, ${it.longitude}")
+                    currentPosition = LatLng(it.latitude, it.longitude)
+                }
+                currentLocation = location
+            }
+        }
+    }
+
+    private val routeAdapter by lazy {
+        object :
+            BaseRecyclerViewAdapter<String, ItemRouteBinding, BaseRecyclerViewHolder<ItemRouteBinding>>(
+                R.layout.item_route,
+                variableId = BR.item
+            ) {
+
+        }
+    }
+
+    private var naverMap: NaverMap? = null
+
     @UiThread
     override fun onMapReady(naverMap: NaverMap) {
+        this.naverMap = naverMap
 
-        val endPoint = WayPoint(LatLng(37.492642, 127.026208), "End")
+        mFusedLocationClient?.requestLocationUpdates(
+            locationRequest,
+            locationCallback,
+            Looper.myLooper()
+        )
+    }
 
+
+    @SuppressLint("CheckResult")
+    private fun findRoute(startPoint: WayPoint, endPoint: WayPoint) {
         ApiModule.provideBingApi()
             .getRoute(
-                startLatLng = "37.482087,126.976742",
+                startLatLng = startPoint.getPoint(),
                 endLatLng = endPoint.getPoint()
             )
             .subscribeOn(Schedulers.io())
@@ -61,28 +106,60 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 val items =
                     root.resourceSets?.first()?.resources?.first()?.routeLegs?.first()?.itineraryItems
 
+                val paths =
+                    root.resourceSets?.first()?.resources?.first()?.routePath?.line?.coordinates
+
                 val points = mutableListOf<WayPoint>()
 
-                items?.forEach {
-                    val mode = it.details?.first()?.mode
+                Logger.d("$paths")
 
-                    it.maneuverPoint?.coordinates?.let { point ->
-                        points.add(WayPoint(LatLng(point[0], point[1]), mode.orEmpty()))
+                paths?.forEach { path ->
+
+                    if (path.size > 1) {
+                        points.add(WayPoint(LatLng(path[0], path[1]), ""))
                     }
                 }
 
-                points.add(endPoint)
-                points
+
+
+                val titles = mutableListOf<String>()
+
+                items?.forEach {
+                    val mode = it.details?.first()?.mode
+                    val title = it.instruction?.text
+
+                    if (!title.isNullOrEmpty()) {
+                        titles.add(title)
+                    }
+                    val childTitles = it.childItineraryItems?.mapNotNull {
+                        it.instruction?.text
+                    }
+                    if (childTitles != null) {
+                        titles.addAll(childTitles)
+                    }
+
+                    if (mode == "Transit") {
+                        Logger.d("$it")
+                    }
+                }
+
+                points to titles
             }
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ list ->
+            .subscribe({ (list, titles) ->
 
+                val cameraUpdate = CameraUpdate.scrollTo(list.first().point)
+                naverMap?.moveCamera(cameraUpdate)
+                drawLine(naverMap!!, list.map { it.point })
+                routeAdapter.replaceAll(titles)
+
+                return@subscribe
                 val sources = list.mapIndexedNotNull { index, wayPoint ->
                     when (wayPoint.mode) {
                         "Transit" -> {
                             ApiModule.provideBingApi()
                                 .getRouteDriving(
-                                    "${wayPoint.point.latitude},${wayPoint.point.longitude}",
+                                    wayPoint.getPoint(),
                                     "${list.get(index + 1).point.latitude},${list.get(index + 1).point.longitude}"
                                 )
                                 .subscribeOn(Schedulers.io())
@@ -91,16 +168,19 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                                         root.resourceSets?.first()?.resources?.first()?.routeLegs?.first()?.itineraryItems
 
                                     val points = mutableListOf<WayPoint>()
-//                                    points.add(wayPoint)
+                                    points.add(wayPoint)
 
                                     items?.forEach {
                                         val mode = it.details?.first()?.mode
+                                        val title =
+                                            it.instruction?.text.orEmpty()
 
                                         it.maneuverPoint?.coordinates?.let { point ->
                                             points.add(
                                                 WayPoint(
                                                     LatLng(point[0], point[1]),
-                                                    mode.orEmpty()
+                                                    mode.orEmpty(),
+//                                                    title
                                                 )
                                             )
                                         }
@@ -122,16 +202,18 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                                         root.resourceSets?.first()?.resources?.first()?.routeLegs?.first()?.itineraryItems
 
                                     val points = mutableListOf<WayPoint>()
-//                                    points.add(wayPoint)
+                                    points.add(wayPoint)
 
                                     items?.forEach {
                                         val mode = it.details?.first()?.mode
+                                        val title =
+                                            it.instruction?.text.orEmpty()
 
                                         it.maneuverPoint?.coordinates?.let { point ->
                                             points.add(
                                                 WayPoint(
                                                     LatLng(point[0], point[1]),
-                                                    mode.orEmpty()
+                                                    mode.orEmpty(),
                                                 )
                                             )
                                         }
@@ -152,7 +234,11 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({array->
+                    .subscribe({ array ->
+                        array.forEach {
+                            Logger.d("${(it as List<WayPoint>).size}")
+                        }
+
                         val list = array.flatMap {
                             it as List<WayPoint>
                         }.toMutableList()
@@ -162,10 +248,18 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                             Logger.d("$it")
                         }
 
-                        drawLine(naverMap, list.map { it.point })
+                        drawLine(naverMap!!, list.map { it.point })
+
+                        routeAdapter.replaceAll(list.flatMap { it.titles })
+                        val markerPoints = list.filter { it.titles.isNotEmpty() }
+                        markerPoints.forEach {
+                            val marker = Marker()
+                            marker.position = it.point
+                            marker.map = naverMap
+                        }
 
                         val cameraUpdate = CameraUpdate.scrollTo(list.first().point)
-                        naverMap.moveCamera(cameraUpdate)
+                        naverMap?.moveCamera(cameraUpdate)
 
                     }, {
                         Logger.d("$it")
@@ -225,9 +319,6 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_meet_detail)
-
-        viewModel.getPlaceDetail()
 
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as MapFragment?
             ?: MapFragment.newInstance().also {
@@ -250,10 +341,50 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
         BottomSheetBehavior.from(bottom_sheet)
             .addBottomSheetCallback(createBottomSheetCallback(bottom_sheet_state))
+
+
+        Handler().postDelayed({
+            val findPoint = intent.getParcelableExtra<LatLng>(FIND_POINT)
+            findPoint?.let {
+
+                Logger.d("currentLocation $currentLocation")
+                currentLocation?.let { currentLocation ->
+                    findRoute(
+                        WayPoint(
+                            LatLng(currentLocation.latitude, currentLocation.longitude),
+                            "Start"
+                        ),
+                        WayPoint(it, "End")
+                    )
+                }
+
+            }
+
+        }, 1000)
+
+
+        val builder: LocationSettingsRequest.Builder = LocationSettingsRequest.Builder()
+        builder.addLocationRequest(locationRequest)
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
+
+
+        binding.routeText.adapter = routeAdapter
+
     }
 
-    private fun createBottomSheetCallback(text: TextView): BottomSheetCallback =
-        object : BottomSheetCallback() {
+
+    override fun onStop() {
+        super.onStop()
+        if (mFusedLocationClient != null) {
+
+            mFusedLocationClient?.removeLocationUpdates(locationCallback)
+        }
+    }
+
+
+    private fun createBottomSheetCallback(text: TextView): BottomSheetBehavior.BottomSheetCallback =
+        object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
 
                 text.text = when (newState) {
@@ -278,4 +409,15 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             ) {
             }
         }
+
+    companion object {
+        const val FIND_POINT = "find_point"
+        private const val UPDATE_INTERVAL_MS = 5000L
+        private const val FASTEST_UPDATE_INTERVAL_MS = 5000L
+        fun getIntent(context: Context, findPoint: LatLng) =
+            Intent(context, RouteActivity::class.java).apply {
+                putExtra(FIND_POINT, findPoint)
+            }
+    }
+
 }

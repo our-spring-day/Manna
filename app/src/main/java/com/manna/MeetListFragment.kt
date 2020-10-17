@@ -9,6 +9,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.manna.databinding.FragmentMeetListBinding
 import com.manna.view.MeetDetailActivity
+import com.manna.view.search.SearchActivity
 
 class MeetListFragment : Fragment() {
 
@@ -30,6 +31,11 @@ class MeetListFragment : Fragment() {
         binding.meetDetail.setOnClickListener {
             startActivity(Intent(requireContext(), MeetDetailActivity::class.java))
         }
+
+        binding.route.setOnClickListener {
+            startActivity(Intent(requireContext(), SearchActivity::class.java))
+        }
+
     }
 
     companion object {

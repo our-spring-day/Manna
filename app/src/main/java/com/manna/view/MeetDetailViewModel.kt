@@ -12,14 +12,14 @@ class MeetDetailViewModel @ViewModelInject constructor(private val repository: A
 
 
     fun getPlaceDetail() {
-        repository.getAddress(37.5129949, 127.1005435)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                Log.d("TEST", "$it")
-            }, {
-                Log.d("TEST", "$it")
-            })
+//        repository.getAddress(37.5129949, 127.1005435)
+//            .subscribeOn(Schedulers.io())
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .subscribe({
+//                Log.d("TEST", "$it")
+//            }, {
+//                Log.d("TEST", "$it")
+//            })
     }
 
 
