@@ -1,6 +1,7 @@
 package com.manna.di
 
 import com.manna.network.api.AddressApi
+import com.manna.network.api.MeetApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,5 +24,16 @@ object ApiModule {
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .build()
             .create(AddressApi::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideMeetApi(): MeetApi {
+        return Retrofit.Builder()
+            .baseUrl(MeetApi.BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .build()
+            .create(MeetApi::class.java)
     }
 }
