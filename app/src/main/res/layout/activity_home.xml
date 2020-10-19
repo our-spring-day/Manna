@@ -13,6 +13,15 @@
         tools:context=".HomeActivity">
 
 
+        <com.manna.view.MyCustomView
+            android:layout_width="match_parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/bottom_tab"
+            android:layout_height="match_parent"/>
+
+
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/home_pager"
             app:layout_constraintStart_toStartOf="parent"
