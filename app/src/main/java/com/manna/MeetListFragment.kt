@@ -46,7 +46,7 @@ class MeetListFragment : Fragment() {
         }
 
         viewModel.run {
-            getMeetList("1234567")
+            getMeetList(UserHolder.userResponse?.deviceId.orEmpty())
             meetList.observe(viewLifecycleOwner) { meetList ->
                 meetAdapter.submitList(meetList)
             }
