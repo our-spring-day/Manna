@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.manna.databinding.FragmentMeetListBinding
+import com.manna.view.WebSocketTestActivity
 import com.manna.view.search.SearchActivity
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -42,7 +43,9 @@ class MeetListFragment : Fragment() {
         binding.run {
             meetList.run {
                 layoutManager = LinearLayoutManager(context)
-                meetAdapter = MeetAdapter()
+                meetAdapter = MeetAdapter {
+                    startActivity(WebSocketTestActivity.getIntent(requireContext(), it))
+                }
                 adapter = meetAdapter
             }
         }

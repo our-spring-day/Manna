@@ -1,13 +1,17 @@
 package com.manna.view
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.manna.Logger
 import com.manna.R
+import com.manna.network.model.meet.MeetResponseItem
 import io.crossbar.autobahn.websocket.WebSocketConnection
 import io.crossbar.autobahn.websocket.exceptions.WebSocketException
 import io.crossbar.autobahn.websocket.interfaces.IWebSocketConnectionHandler
@@ -22,6 +26,10 @@ class WebSocketTestActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_websocket)
+
+        val meetItem = intent.getParcelableExtra<MeetResponseItem>(MEET_ITEM)
+
+        Toast.makeText(this, meetItem.toString(), Toast.LENGTH_LONG).show()
 
         inputView = findViewById(R.id.input)
         outputView = findViewById(R.id.output_window)
@@ -87,5 +95,11 @@ class WebSocketTestActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "WebSocketTestActivity"
+
+        private const val MEET_ITEM = "meet_item"
+        fun getIntent(context: Context, meetItem: MeetResponseItem) =
+            Intent(context, WebSocketTestActivity::class.java).apply {
+                putExtra(MEET_ITEM, meetItem)
+            }
     }
 }
