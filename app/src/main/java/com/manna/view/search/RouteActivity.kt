@@ -39,11 +39,18 @@ import kotlinx.android.synthetic.main.activity_meet_detail.*
 class RouteActivity : BaseActivity<ActivityRouteBinding>(R.layout.activity_route),
     OnMapReadyCallback {
 
+    companion object {
+        const val FIND_POINT = "find_point"
+        private const val UPDATE_INTERVAL_MS = 5000L
+        private const val FASTEST_UPDATE_INTERVAL_MS = 5000L
+        fun getIntent(context: Context, findPoint: LatLng) =
+            Intent(context, RouteActivity::class.java).apply {
+                putExtra(FIND_POINT, findPoint)
+            }
+    }
 
     var currentLocation: Location? = null
     var currentPosition: LatLng? = null
-
-
     private var mFusedLocationClient: FusedLocationProviderClient? = null
 
     private var location: Location? = null
@@ -119,7 +126,6 @@ class RouteActivity : BaseActivity<ActivityRouteBinding>(R.layout.activity_route
                         points.add(WayPoint(LatLng(path[0], path[1]), ""))
                     }
                 }
-
 
 
                 val titles = mutableListOf<String>()
@@ -409,15 +415,4 @@ class RouteActivity : BaseActivity<ActivityRouteBinding>(R.layout.activity_route
             ) {
             }
         }
-
-    companion object {
-        const val FIND_POINT = "find_point"
-        private const val UPDATE_INTERVAL_MS = 5000L
-        private const val FASTEST_UPDATE_INTERVAL_MS = 5000L
-        fun getIntent(context: Context, findPoint: LatLng) =
-            Intent(context, RouteActivity::class.java).apply {
-                putExtra(FIND_POINT, findPoint)
-            }
-    }
-
 }

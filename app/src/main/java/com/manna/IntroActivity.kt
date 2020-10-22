@@ -48,7 +48,7 @@ class IntroViewModel @ViewModelInject constructor(private val repository: MeetRe
     }
 
     private fun registerDevice(deviceId: String) {
-        compositeDisposable += repository.registerUser("테스트굿", deviceId)
+        compositeDisposable += repository.registerUser("원우석", deviceId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
