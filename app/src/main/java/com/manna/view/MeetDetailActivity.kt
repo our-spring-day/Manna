@@ -6,8 +6,12 @@ import android.graphics.PointF
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.gson.Gson
 import com.manna.R
 import com.manna.ext.ViewUtil
 import com.naver.maps.geometry.LatLng
@@ -31,11 +35,12 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var naverMap: NaverMap
     private lateinit var webSocketClient: WebSocketClient
     private var myLatLng = LatLng(0.0, 0.0)
+    private val user: HashMap<String, Marker> = hashMapOf()
+    val meetDetailAdapter = MeetDetailAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_meet_detail)
-        connect()
         locationSource =
             FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE)
 
@@ -52,6 +57,9 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         btn_back.setOnClickListener {
             onBackPressed()
         }
+
+        rv_user.layoutManager = LinearLayoutManager(this)
+        rv_user.adapter = meetDetailAdapter
     }
 
     override fun onRequestPermissionsResult(
@@ -90,20 +98,14 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         uiSettings.logoGravity = Gravity.END
         uiSettings.setLogoMargin(0, 80, 60, 0)
 
+        connect()
+
         val meetPlaceMarker = Marker()
         meetPlaceMarker.apply {
             position = LatLng(37.557527, 126.9222782)
             map = naverMap
             icon = MarkerIcons.BLACK
             iconTintColor = Color.RED
-        }
-
-        iv_test_1.setOnClickListener {
-            moveLocation(LatLng(37.566065, 126.9804903))
-        }
-
-        iv_test_2.setOnClickListener {
-            moveLocation(LatLng(37.534542, 126.9924073))
         }
 
         val display = windowManager.defaultDisplay
@@ -171,12 +173,11 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun connect() {
-        val url = "ws://ec2-54-180-125-3.ap-northeast-2.compute.amazonaws.com:40008/ws?token=2"
-        var uri: URI? = null
-        uri = try {
+        val url = "ws://ec2-54-180-125-3.ap-northeast-2.compute.amazonaws.com:40008/ws?token=5dcd757a5c7d4c52"
+        val uri = try {
             URI(url)
         } catch (e: URISyntaxException) {
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message)
             return
         }
         webSocketClient = object : WebSocketClient(uri) {
@@ -187,6 +188,9 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
             override fun onMessage(message: String) {
                 Log.e(TAG, "Message: $message")
+                runOnUiThread {
+                    replace(message)
+                }
             }
 
             override fun onClose(code: Int, reason: String, remote: Boolean) {
@@ -208,41 +212,38 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         webSocketClient.connect()
     }
 
+    fun replace(message: String) {
+        val gson = Gson()
+        val response = gson.fromJson(message, Response::class.java)
+        val marker = Marker()
+        if(response.location != null){
+            val name = response.sender.username
+            val latitude = response.location.latitude
+            val longitude = response.location.longitude
+            marker.map = null
+            marker.position = LatLng(latitude.toDouble(), longitude.toDouble())
+            user[name] = marker
+            marker.map = naverMap
+            marker.icon =
+                OverlayImage.fromView(TextView(this).apply {
+                    setBackgroundColor(resources.getColor(R.color.darkGray))
+                    setTextColor(Color.WHITE)
+                    text = name
+                    setPadding(30, 30, 30, 30)
+                })
+            meetDetailAdapter.addData(User(name, latitude, longitude))
+        }
+    }
+
     private fun setMyLocation() {
         val timer = timer(period = 10000) {
             webSocketClient.send("{\"latitude\":${myLatLng.latitude},\"longitude\":${myLatLng.longitude}}")
         }
     }
 
-    private fun moveLocation(latLng: LatLng) {
-        val marker = Marker()
-        marker.map = null
-        marker.position = latLng
-        marker.map = naverMap
-        marker.icon =
-            OverlayImage.fromView(TextView(this).apply {
-                setBackgroundColor(resources.getColor(R.color.darkGray))
-                setTextColor(Color.WHITE)
-                text = "연재"
-
-                setPadding(30, 30, 30, 30)
-            })
+    private fun moveLocation(marker: Marker) {
         val cameraUpdate = CameraUpdate.scrollAndZoomTo(marker.position, 16.0)
         naverMap.moveCamera(cameraUpdate)
-    }
-
-    private fun getLocation(latLng: LatLng) {
-        val marker = Marker()
-        marker.map = null
-        marker.position = latLng
-        marker.map = naverMap
-        marker.icon =
-            OverlayImage.fromView(TextView(this).apply {
-                setBackgroundColor(resources.getColor(R.color.darkGray))
-                setTextColor(Color.WHITE)
-                text = "연재"
-                setPadding(30, 30, 30, 30)
-            })
     }
 
     private fun getLatLng(
