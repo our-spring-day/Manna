@@ -34,7 +34,7 @@ import com.naver.maps.map.overlay.MultipartPathOverlay
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_meet_detail.*
+import kotlinx.android.synthetic.main.activity_route.*
 
 class RouteActivity : BaseActivity<ActivityRouteBinding>(R.layout.activity_route),
     OnMapReadyCallback {

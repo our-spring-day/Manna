@@ -1,16 +1,30 @@
 package com.manna.view
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Point
 import android.graphics.PointF
+import android.location.Location
 import android.os.Bundle
+import android.os.Looper
 import android.util.Log
 import android.view.Gravity
+import android.view.LayoutInflater
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
 import com.google.gson.Gson
+import com.google.gson.JsonObject
+import com.manna.Logger
 import com.manna.R
+import com.manna.SocketResponse
+import com.manna.UserHolder
 import com.manna.ext.ViewUtil
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
@@ -20,13 +34,15 @@ import com.naver.maps.map.util.FusedLocationSource
 import com.naver.maps.map.util.MarkerIcons
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_meet_detail.*
+import kotlinx.android.synthetic.main.activity_meet_detail.btn_back
+import kotlinx.android.synthetic.main.activity_meet_detail.top_panel
+import kotlinx.android.synthetic.main.activity_websocket.*
 import org.java_websocket.client.DefaultSSLWebSocketClientFactory
 import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
 import java.net.URI
 import java.net.URISyntaxException
 import javax.net.ssl.SSLContext
-import kotlin.concurrent.timer
 import kotlin.math.sqrt
 
 enum class WayMode(val type: String) {
@@ -49,12 +65,38 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var naverMap: NaverMap
     private lateinit var webSocketClient: WebSocketClient
     private var myLatLng = LatLng(0.0, 0.0)
-    private val user: HashMap<String, Marker> = hashMapOf()
+    private val markerMap: HashMap<String, Marker> = hashMapOf()
     private val meetDetailAdapter = MeetDetailAdapter()
+    private var fusedLocationClient: FusedLocationProviderClient? = null
+
+    private val locationRequest by lazy {
+        LocationRequest().setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+            .setInterval(UPDATE_INTERVAL_MS)
+            .setFastestInterval(FASTEST_UPDATE_INTERVAL_MS)
+    }
+
+    private val locationCallback: LocationCallback = object : LocationCallback() {
+        override fun onLocationResult(locationResult: LocationResult) {
+            super.onLocationResult(locationResult)
+            val locationList: List<Location> = locationResult.locations
+
+            locationList.getOrNull(locationList.size - 1)?.let {
+                val message = JsonObject().apply {
+                    addProperty("latitude", it.latitude)
+                    addProperty("longitude", it.longitude)
+                }
+
+                if (webSocketClient.connection.isConnecting) {
+                    webSocketClient.send(message.toString())
+                }
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_meet_detail)
+
         locationSource =
             FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE)
 
@@ -92,28 +134,31 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
+    @SuppressLint("MissingPermission")
     override fun onMapReady(naverMap: NaverMap) {
+
+        fusedLocationClient?.requestLocationUpdates(
+            locationRequest,
+            locationCallback,
+            Looper.myLooper()
+        )
+
         this.naverMap = naverMap
         naverMap.locationSource = locationSource
         naverMap.locationTrackingMode = LocationTrackingMode.Face
         naverMap.isIndoorEnabled = true
-
-        naverMap.addOnLocationChangeListener { location ->
-            myLatLng = LatLng(location.latitude, location.longitude)
+        naverMap.uiSettings.run {
+            isIndoorLevelPickerEnabled = true
+            isLocationButtonEnabled = true
+            isCompassEnabled = false
+            isScaleBarEnabled = false
+            logoGravity = Gravity.END
+            setLogoMargin(0, 80, 60, 0)
         }
-
-        val uiSettings = naverMap.uiSettings
-        uiSettings.isIndoorLevelPickerEnabled = true
-        uiSettings.isLocationButtonEnabled = true
-        uiSettings.isCompassEnabled = false
-        uiSettings.isScaleBarEnabled = false
-        uiSettings.logoGravity = Gravity.END
-        uiSettings.setLogoMargin(0, 80, 60, 0)
 
         connect()
 
-        val meetPlaceMarker = Marker()
-        meetPlaceMarker.apply {
+        val meetPlaceMarker = Marker().apply {
             position = LatLng(37.557527, 126.9222782)
             map = naverMap
             icon = MarkerIcons.BLACK
@@ -193,7 +238,7 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun connect() {
         val url =
-            "ws://ec2-54-180-125-3.ap-northeast-2.compute.amazonaws.com:40008/ws?token=5dcd757a5c7d4c52"
+            "ws://ec2-54-180-125-3.ap-northeast-2.compute.amazonaws.com:40008/ws?token=${UserHolder.userResponse?.deviceId}"
         val uri = try {
             URI(url)
         } catch (e: URISyntaxException) {
@@ -203,13 +248,27 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         webSocketClient = object : WebSocketClient(uri) {
             override fun onOpen(handshakedata: ServerHandshake) {
                 Log.e(TAG, "Connect")
-                setMyLocation()
+//                setMyLocation()
             }
 
             override fun onMessage(message: String) {
                 Log.e(TAG, "Message: $message")
                 runOnUiThread {
-                    replace(message)
+
+                    val socketResponse = Gson().fromJson(message, SocketResponse::class.java)
+                    Logger.d("socketResponse: $socketResponse")
+
+                    when (socketResponse.type) {
+                        SocketResponse.Type.LOCATION -> {
+                            handleLocation(socketResponse)
+                        }
+                        SocketResponse.Type.JOIN -> {
+//                            routeAdapter.add("${socketResponse.sender?.username}님이 들어왔습니다.")
+                        }
+                        SocketResponse.Type.LEAVE -> {
+//                            routeAdapter.add("${socketResponse.sender?.username}님이 나갔습니다.")
+                        }
+                    }
                 }
             }
 
@@ -232,34 +291,31 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         webSocketClient.connect()
     }
 
-    fun replace(message: String) {
-        val gson = Gson()
-        val response = gson.fromJson(message, Response::class.java)
-        val marker = Marker()
-        if (response.location != null) {
-            val name = response.sender.username
-            val latitude = response.location.latitude
-            val longitude = response.location.longitude
-            marker.map = null
-            marker.position = LatLng(latitude.toDouble(), longitude.toDouble())
-            user[name] = marker
-            marker.map = naverMap
-            marker.icon =
-                OverlayImage.fromView(TextView(this).apply {
-                    setBackgroundColor(resources.getColor(R.color.darkGray))
-                    setTextColor(Color.WHITE)
-                    text = name
-                    setPadding(30, 30, 30, 30)
-                })
-            meetDetailAdapter.addData(User(name, latitude, longitude))
+    private fun handleLocation(socketResponse: SocketResponse) {
+        socketResponse.sender?.username?.let { fromUserName ->
+            val latLng = socketResponse.latLng
+            Logger.d("locate: ${latLng?.latitude} ${latLng?.longitude}")
+            if (latLng?.latitude != null && latLng.longitude != null) {
+                val markerView = LayoutInflater.from(this)
+                    .inflate(R.layout.view_marker, this.root_view, false)
+                markerView.findViewById<TextView>(R.id.name).text =
+                    fromUserName.subSequence(1, fromUserName.length)
+
+                val marker =
+                    markerMap[fromUserName] ?: Marker().also { markerMap[fromUserName] = it }
+                marker.icon = OverlayImage.fromView(markerView)
+                marker.position = LatLng(latLng.latitude, latLng.longitude)
+                marker.map = naverMap
+
+            }
         }
     }
 
-    private fun setMyLocation() {
-        val timer = timer(period = 10000) {
-            webSocketClient.send("{\"latitude\":${myLatLng.latitude},\"longitude\":${myLatLng.longitude}}")
-        }
-    }
+//    private fun setMyLocation() {
+//        val timer = timer(period = 10000) {
+//            webSocketClient.send("{\"latitude\":${myLatLng.latitude},\"longitude\":${myLatLng.longitude}}")
+//        }
+//    }
 
     private fun moveLocation(marker: Marker) {
         val cameraUpdate = CameraUpdate.scrollAndZoomTo(marker.position, 16.0)
@@ -281,8 +337,13 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     companion object {
-        private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
         private const val TAG = "MeetDetailActivity:"
+        private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
+        private const val UPDATE_INTERVAL_MS = 5000L
+        private const val FASTEST_UPDATE_INTERVAL_MS = 5000L
+
+        fun getIntent(context: Context) =
+            Intent(context, MeetDetailActivity::class.java)
     }
 }
 

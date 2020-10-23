@@ -13,7 +13,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gun0912.tedpermission.TedPermissionResult
 import com.manna.databinding.FragmentMeetListBinding
-import com.manna.view.WebSocketTestActivity
+import com.manna.view.MeetDetailActivity
 import com.manna.view.search.SearchActivity
 import com.tedpark.tedpermission.rx2.TedRx2Permission
 import dagger.hilt.android.AndroidEntryPoint
@@ -59,7 +59,7 @@ class MeetListFragment : Fragment() {
                         .request()
                         .subscribe({ tedPermissionResult: TedPermissionResult ->
                             if (tedPermissionResult.isGranted) {
-                                startActivity(WebSocketTestActivity.getIntent(requireContext(), it))
+                                startActivity(MeetDetailActivity.getIntent(requireContext()))
                             } else {
                                 Toast.makeText(
                                     requireContext(),

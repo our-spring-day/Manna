@@ -13,7 +13,6 @@ import androidx.annotation.UiThread
 import androidx.databinding.library.baseAdapters.BR
 import com.google.android.gms.location.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.manna.Logger
 import com.manna.R
@@ -33,15 +32,11 @@ import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
-import io.crossbar.autobahn.websocket.WebSocketConnection
-import io.crossbar.autobahn.websocket.exceptions.WebSocketException
-import io.crossbar.autobahn.websocket.interfaces.IWebSocketConnectionHandler
-import io.crossbar.autobahn.websocket.types.ConnectionResponse
 import kotlinx.android.synthetic.main.activity_websocket.*
 
 class WebSocketTestActivity : BaseActivity<ActivityWebsocketBinding>(R.layout.activity_websocket),
     OnMapReadyCallback {
-    private val socketConnection: WebSocketConnection = WebSocketConnection()
+    //    private val socketConnection: WebSocketConnection = WebSocketConnection()
     private var fusedLocationClient: FusedLocationProviderClient? = null
 
     private var location: Location? = null
@@ -67,9 +62,9 @@ class WebSocketTestActivity : BaseActivity<ActivityWebsocketBinding>(R.layout.ac
                         addProperty("longitude", it.longitude)
                     }
 
-                    if (socketConnection.isConnected) {
-                        socketConnection.sendMessage(message.toString())
-                    }
+//                    if (socketConnection.isConnected) {
+//                        socketConnection.sendMessage(message.toString())
+//                    }
                 }
             }
         }
@@ -176,69 +171,69 @@ class WebSocketTestActivity : BaseActivity<ActivityWebsocketBinding>(R.layout.ac
     private fun start() {
         val wsuri =
             "ws://ec2-54-180-125-3.ap-northeast-2.compute.amazonaws.com:40008/ws?token=${UserHolder.userResponse?.deviceId}" //"ws://ec2-13-124-151-24.ap-northeast-2.compute.amazonaws.com:9999/manna"
-        try {
-            socketConnection.connect(wsuri, object : IWebSocketConnectionHandler {
-
-                override fun onMessage(payload: ByteArray?, isBinary: Boolean) {
-                    Logger.d("$payload $isBinary")
-                }
-
-                override fun onConnect(response: ConnectionResponse?) {
-                    Logger.d("$response")
-                }
-
-                override fun onPing() {
-                    Logger.d("")
-                }
-
-                override fun onPing(payload: ByteArray?) {
-                    Logger.d("$payload")
-                }
-
-                override fun onPong() {
-                    Logger.d("")
-                }
-
-                override fun onPong(payload: ByteArray?) {
-                    Logger.d("$payload")
-                }
-
-                override fun setConnection(connection: WebSocketConnection?) {
-                    Logger.d("$connection")
-                }
-
-                @SuppressLint("SetTextI18n")
-                override fun onOpen() {
-                    Logger.d("Status: Connected to $wsuri")
-//                    outputView.text = outputView.text.toString() + "\nconnected to " + wsuri
-                }
-
-                override fun onMessage(payload: String?) {
-                    Logger.d("Got echo: $payload")
-
-                    val socketResponse = Gson().fromJson(payload, SocketResponse::class.java)
-                    Logger.d("socketResponse: $socketResponse")
-
-                    when (socketResponse.type) {
-                        SocketResponse.Type.LOCATION -> {
-                            handleLocation(socketResponse)
-                        }
-                        SocketResponse.Type.JOIN -> {
-                            routeAdapter.add("${socketResponse.sender?.username}님이 들어왔습니다.")
-                        }
-                        SocketResponse.Type.LEAVE -> {
-                            routeAdapter.add("${socketResponse.sender?.username}님이 나갔습니다.")
-                        }
-                    }
-                }
-
-                override fun onClose(code: Int, reason: String?) {
-                    Logger.d("Connection lost.")
-                }
-            })
-        } catch (e: WebSocketException) {
-            Logger.d(e.toString())
-        }
+//        try {
+//            socketConnection.connect(wsuri, object : IWebSocketConnectionHandler {
+//
+//                override fun onMessage(payload: ByteArray?, isBinary: Boolean) {
+//                    Logger.d("$payload $isBinary")
+//                }
+//
+//                override fun onConnect(response: ConnectionResponse?) {
+//                    Logger.d("$response")
+//                }
+//
+//                override fun onPing() {
+//                    Logger.d("")
+//                }
+//
+//                override fun onPing(payload: ByteArray?) {
+//                    Logger.d("$payload")
+//                }
+//
+//                override fun onPong() {
+//                    Logger.d("")
+//                }
+//
+//                override fun onPong(payload: ByteArray?) {
+//                    Logger.d("$payload")
+//                }
+//
+//                override fun setConnection(connection: WebSocketConnection?) {
+//                    Logger.d("$connection")
+//                }
+//
+//                @SuppressLint("SetTextI18n")
+//                override fun onOpen() {
+//                    Logger.d("Status: Connected to $wsuri")
+////                    outputView.text = outputView.text.toString() + "\nconnected to " + wsuri
+//                }
+//
+//                override fun onMessage(payload: String?) {
+//                    Logger.d("Got echo: $payload")
+//
+//                    val socketResponse = Gson().fromJson(payload, SocketResponse::class.java)
+//                    Logger.d("socketResponse: $socketResponse")
+//
+//                    when (socketResponse.type) {
+//                        SocketResponse.Type.LOCATION -> {
+//                            handleLocation(socketResponse)
+//                        }
+//                        SocketResponse.Type.JOIN -> {
+//                            routeAdapter.add("${socketResponse.sender?.username}님이 들어왔습니다.")
+//                        }
+//                        SocketResponse.Type.LEAVE -> {
+//                            routeAdapter.add("${socketResponse.sender?.username}님이 나갔습니다.")
+//                        }
+//                    }
+//                }
+//
+//                override fun onClose(code: Int, reason: String?) {
+//                    Logger.d("Connection lost.")
+//                }
+//            })
+//        } catch (e: WebSocketException) {
+//            Logger.d(e.toString())
+//        }
     }
 
     private fun handleLocation(socketResponse: SocketResponse) {
