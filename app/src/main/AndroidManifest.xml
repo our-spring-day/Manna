@@ -33,5 +33,4 @@
         <activity android:name=".view.WebSocketTestActivity" />
 
     </application>
-
 </manifest>

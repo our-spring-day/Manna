@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -32,21 +31,23 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <ImageView
+                <com.manna.CircleImageView
                     android:id="@+id/btn_back"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:src="@drawable/ic_back_24"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="22dp"
+                    android:layout_marginTop="29.18dp"
+                    android:src="@drawable/ic_back"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <ImageView
-                    android:id="@+id/btn_menu"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:src="@drawable/ic_menu_24"
+                <com.manna.CircleImageView
+                    android:id="@+id/btn_info"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="29.18dp"
+                    android:layout_marginEnd="22dp"
+                    android:src="@drawable/ic_info"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -57,32 +58,21 @@
             android:id="@+id/bottom_sheet"
             style="@style/Widget.MaterialComponents.BottomSheet"
             android:layout_width="match_parent"
-            android:layout_height="400dp"
+            android:layout_height="182dp"
             android:background="@color/colorAccent"
             app:backgroundTint="?attr/colorSurface"
             app:behavior_hideable="false"
-            app:behavior_peekHeight="200dp"
             app:layout_behavior="@string/bottom_sheet_behavior">
 
-            <TextView
-                android:id="@+id/bottom_sheet_state"
-                android:layout_width="wrap_content"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_user"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias=".2"
-                tools:text="STATE" />
-
-
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-    <include
-        android:id="@+id/side_panel"
-        layout="@layout/view_drawer" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

@@ -10,4 +10,5 @@
 
     <color name="warning_color">#BA0000</color>
     <color name="gray7C7C7C">#7C7C7C</color>
+    <color name="darkGray">#5D5D5D</color>
 </resources>
