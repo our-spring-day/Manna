@@ -16,9 +16,9 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.manna.Logger
-import com.manna.MyLatLng
 import com.manna.R
 import com.manna.SocketResponse
+import com.manna.UserHolder
 import com.manna.common.BaseActivity
 import com.manna.common.BaseRecyclerViewAdapter
 import com.manna.common.BaseRecyclerViewHolder
@@ -41,8 +41,8 @@ import kotlinx.android.synthetic.main.activity_websocket.*
 
 class WebSocketTestActivity : BaseActivity<ActivityWebsocketBinding>(R.layout.activity_websocket),
     OnMapReadyCallback {
-    private val mConnection: WebSocketConnection = WebSocketConnection()
-    private var mFusedLocationClient: FusedLocationProviderClient? = null
+    private val socketConnection: WebSocketConnection = WebSocketConnection()
+    private var fusedLocationClient: FusedLocationProviderClient? = null
 
     private var location: Location? = null
 
@@ -67,14 +67,10 @@ class WebSocketTestActivity : BaseActivity<ActivityWebsocketBinding>(R.layout.ac
                         addProperty("longitude", it.longitude)
                     }
 
-                    if (mConnection.isConnected) {
-                        mConnection.sendMessage(message.toString())
+                    if (socketConnection.isConnected) {
+                        socketConnection.sendMessage(message.toString())
                     }
-                    currentPosition = LatLng(it.latitude, it.longitude)
                 }
-
-
-                currentLocation = location
             }
         }
     }
@@ -97,7 +93,7 @@ class WebSocketTestActivity : BaseActivity<ActivityWebsocketBinding>(R.layout.ac
     override fun onMapReady(naverMap: NaverMap) {
         this.naverMap = naverMap
 
-        mFusedLocationClient?.requestLocationUpdates(
+        fusedLocationClient?.requestLocationUpdates(
             locationRequest,
             locationCallback,
             Looper.myLooper()
@@ -134,7 +130,7 @@ class WebSocketTestActivity : BaseActivity<ActivityWebsocketBinding>(R.layout.ac
 
         val builder: LocationSettingsRequest.Builder = LocationSettingsRequest.Builder()
         builder.addLocationRequest(locationRequest)
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         binding.routeText.adapter = routeAdapter
     }
@@ -142,10 +138,10 @@ class WebSocketTestActivity : BaseActivity<ActivityWebsocketBinding>(R.layout.ac
 
     override fun onStop() {
         super.onStop()
-        if (mFusedLocationClient != null) {
-
-            mFusedLocationClient?.removeLocationUpdates(locationCallback)
-        }
+//        if (fusedLocationClient != null) {
+//
+//            fusedLocationClient?.removeLocationUpdates(locationCallback)
+//        }
     }
 
 
@@ -178,11 +174,10 @@ class WebSocketTestActivity : BaseActivity<ActivityWebsocketBinding>(R.layout.ac
 
 
     private fun start() {
-
         val wsuri =
-            "ws://ec2-54-180-125-3.ap-northeast-2.compute.amazonaws.com:40008/ws?token=1" //"ws://ec2-13-124-151-24.ap-northeast-2.compute.amazonaws.com:9999/manna"
+            "ws://ec2-54-180-125-3.ap-northeast-2.compute.amazonaws.com:40008/ws?token=${UserHolder.userResponse?.deviceId}" //"ws://ec2-13-124-151-24.ap-northeast-2.compute.amazonaws.com:9999/manna"
         try {
-            mConnection.connect(wsuri, object : IWebSocketConnectionHandler {
+            socketConnection.connect(wsuri, object : IWebSocketConnectionHandler {
 
                 override fun onMessage(payload: ByteArray?, isBinary: Boolean) {
                     Logger.d("$payload $isBinary")
@@ -219,33 +214,20 @@ class WebSocketTestActivity : BaseActivity<ActivityWebsocketBinding>(R.layout.ac
                 }
 
                 override fun onMessage(payload: String?) {
-
                     Logger.d("Got echo: $payload")
 
-                    val gson = Gson()
-                    val socketResponse = gson.fromJson(payload, SocketResponse::class.java)
+                    val socketResponse = Gson().fromJson(payload, SocketResponse::class.java)
                     Logger.d("socketResponse: $socketResponse")
-                    socketResponse.from?.username?.let { fromUserName ->
-                        val latlng = gson.fromJson(socketResponse.message, MyLatLng::class.java)
 
-                        Logger.d("locate: ${latlng?.latitude} ${latlng.longitude}")
-                        if (latlng?.latitude != null && latlng.longitude != null){
-                            val cameraUpdate = CameraUpdate.scrollTo(LatLng(
-                                latlng.latitude,
-                                latlng.longitude
-                            ))
-                            naverMap?.moveCamera(cameraUpdate)
-
-                            val markerView = LayoutInflater.from(this@WebSocketTestActivity).inflate(R.layout.view_marker, this@WebSocketTestActivity.root_view, false)
-                            markerView.findViewById<TextView>(R.id.name).text = fromUserName.subSequence(1, fromUserName.length)
-
-                            val marker = markerMap[fromUserName] ?: Marker().also { markerMap[fromUserName] = it }
-                            marker.icon = OverlayImage.fromView(markerView)
-                            marker.position = LatLng(latlng.latitude, latlng.longitude)
-                            marker.map = naverMap
-
-                        } else {
-                            routeAdapter.add("$fromUserName : $payload")
+                    when (socketResponse.type) {
+                        SocketResponse.Type.LOCATION -> {
+                            handleLocation(socketResponse)
+                        }
+                        SocketResponse.Type.JOIN -> {
+                            routeAdapter.add("${socketResponse.sender?.username}님이 들어왔습니다.")
+                        }
+                        SocketResponse.Type.LEAVE -> {
+                            routeAdapter.add("${socketResponse.sender?.username}님이 나갔습니다.")
                         }
                     }
                 }
@@ -259,17 +241,40 @@ class WebSocketTestActivity : BaseActivity<ActivityWebsocketBinding>(R.layout.ac
         }
     }
 
+    private fun handleLocation(socketResponse: SocketResponse) {
+        socketResponse.sender?.username?.let { fromUserName ->
+            val latLng = socketResponse.latLng
+
+            Logger.d("locate: ${latLng?.latitude} ${latLng?.longitude}")
+            if (latLng?.latitude != null && latLng.longitude != null) {
+                val cameraUpdate = CameraUpdate.scrollTo(
+                    LatLng(
+                        latLng.latitude,
+                        latLng.longitude
+                    )
+                )
+                naverMap?.moveCamera(cameraUpdate)
+
+                val markerView = LayoutInflater.from(this@WebSocketTestActivity)
+                    .inflate(R.layout.view_marker, this@WebSocketTestActivity.root_view, false)
+                markerView.findViewById<TextView>(R.id.name).text =
+                    fromUserName.subSequence(1, fromUserName.length)
+
+                val marker =
+                    markerMap[fromUserName] ?: Marker().also { markerMap[fromUserName] = it }
+                marker.icon = OverlayImage.fromView(markerView)
+                marker.position = LatLng(latLng.latitude, latLng.longitude)
+                marker.map = naverMap
+
+            }
+        }
+    }
+
 
     companion object {
-        private const val TAG = "WebSocketTestActivity"
-
         private const val MEET_ITEM = "meet_item"
-
-        const val FIND_POINT = "find_point"
-        private const val UPDATE_INTERVAL_MS = 20000L
-        private const val FASTEST_UPDATE_INTERVAL_MS = 20000L
-        var currentLocation: Location? = null
-        var currentPosition: LatLng? = null
+        private const val UPDATE_INTERVAL_MS = 5000L
+        private const val FASTEST_UPDATE_INTERVAL_MS = 5000L
 
         fun getIntent(context: Context, meetItem: MeetResponseItem) =
             Intent(context, WebSocketTestActivity::class.java).apply {

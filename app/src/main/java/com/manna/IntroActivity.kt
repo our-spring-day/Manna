@@ -80,6 +80,7 @@ class IntroActivity : AppCompatActivity() {
         viewModel.isValidDevice.observe(this, EventObserver { isValid ->
             if (isValid) {
                 startActivity(Intent(this, HomeActivity::class.java))
+                finish()
             } else {
                 Toast.makeText(this, "기기 인증이 안되네요 허허", Toast.LENGTH_SHORT).show()
             }

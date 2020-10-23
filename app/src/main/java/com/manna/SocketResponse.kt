@@ -3,12 +3,19 @@ package com.manna
 import com.google.gson.annotations.SerializedName
 
 data class SocketResponse(
-    @SerializedName("createTime")
-    val createTime: String?,
-    @SerializedName("from")
-    val from: SocketUser?,
-    @SerializedName("message")
-    val message: String?,
-    @SerializedName("to")
-    val socket: List<SocketUser>?
-)
+    @SerializedName("location")
+    val latLng: MyLatLng?,
+    @SerializedName("sender")
+    val sender: Sender?,
+    @SerializedName("type")
+    val type: Type?
+) {
+    enum class Type {
+        @SerializedName("LOCATION")
+        LOCATION,
+        @SerializedName("JOIN")
+        JOIN,
+        @SerializedName("LEAVE")
+        LEAVE
+    }
+}
