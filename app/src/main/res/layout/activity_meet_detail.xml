@@ -59,15 +59,18 @@
             style="@style/Widget.MaterialComponents.BottomSheet"
             android:layout_width="match_parent"
             android:layout_height="182dp"
+
             android:background="@color/colorAccent"
             app:backgroundTint="?attr/colorSurface"
             app:behavior_hideable="false"
+            app:behavior_peekHeight="80dp"
             app:layout_behavior="@string/bottom_sheet_behavior">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_user"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:overScrollMode="never"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

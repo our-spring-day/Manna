@@ -14,7 +14,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -65,7 +65,7 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var naverMap: NaverMap
     private lateinit var webSocketClient: WebSocketClient
     private var myLatLng = LatLng(0.0, 0.0)
-    private val markerMap: HashMap<String, Marker> = hashMapOf()
+    private val markerMap: HashMap<String?, Marker> = hashMapOf()
     private val meetDetailAdapter = MeetDetailAdapter()
     private var fusedLocationClient: FusedLocationProviderClient? = null
 
@@ -112,8 +112,13 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             onBackPressed()
         }
 
-        rv_user.layoutManager = LinearLayoutManager(this)
+        rv_user.layoutManager = GridLayoutManager(this, 4)
         rv_user.adapter = meetDetailAdapter
+        meetDetailAdapter.setOnClickListener(object : MeetDetailAdapter.OnClickListener {
+            override fun onClick(user: User) {
+                markerMap[user.deviceToken]?.let { moveLocation(it) }
+            }
+        })
     }
 
     override fun onRequestPermissionsResult(
@@ -145,7 +150,7 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
         this.naverMap = naverMap
         naverMap.locationSource = locationSource
-        naverMap.locationTrackingMode = LocationTrackingMode.Face
+        naverMap.locationTrackingMode = LocationTrackingMode.NoFollow
         naverMap.isIndoorEnabled = true
         naverMap.uiSettings.run {
             isIndoorLevelPickerEnabled = true
@@ -301,11 +306,23 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 markerView.findViewById<TextView>(R.id.name).text =
                     fromUserName.subSequence(1, fromUserName.length)
 
+                val name = socketResponse.sender.username
+                val latitude = socketResponse.latLng.latitude
+                val longitude = socketResponse.latLng.longitude
+                val deviceToken = socketResponse.sender.deviceToken
+
                 val marker =
                     markerMap[fromUserName] ?: Marker().also { markerMap[fromUserName] = it }
                 marker.icon = OverlayImage.fromView(markerView)
                 marker.position = LatLng(latLng.latitude, latLng.longitude)
                 marker.map = naverMap
+
+                if (!markerMap.containsKey(deviceToken)) {
+                    meetDetailAdapter.addData(User(name, deviceToken, latitude, longitude))
+                } else {
+                    meetDetailAdapter.refreshItem(User(name, deviceToken, latitude, longitude))
+                }
+                markerMap[deviceToken] = marker
 
             }
         }
