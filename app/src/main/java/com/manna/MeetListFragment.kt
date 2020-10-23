@@ -1,18 +1,23 @@
 package com.manna
 
+import android.Manifest
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.gun0912.tedpermission.TedPermissionResult
 import com.manna.databinding.FragmentMeetListBinding
 import com.manna.view.WebSocketTestActivity
 import com.manna.view.search.SearchActivity
+import com.tedpark.tedpermission.rx2.TedRx2Permission
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class MeetListFragment : Fragment() {
@@ -44,7 +49,29 @@ class MeetListFragment : Fragment() {
             meetList.run {
                 layoutManager = LinearLayoutManager(context)
                 meetAdapter = MeetAdapter {
-                    startActivity(WebSocketTestActivity.getIntent(requireContext(), it))
+
+                    TedRx2Permission.with(requireContext())
+                        .setRationaleTitle("위치정보 권한 요청")
+                        .setRationaleMessage("항상 허용으로 좀 해주세요 ㅠ") // "we need permission for read contact and find your location"
+                        .setPermissions(
+                            Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                        )
+                        .request()
+                        .subscribe({ tedPermissionResult: TedPermissionResult ->
+                            if (tedPermissionResult.isGranted) {
+                                startActivity(WebSocketTestActivity.getIntent(requireContext(), it))
+                            } else {
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Permission Denied ${tedPermissionResult.deniedPermissions}",
+                                    Toast.LENGTH_SHORT
+                                )
+                                    .show()
+                            }
+                        }, { throwable: Throwable? ->
+
+                        })
+
                 }
                 adapter = meetAdapter
             }

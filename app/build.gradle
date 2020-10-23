@@ -98,5 +98,7 @@ dependencies {
         // excluding org.json which is provided by Android
         exclude group: 'org.json', module: 'json'
     }
-    implementation 'io.crossbar.autobahn:autobahn-android:20.2.1' 
+    implementation 'io.crossbar.autobahn:autobahn-android:20.2.1'
+
+    implementation 'gun0912.ted:tedpermission-rx2:2.2.3'
 }
