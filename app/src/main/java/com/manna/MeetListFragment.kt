@@ -2,6 +2,7 @@ package com.manna
 
 import android.Manifest
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -54,7 +55,7 @@ class MeetListFragment : Fragment() {
                         .setRationaleTitle("위치정보 권한 요청")
                         .setRationaleMessage("항상 허용으로 좀 해주세요 ㅠ") // "we need permission for read contact and find your location"
                         .setPermissions(
-                            Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) Manifest.permission.ACCESS_FINE_LOCATION else Manifest.permission.ACCESS_BACKGROUND_LOCATION
                         )
                         .request()
                         .subscribe({ tedPermissionResult: TedPermissionResult ->
