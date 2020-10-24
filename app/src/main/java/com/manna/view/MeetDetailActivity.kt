@@ -15,10 +15,7 @@ import android.view.LayoutInflater
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.*
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.manna.Logger
@@ -86,9 +83,14 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                     addProperty("longitude", it.longitude)
                 }
 
-                if (webSocketClient.connection.isConnecting) {
+
+                Logger.d("$message")
+                try {
                     webSocketClient.send(message.toString())
+                } catch (e: Exception) {
+
                 }
+
             }
         }
     }
@@ -119,6 +121,10 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 markerMap[user.deviceToken]?.let { moveLocation(it) }
             }
         })
+
+        val builder: LocationSettingsRequest.Builder = LocationSettingsRequest.Builder()
+        builder.addLocationRequest(locationRequest)
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
     }
 
     override fun onRequestPermissionsResult(
@@ -293,6 +299,7 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 e.printStackTrace()
             }
         }
+
         webSocketClient.connect()
     }
 
