@@ -1,8 +1,10 @@
 package com.manna.view
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.manna.R
 import kotlinx.android.synthetic.main.item_round_view.view.*
 
@@ -10,6 +12,7 @@ class MeetDetailAdapter :
     RecyclerView.Adapter<MeetDetailAdapter.ViewHolder>() {
     private val items = mutableListOf<User>()
     private var onClickListener: OnClickListener? = null
+    private var itemViewType = VIEW_TYPE_TEXT
 
     interface OnClickListener {
         fun onClick(user: User)
@@ -41,6 +44,19 @@ class MeetDetailAdapter :
         }
     }
 
+    fun setItemViewType() {
+        itemViewType = if (itemViewType == VIEW_TYPE_TEXT) {
+            VIEW_TYPE_IMAGE
+        } else {
+            VIEW_TYPE_TEXT
+        }
+        notifyDataSetChanged()
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return itemViewType
+    }
+
     class ViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
         LayoutInflater.from(parent.context).inflate(R.layout.item_round_view, parent, false)
     ) {
@@ -49,8 +65,21 @@ class MeetDetailAdapter :
                 setOnClickListener {
                     listener?.onClick(item)
                 }
-                tv_name.text = item.name?.subSequence(1, item.name.length)
+                if (itemViewType == VIEW_TYPE_TEXT) {
+                    tv_name.visibility = View.VISIBLE
+                    iv_image.visibility = View.GONE
+                    tv_name.text = item.name?.subSequence(1, item.name.length)
+                } else {
+                    tv_name.visibility = View.GONE
+                    iv_image.visibility = View.VISIBLE
+                    Glide.with(this).load(R.drawable.test_1).into(iv_image)
+                }
             }
         }
+    }
+
+    companion object {
+        const val VIEW_TYPE_TEXT = 0
+        const val VIEW_TYPE_IMAGE = 1
     }
 }

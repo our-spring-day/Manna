@@ -13,15 +13,17 @@ import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bumptech.glide.Glide
 import com.google.android.gms.location.*
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import com.manna.CircleImageView
 import com.manna.Logger
 import com.manna.R
 import com.manna.SocketResponse
-import com.manna.UserHolder
 import com.manna.ext.ViewUtil
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
@@ -33,7 +35,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_meet_detail.*
 import kotlinx.android.synthetic.main.activity_meet_detail.btn_back
 import kotlinx.android.synthetic.main.activity_meet_detail.top_panel
-import kotlinx.android.synthetic.main.activity_websocket.*
 import org.java_websocket.client.DefaultSSLWebSocketClientFactory
 import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
@@ -65,12 +66,12 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private val markerMap: HashMap<String?, Marker> = hashMapOf()
     private val meetDetailAdapter = MeetDetailAdapter()
     private var fusedLocationClient: FusedLocationProviderClient? = null
-
     private val locationRequest by lazy {
         LocationRequest().setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
             .setInterval(UPDATE_INTERVAL_MS)
             .setFastestInterval(FASTEST_UPDATE_INTERVAL_MS)
     }
+    var layoutId = R.layout.view_round_marker
 
     private val locationCallback: LocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
@@ -82,8 +83,6 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                     addProperty("latitude", it.latitude)
                     addProperty("longitude", it.longitude)
                 }
-
-
                 Logger.d("$message")
                 try {
                     webSocketClient.send(message.toString())
@@ -112,6 +111,26 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
         btn_back.setOnClickListener {
             onBackPressed()
+        }
+
+        btn_info.setOnClickListener {
+            meetDetailAdapter.setItemViewType()
+            val markerView = LayoutInflater.from(this)
+                .inflate(layoutId, this.root_view, false)
+            if(layoutId == R.layout.view_round_marker){
+                layoutId = R.layout.view_marker
+                markerMap.forEach{
+                    it.value.icon = OverlayImage.fromView(markerView)
+                    markerView.findViewById<TextView>(R.id.name).text =
+                        it.key?.length?.let { it1 -> it.key?.subSequence(1, it1) }
+                }
+            } else {
+                layoutId = R.layout.view_round_marker
+                markerMap.forEach{
+                    it.value.icon = OverlayImage.fromView(markerView)
+                    Glide.with(this).load(R.drawable.test_1).into(markerView.findViewById<CircleImageView>(R.id.iv_image))
+                }
+            }
         }
 
         rv_user.layoutManager = GridLayoutManager(this, 4)
@@ -182,6 +201,8 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         val projection = naverMap.projection
 
         val newMarker = Marker()
+        newMarker.icon =
+            OverlayImage.fromResource(R.drawable.ic_baseline_account_circle_24)
 
         naverMap.addOnCameraChangeListener { reason, animated ->
             val topBottomLatLng: LatLng
@@ -204,23 +225,15 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 newMarker.map = null
             } else {
                 newMarker.map = null
-                if (markerPoint.x > size.x / 2) {
-                    startEndLatLng =
-                        getLatLng(topEnd, bottomEnd, center, meetPlaceMarker.position)
-                    newMarker.angle = 0f
+                startEndLatLng = if (markerPoint.x > size.x / 2) {
+                    getLatLng(topEnd, bottomEnd, center, meetPlaceMarker.position)
                 } else {
-                    startEndLatLng =
-                        getLatLng(topStart, bottomStart, center, meetPlaceMarker.position)
-                    newMarker.angle = 0f
+                    getLatLng(topStart, bottomStart, center, meetPlaceMarker.position)
                 }
-                if (markerPoint.y > size.y / 2) {
-                    topBottomLatLng =
-                        getLatLng(bottomStart, bottomEnd, center, meetPlaceMarker.position)
-                    newMarker.angle = 0f
+                topBottomLatLng = if (markerPoint.y > size.y / 2) {
+                    getLatLng(bottomStart, bottomEnd, center, meetPlaceMarker.position)
                 } else {
-                    topBottomLatLng =
-                        getLatLng(topStart, topEnd, center, meetPlaceMarker.position)
-                    newMarker.angle = 180f
+                    getLatLng(topStart, topEnd, center, meetPlaceMarker.position)
                 }
 
                 val startEnd = sqrt(
@@ -231,17 +244,12 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                     (topBottomLatLng.latitude - center.latitude) * (topBottomLatLng.latitude - center.latitude) +
                             (topBottomLatLng.longitude - center.longitude) * (topBottomLatLng.longitude - center.longitude)
                 )
-
                 if (startEnd < topBottom) {
                     newMarker.position = startEndLatLng
                     newMarker.map = naverMap
-                    newMarker.icon =
-                        OverlayImage.fromResource(R.drawable.ic_baseline_account_circle_24)
                 } else if (startEnd > topBottom) {
                     newMarker.position = topBottomLatLng
                     newMarker.map = naverMap
-                    newMarker.icon =
-                        OverlayImage.fromResource(R.drawable.ic_baseline_account_circle_24)
                 }
             }
         }
@@ -249,7 +257,7 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun connect() {
         val url =
-            "ws://ec2-54-180-125-3.ap-northeast-2.compute.amazonaws.com:40008/ws?token=${UserHolder.userResponse?.deviceId}"
+            "ws://ec2-54-180-125-3.ap-northeast-2.compute.amazonaws.com:40008/ws?token=aed64e8da3a07df4"
         val uri = try {
             URI(url)
         } catch (e: URISyntaxException) {
@@ -268,6 +276,11 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
                     val socketResponse = Gson().fromJson(message, SocketResponse::class.java)
                     Logger.d("socketResponse: $socketResponse")
+                    Toast.makeText(
+                        applicationContext,
+                        socketResponse.latLng.toString(),
+                        Toast.LENGTH_SHORT
+                    ).show()
 
                     when (socketResponse.type) {
                         SocketResponse.Type.LOCATION -> {
@@ -309,9 +322,13 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             Logger.d("locate: ${latLng?.latitude} ${latLng?.longitude}")
             if (latLng?.latitude != null && latLng.longitude != null) {
                 val markerView = LayoutInflater.from(this)
-                    .inflate(R.layout.view_marker, this.root_view, false)
-                markerView.findViewById<TextView>(R.id.name).text =
-                    fromUserName.subSequence(1, fromUserName.length)
+                    .inflate(layoutId, this.root_view, false)
+                if(layoutId == R.layout.view_marker){
+                    markerView.findViewById<TextView>(R.id.name).text =
+                        fromUserName.subSequence(1, fromUserName.length)
+                } else {
+                    Glide.with(this).load(R.drawable.test_1).into(markerView.findViewById<CircleImageView>(R.id.iv_image))
+                }
 
                 val name = socketResponse.sender.username
                 val latitude = socketResponse.latLng.latitude
