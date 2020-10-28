@@ -12,6 +12,7 @@ import android.os.Looper
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -72,6 +73,7 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             .setFastestInterval(FASTEST_UPDATE_INTERVAL_MS)
     }
     var layoutId = R.layout.view_round_marker
+    lateinit var markerView : View
 
     private val locationCallback: LocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
@@ -115,17 +117,18 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
         btn_info.setOnClickListener {
             meetDetailAdapter.setItemViewType()
-            val markerView = LayoutInflater.from(this)
-                .inflate(layoutId, this.root_view, false)
             if(layoutId == R.layout.view_round_marker){
                 layoutId = R.layout.view_marker
+                markerView = LayoutInflater.from(this)
+                    .inflate(layoutId, this.root_view, false)
                 markerMap.forEach{
                     it.value.icon = OverlayImage.fromView(markerView)
-                    markerView.findViewById<TextView>(R.id.name).text =
-                        it.key?.length?.let { it1 -> it.key?.subSequence(1, it1) }
+                    markerView.findViewById<TextView>(R.id.name).text = it.key
                 }
             } else {
                 layoutId = R.layout.view_round_marker
+                markerView = LayoutInflater.from(this)
+                    .inflate(layoutId, this.root_view, false)
                 markerMap.forEach{
                     it.value.icon = OverlayImage.fromView(markerView)
                     Glide.with(this).load(R.drawable.test_1).into(markerView.findViewById<CircleImageView>(R.id.iv_image))
@@ -321,7 +324,7 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             val latLng = socketResponse.latLng
             Logger.d("locate: ${latLng?.latitude} ${latLng?.longitude}")
             if (latLng?.latitude != null && latLng.longitude != null) {
-                val markerView = LayoutInflater.from(this)
+                markerView = LayoutInflater.from(this)
                     .inflate(layoutId, this.root_view, false)
                 if(layoutId == R.layout.view_marker){
                     markerView.findViewById<TextView>(R.id.name).text =
