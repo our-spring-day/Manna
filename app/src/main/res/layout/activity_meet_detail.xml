@@ -57,14 +57,14 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/bottom_sheet"
-            style="@style/Widget.MaterialComponents.BottomSheet"
+            style="@style/CustomBottomSheet"
             android:layout_width="match_parent"
-            android:layout_height="182dp"
-
+            android:layout_height="match_parent"
             android:background="@color/colorAccent"
+            android:padding="32dp"
             app:backgroundTint="?attr/colorSurface"
             app:behavior_hideable="false"
-            app:behavior_peekHeight="80dp"
+            app:behavior_peekHeight="182dp"
             app:layout_behavior="@string/bottom_sheet_behavior">
 
             <androidx.recyclerview.widget.RecyclerView
