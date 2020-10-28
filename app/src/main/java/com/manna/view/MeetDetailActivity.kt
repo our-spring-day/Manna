@@ -34,8 +34,6 @@ import com.naver.maps.map.util.FusedLocationSource
 import com.naver.maps.map.util.MarkerIcons
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_meet_detail.*
-import kotlinx.android.synthetic.main.activity_meet_detail.btn_back
-import kotlinx.android.synthetic.main.activity_meet_detail.top_panel
 import org.java_websocket.client.DefaultSSLWebSocketClientFactory
 import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
@@ -73,7 +71,7 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             .setFastestInterval(FASTEST_UPDATE_INTERVAL_MS)
     }
     var layoutId = R.layout.view_round_marker
-    lateinit var markerView : View
+    lateinit var markerView: View
 
     private val locationCallback: LocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
@@ -117,11 +115,11 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
         btn_info.setOnClickListener {
             meetDetailAdapter.setItemViewType()
-            if(layoutId == R.layout.view_round_marker){
+            if (layoutId == R.layout.view_round_marker) {
                 layoutId = R.layout.view_marker
                 markerView = LayoutInflater.from(this)
                     .inflate(layoutId, this.root_view, false)
-                markerMap.forEach{
+                markerMap.forEach {
                     it.value.icon = OverlayImage.fromView(markerView)
                     markerView.findViewById<TextView>(R.id.name).text = it.key
                 }
@@ -129,9 +127,9 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 layoutId = R.layout.view_round_marker
                 markerView = LayoutInflater.from(this)
                     .inflate(layoutId, this.root_view, false)
-                markerMap.forEach{
+                markerMap.forEach {
                     it.value.icon = OverlayImage.fromView(markerView)
-                    Glide.with(this).load(R.drawable.test_1).into(markerView.findViewById<CircleImageView>(R.id.iv_image))
+                    setImage(markerView.findViewById(R.id.iv_image), it.key.toString())
                 }
             }
         }
@@ -324,19 +322,21 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             val latLng = socketResponse.latLng
             Logger.d("locate: ${latLng?.latitude} ${latLng?.longitude}")
             if (latLng?.latitude != null && latLng.longitude != null) {
-                markerView = LayoutInflater.from(this)
-                    .inflate(layoutId, this.root_view, false)
-                if(layoutId == R.layout.view_marker){
-                    markerView.findViewById<TextView>(R.id.name).text =
-                        fromUserName.subSequence(1, fromUserName.length)
-                } else {
-                    Glide.with(this).load(R.drawable.test_1).into(markerView.findViewById<CircleImageView>(R.id.iv_image))
-                }
-
                 val name = socketResponse.sender.username
                 val latitude = socketResponse.latLng.latitude
                 val longitude = socketResponse.latLng.longitude
                 val deviceToken = socketResponse.sender.deviceToken
+
+                markerView = LayoutInflater.from(this)
+                    .inflate(layoutId, this.root_view, false)
+                if (layoutId == R.layout.view_marker) {
+                    markerView.findViewById<TextView>(R.id.name).text =
+                        fromUserName.subSequence(1, fromUserName.length)
+                } else {
+                    if (deviceToken != null) {
+                        setImage(markerView.findViewById(R.id.iv_image), deviceToken)
+                    }
+                }
 
                 val marker =
                     markerMap[fromUserName] ?: Marker().also { markerMap[fromUserName] = it }
@@ -360,6 +360,20 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 //            webSocketClient.send("{\"latitude\":${myLatLng.latitude},\"longitude\":${myLatLng.longitude}}")
 //        }
 //    }
+
+    private fun setImage(imageView: CircleImageView, deviceToken: String) {
+        when (deviceToken) {
+            "aed64e8da3a07df4" -> Glide.with(this).load(R.drawable.test_2).into(imageView)
+            "f606564d8371e455" -> Glide.with(this).load(R.drawable.image_3).into(imageView)
+            "8F630481-548D-4B8A-B501-FFD90ADFDBA4" -> Glide.with(this).load(R.drawable.image_2).into(imageView)
+            "0954A791-B5BE-4B56-8F25-07554A4D6684" -> Glide.with(this).load(R.drawable.image_4).into(imageView)
+            "C65CDF73-8C04-4F76-A26A-AE3400FEC14B" -> Glide.with(this).load(R.drawable.image_6).into(imageView)
+            "69751764-A224-4923-9844-C61646743D10" -> Glide.with(this).load(R.drawable.image_1).into(imageView)
+            "2872483D-9E7B-46D1-A2B8-44832FE3F1AD" -> Glide.with(this).load(R.drawable.image_5).into(imageView)
+            "8D44FAA1-2F87-4702-9DAC-B8B15D949880" -> Glide.with(this).load(R.drawable.image_7).into(imageView)
+            else -> Glide.with(this).load(R.drawable.test_1).into(imageView)
+        }
+    }
 
     private fun moveLocation(marker: Marker) {
         val cameraUpdate = CameraUpdate.scrollAndZoomTo(marker.position, 16.0)

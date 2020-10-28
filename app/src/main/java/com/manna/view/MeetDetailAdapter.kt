@@ -72,7 +72,17 @@ class MeetDetailAdapter :
                 } else {
                     tv_name.visibility = View.GONE
                     iv_image.visibility = View.VISIBLE
-                    Glide.with(this).load(R.drawable.test_1).into(iv_image)
+                    when(item.name){
+                        "이연재" -> Glide.with(this).load(R.drawable.test_2).into(iv_image)
+                        "원우석" -> Glide.with(this).load(R.drawable.image_3).into(iv_image)
+                        "윤상원" -> Glide.with(this).load(R.drawable.image_2).into(iv_image)
+                        "정재인" -> Glide.with(this).load(R.drawable.image_4).into(iv_image)
+                        "양종찬" -> Glide.with(this).load(R.drawable.image_6).into(iv_image)
+                        "최용권" -> Glide.with(this).load(R.drawable.image_1).into(iv_image)
+                        "김규리" -> Glide.with(this).load(R.drawable.image_5).into(iv_image)
+                        "이효근" -> Glide.with(this).load(R.drawable.image_7).into(iv_image)
+                        else -> Glide.with(this).load(R.drawable.test_1).into(iv_image)
+                    }
                 }
             }
         }
