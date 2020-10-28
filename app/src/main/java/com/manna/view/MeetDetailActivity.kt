@@ -39,6 +39,7 @@ import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
 import java.net.URI
 import java.net.URISyntaxException
+import java.util.*
 import javax.net.ssl.SSLContext
 import kotlin.math.sqrt
 
@@ -110,7 +111,8 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         top_panel.fitsSystemWindows = true
 
         btn_back.setOnClickListener {
-            onBackPressed()
+            //onBackPressed()
+            meetDetailAdapter.changeItem()
         }
 
         btn_info.setOnClickListener {
@@ -365,12 +367,30 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         when (deviceToken) {
             "aed64e8da3a07df4" -> Glide.with(this).load(R.drawable.test_2).into(imageView)
             "f606564d8371e455" -> Glide.with(this).load(R.drawable.image_3).into(imageView)
-            "8F630481-548D-4B8A-B501-FFD90ADFDBA4" -> Glide.with(this).load(R.drawable.image_2).into(imageView)
-            "0954A791-B5BE-4B56-8F25-07554A4D6684" -> Glide.with(this).load(R.drawable.image_4).into(imageView)
-            "C65CDF73-8C04-4F76-A26A-AE3400FEC14B" -> Glide.with(this).load(R.drawable.image_6).into(imageView)
-            "69751764-A224-4923-9844-C61646743D10" -> Glide.with(this).load(R.drawable.image_1).into(imageView)
-            "2872483D-9E7B-46D1-A2B8-44832FE3F1AD" -> Glide.with(this).load(R.drawable.image_5).into(imageView)
-            "8D44FAA1-2F87-4702-9DAC-B8B15D949880" -> Glide.with(this).load(R.drawable.image_7).into(imageView)
+            "8F630481-548D-4B8A-B501-FFD90ADFDBA4" -> Glide.with(this).load(R.drawable.image_2)
+                .into(
+                    imageView
+                )
+            "0954A791-B5BE-4B56-8F25-07554A4D6684" -> Glide.with(this).load(R.drawable.image_4)
+                .into(
+                    imageView
+                )
+            "C65CDF73-8C04-4F76-A26A-AE3400FEC14B" -> Glide.with(this).load(R.drawable.image_6)
+                .into(
+                    imageView
+                )
+            "69751764-A224-4923-9844-C61646743D10" -> Glide.with(this).load(R.drawable.image_1)
+                .into(
+                    imageView
+                )
+            "2872483D-9E7B-46D1-A2B8-44832FE3F1AD" -> Glide.with(this).load(R.drawable.image_5)
+                .into(
+                    imageView
+                )
+            "8D44FAA1-2F87-4702-9DAC-B8B15D949880" -> Glide.with(this).load(R.drawable.image_7)
+                .into(
+                    imageView
+                )
             else -> Glide.with(this).load(R.drawable.test_1).into(imageView)
         }
     }

@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.manna.R
 import kotlinx.android.synthetic.main.item_round_view.view.*
+import java.util.*
 
 class MeetDetailAdapter :
     RecyclerView.Adapter<MeetDetailAdapter.ViewHolder>() {
@@ -44,6 +45,13 @@ class MeetDetailAdapter :
         }
     }
 
+    fun changeItem() {
+        items.sortWith(Comparator { item1, item2 ->
+            item1.name.toString().compareTo(item2.name.toString())
+        })
+        notifyDataSetChanged()
+    }
+
     fun setItemViewType() {
         itemViewType = if (itemViewType == VIEW_TYPE_TEXT) {
             VIEW_TYPE_IMAGE
@@ -72,7 +80,7 @@ class MeetDetailAdapter :
                 } else {
                     tv_name.visibility = View.GONE
                     iv_image.visibility = View.VISIBLE
-                    when(item.name){
+                    when (item.name) {
                         "이연재" -> Glide.with(this).load(R.drawable.test_2).into(iv_image)
                         "원우석" -> Glide.with(this).load(R.drawable.image_3).into(iv_image)
                         "윤상원" -> Glide.with(this).load(R.drawable.image_2).into(iv_image)
