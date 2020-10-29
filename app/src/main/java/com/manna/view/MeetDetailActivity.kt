@@ -121,17 +121,17 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 layoutId = R.layout.view_marker
                 markerView = LayoutInflater.from(this)
                     .inflate(layoutId, this.root_view, false)
-                markerMap.forEach {
-                    it.value.icon = OverlayImage.fromView(markerView)
-                    markerView.findViewById<TextView>(R.id.name).text = it.key
+                for (i in markerMap.keys) {
+                    markerView.findViewById<TextView>(R.id.name).text = setName(i.toString())
+                    markerMap[i]?.icon = OverlayImage.fromView(markerView)
                 }
             } else {
                 layoutId = R.layout.view_round_marker
                 markerView = LayoutInflater.from(this)
                     .inflate(layoutId, this.root_view, false)
-                markerMap.forEach {
-                    it.value.icon = OverlayImage.fromView(markerView)
-                    setImage(markerView.findViewById(R.id.iv_image), it.key.toString())
+                for (i in markerMap.keys) {
+                    setImage(markerView.findViewById(R.id.iv_image), i.toString())
+                    markerMap[i]?.icon = OverlayImage.fromView(markerView)
                 }
             }
         }
@@ -319,14 +319,12 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         webSocketClient.connect()
     }
 
+    private var marker = Marker()
     private fun handleLocation(socketResponse: SocketResponse) {
         socketResponse.sender?.username?.let { fromUserName ->
             val latLng = socketResponse.latLng
             Logger.d("locate: ${latLng?.latitude} ${latLng?.longitude}")
             if (latLng?.latitude != null && latLng.longitude != null) {
-                val name = socketResponse.sender.username
-                val latitude = socketResponse.latLng.latitude
-                val longitude = socketResponse.latLng.longitude
                 val deviceToken = socketResponse.sender.deviceToken
 
                 markerView = LayoutInflater.from(this)
@@ -340,19 +338,30 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                     }
                 }
 
-                val marker =
-                    markerMap[fromUserName] ?: Marker().also { markerMap[fromUserName] = it }
+                if (!markerMap.containsKey(deviceToken)) {
+                    meetDetailAdapter.addData(
+                        User(
+                            fromUserName,
+                            deviceToken,
+                            latLng.latitude,
+                            latLng.longitude
+                        )
+                    )
+                } else {
+                    meetDetailAdapter.refreshItem(
+                        User(
+                            fromUserName,
+                            deviceToken,
+                            latLng.latitude,
+                            latLng.longitude
+                        )
+                    )
+                }
+                marker = markerMap[deviceToken] ?: Marker().also { markerMap[deviceToken] = it }
                 marker.icon = OverlayImage.fromView(markerView)
                 marker.position = LatLng(latLng.latitude, latLng.longitude)
                 marker.map = naverMap
-
-                if (!markerMap.containsKey(deviceToken)) {
-                    meetDetailAdapter.addData(User(name, deviceToken, latitude, longitude))
-                } else {
-                    meetDetailAdapter.refreshItem(User(name, deviceToken, latitude, longitude))
-                }
-                markerMap[deviceToken] = marker
-
+                //markerMap[deviceToken] = marker
             }
         }
     }
@@ -392,6 +401,20 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                     imageView
                 )
             else -> Glide.with(this).load(R.drawable.test_1).into(imageView)
+        }
+    }
+
+    private fun setName(deviceToken: String):String {
+        return when (deviceToken) {
+            "aed64e8da3a07df4" -> "연재"
+            "f606564d8371e455" -> "우석"
+            "8F630481-548D-4B8A-B501-FFD90ADFDBA4" -> "윤상원"
+            "0954A791-B5BE-4B56-8F25-07554A4D6684" -> "정재인"
+            "C65CDF73-8C04-4F76-A26A-AE3400FEC14B" -> "양종찬"
+            "69751764-A224-4923-9844-C61646743D10" -> "최용권"
+            "2872483D-9E7B-46D1-A2B8-44832FE3F1AD" -> "김규리"
+            "8D44FAA1-2F87-4702-9DAC-B8B15D949880" -> "이효근"
+            else -> ""
         }
     }
 
