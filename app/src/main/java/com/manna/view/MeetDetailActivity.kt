@@ -182,12 +182,13 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         naverMap.isIndoorEnabled = true
         naverMap.uiSettings.run {
             isIndoorLevelPickerEnabled = true
-            isLocationButtonEnabled = true
+            isLocationButtonEnabled = false
             isCompassEnabled = false
             isScaleBarEnabled = false
             logoGravity = Gravity.END
             setLogoMargin(0, 80, 60, 0)
         }
+        btn_location.map = naverMap
 
         connect()
 
