@@ -2,7 +2,6 @@ package com.manna.network.api
 
 import com.manna.network.model.test.RootResponse
 import io.reactivex.Observable
-import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Query
 import java.text.SimpleDateFormat
@@ -31,11 +30,10 @@ interface BingApi {
         @Query("wp.1") endLatLng: String,
         @Query("timetype") timeType: String = "departure",
         @Query("datetime") datetime: String = SimpleDateFormat("hh:mm:ss", Locale.KOREA).format(Date()),
-        @Query("avoid") avoid: String = "tolls,highways",
-        @Query("output") output: String = "json",
         @Query("key") key: String = "Ao2GRV09K_rtjtR8UpkI95is2ItgRHDHENkjy-Fg0CfDUZ7R20bRBKXeG6hsq2Ek",
         @Query("culture") culture: String = "ko",
-        @Query("routePathOutput") routePathOutput: String = "Points"
+        @Query("routePathOutput") routePathOutput: String = "Points",
+        @Query("distanceUnit") distanceUnit: String = "km"
     ): Observable<RootResponse>
 
     @GET("rest/v1/routes/Walking")
