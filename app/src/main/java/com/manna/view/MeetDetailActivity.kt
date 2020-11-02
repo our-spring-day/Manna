@@ -14,21 +14,20 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
 import com.google.android.gms.location.*
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import com.manna.CircleImageView
-import com.manna.Logger
+import com.manna.*
 import com.manna.R
-import com.manna.SocketResponse
 import com.manna.ext.ViewUtil
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
 import com.naver.maps.map.overlay.Marker
+import com.naver.maps.map.overlay.MultipartPathOverlay
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
 import com.naver.maps.map.util.MarkerIcons
@@ -62,7 +61,7 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var locationSource: FusedLocationSource
     private lateinit var naverMap: NaverMap
     private lateinit var webSocketClient: WebSocketClient
-    private var myLatLng = LatLng(0.0, 0.0)
+
     private val markerMap: HashMap<String?, Marker> = hashMapOf()
     private val meetDetailAdapter = MeetDetailAdapter()
     private var fusedLocationClient: FusedLocationProviderClient? = null
@@ -73,6 +72,8 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     }
     var layoutId = R.layout.view_round_marker
     lateinit var markerView: View
+
+    private val viewModel by viewModels<MeetDetailViewModel>()
 
     private val locationCallback: LocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
@@ -140,13 +141,37 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         rv_user.adapter = meetDetailAdapter
         meetDetailAdapter.setOnClickListener(object : MeetDetailAdapter.OnClickListener {
             override fun onClick(user: User) {
-                markerMap[user.deviceToken]?.let { moveLocation(it) }
+                markerMap[user.deviceToken]?.let {
+                    viewModel.findRoute(
+                        startPoint = WayPoint(it.position, ""),
+                        endPoint = WayPoint(LatLng(37.475370, 126.980438), "")
+                    )
+                    moveLocation(it)
+                }
             }
         })
 
         val builder: LocationSettingsRequest.Builder = LocationSettingsRequest.Builder()
         builder.addLocationRequest(locationRequest)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
+        viewModel.drawWayPoints.observe(this, {
+            drawLine(naverMap, it.map { it.point })
+        })
+    }
+
+    private fun drawLine(naverMap: NaverMap, points: List<LatLng>) {
+        val multipartPath = MultipartPathOverlay()
+
+        multipartPath.coordParts = listOf(points)
+
+        multipartPath.colorParts = listOf(
+            MultipartPathOverlay.ColorPart(
+                Color.RED, Color.WHITE, Color.GRAY, Color.LTGRAY
+            )
+        )
+
+        multipartPath.map = naverMap
     }
 
     override fun onRequestPermissionsResult(
@@ -261,7 +286,7 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun connect() {
         val url =
-            "ws://ec2-54-180-125-3.ap-northeast-2.compute.amazonaws.com:40008/ws?token=aed64e8da3a07df4"
+            "ws://ec2-54-180-125-3.ap-northeast-2.compute.amazonaws.com:40008/ws?token=${UserHolder.userResponse?.deviceId}"
         val uri = try {
             URI(url)
         } catch (e: URISyntaxException) {
@@ -280,11 +305,6 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
                     val socketResponse = Gson().fromJson(message, SocketResponse::class.java)
                     Logger.d("socketResponse: $socketResponse")
-                    Toast.makeText(
-                        applicationContext,
-                        socketResponse.latLng.toString(),
-                        Toast.LENGTH_SHORT
-                    ).show()
 
                     when (socketResponse.type) {
                         SocketResponse.Type.LOCATION -> {
@@ -448,188 +468,3 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             Intent(context, MeetDetailActivity::class.java)
     }
 }
-
-
-//class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
-//
-//    private val viewModel: MeetDetailViewModel by viewModels()
-//
-//    @SuppressLint("CheckResult")
-//    @UiThread
-//    override fun onMapReady(naverMap: NaverMap) {
-//
-//        val endPoint = WayPoint(LatLng(37.492642, 127.026208), "End")
-//
-//        ApiModule.provideBingApi()
-//            .getRoute(
-//                startLatLng = "37.482087,126.976742",
-//                endLatLng = endPoint.getPoint()
-//            )
-//            .subscribeOn(Schedulers.io())
-//            .map { root ->
-//                val items =
-//                    root.resourceSets?.first()?.resources?.first()?.routeLegs?.first()?.itineraryItems
-//
-//                val points = mutableListOf<WayPoint>()
-//
-//                items?.forEach {
-//                    val mode = it.details?.first()?.mode
-//
-//                    it.maneuverPoint?.coordinates?.let { point ->
-//                        points.add(WayPoint(LatLng(point[0], point[1]), mode.orEmpty()))
-//                    }
-//                }
-//
-//                points.add(endPoint)
-//                points
-//            }
-//            .observeOn(AndroidSchedulers.mainThread())
-//            .subscribe({ list ->
-//
-//                val sources = list.mapIndexedNotNull { index, wayPoint ->
-//                    when (wayPoint.mode) {
-//                        "Transit" -> {
-//                            ApiModule.provideBingApi()
-//                                .getRouteDriving(
-//                                    "${wayPoint.point.latitude},${wayPoint.point.longitude}",
-//                                    "${list.get(index + 1).point.latitude},${list.get(index + 1).point.longitude}"
-//                                )
-//                                .subscribeOn(Schedulers.io())
-//                                .map { root ->
-//                                    val items =
-//                                        root.resourceSets?.first()?.resources?.first()?.routeLegs?.first()?.itineraryItems
-//
-//                                    val points = mutableListOf<WayPoint>()
-////                                    points.add(wayPoint)
-//
-//                                    items?.forEach {
-//                                        val mode = it.details?.first()?.mode
-//
-//                                        it.maneuverPoint?.coordinates?.let { point ->
-//                                            points.add(
-//                                                WayPoint(
-//                                                    LatLng(point[0], point[1]),
-//                                                    mode.orEmpty()
-//                                                )
-//                                            )
-//                                        }
-//                                    }
-//
-//                                    points
-//                                }
-//                                .observeOn(AndroidSchedulers.mainThread())
-//                        }
-//                        "Walking" -> {
-//                            ApiModule.provideBingApi()
-//                                .getRouteWalking(
-//                                    "${wayPoint.point.latitude},${wayPoint.point.longitude}",
-//                                    "${list.get(index + 1).point.latitude},${list.get(index + 1).point.longitude}"
-//                                )
-//                                .subscribeOn(Schedulers.io())
-//                                .map { root ->
-//                                    val items =
-//                                        root.resourceSets?.first()?.resources?.first()?.routeLegs?.first()?.itineraryItems
-//
-//                                    val points = mutableListOf<WayPoint>()
-////                                    points.add(wayPoint)
-//
-//                                    items?.forEach {
-//                                        val mode = it.details?.first()?.mode
-//
-//                                        it.maneuverPoint?.coordinates?.let { point ->
-//                                            points.add(
-//                                                WayPoint(
-//                                                    LatLng(point[0], point[1]),
-//                                                    mode.orEmpty()
-//                                                )
-//                                            )
-//                                        }
-//                                    }
-//
-//                                    points
-//                                }
-//                                .observeOn(AndroidSchedulers.mainThread())
-//                        }
-//                        else -> {
-//                            null
-//                        }
-//                    }
-//                }
-//
-//                Observable.zip(sources) {
-//                    it
-//                }
-//                    .subscribeOn(Schedulers.io())
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .subscribe({ array ->
-//                        val list = array.flatMap {
-//                            it as List<WayPoint>
-//                        }.toMutableList()
-//                        list.add(endPoint)
-//
-//                        list.forEach {
-//                            Logger.d("$it")
-//                        }
-//
-//                        drawLine(naverMap, list.map { it.point })
-//
-//                        val cameraUpdate = CameraUpdate.scrollTo(list.first().point)
-//                        naverMap.moveCamera(cameraUpdate)
-//
-//                    }, {
-//                        Logger.d("$it")
-//                    })
-//
-//            }, {
-//                Logger.d("$it")
-//            })
-//    }
-//
-//    private fun drawLine(naverMap: NaverMap, points: List<LatLng>) {
-//        val multipartPath = MultipartPathOverlay()
-//
-//        multipartPath.coordParts = listOf(
-//            points
-////            listOf(
-////                LatLng(37.5744287, 126.982625),
-////                LatLng(37.57152, 126.97714),
-////                LatLng(37.56607, 126.98268)
-////            ),
-////            listOf(
-////                LatLng(37.56607, 126.98268),
-////                LatLng(37.55845, 126.98207),
-////                LatLng(37.55855, 126.97822)
-////            ),
-////            listOf(
-////                LatLng(37.56607, 126.98268),
-////                LatLng(37.56345, 126.97607),
-////                LatLng(37.56755, 126.96722)
-////            ),
-////            listOf(
-////                LatLng(37.56607, 126.98268),
-////                LatLng(37.56445, 126.99707),
-////                LatLng(37.55855, 126.99822)
-////            )
-//        )
-//
-//        multipartPath.colorParts = listOf(
-//            MultipartPathOverlay.ColorPart(
-//                Color.RED, Color.WHITE, Color.GRAY, Color.LTGRAY
-//            )
-////            ,
-////            MultipartPathOverlay.ColorPart(
-////                Color.GREEN, Color.WHITE, Color.DKGRAY, Color.LTGRAY
-////            ),
-////            MultipartPathOverlay.ColorPart(
-////                Color.BLUE, Color.WHITE, Color.DKGRAY, Color.LTGRAY
-////            ),
-////            MultipartPathOverlay.ColorPart(
-////                Color.BLACK, Color.WHITE, Color.DKGRAY, Color.LTGRAY
-////            )
-//        )
-//
-//        multipartPath.map = naverMap
-//
-//    }
-//
-//}
