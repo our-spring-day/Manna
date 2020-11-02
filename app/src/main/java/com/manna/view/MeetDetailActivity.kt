@@ -229,17 +229,35 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 newMarker.map = null
             } else {
                 newMarker.map = null
-                startEndLatLng = if (markerPoint.x > size.x / 2) {
-                    getLatLng(topEnd, bottomEnd, center, meetPlaceMarker.position)
-                } else {
-                    getLatLng(topStart, bottomStart, center, meetPlaceMarker.position)
-                }
-                topBottomLatLng = if (markerPoint.y > size.y / 2) {
-                    getLatLng(bottomStart, bottomEnd, center, meetPlaceMarker.position)
-                } else {
-                    getLatLng(topStart, topEnd, center, meetPlaceMarker.position)
-                }
+                if (topStart.latitude == topEnd.latitude || topStart.longitude == bottomStart.longitude) {
+                    startEndLatLng = if (markerPoint.x > size.x / 2) {
+                        getLinearEquation(center, meetPlaceMarker.position, topEnd.latitude, "x")
+                    } else {
+                        getLinearEquation(center, meetPlaceMarker.position, topStart.latitude, "x")
+                    }
+                    topBottomLatLng = if (markerPoint.y > size.y / 2) {
+                        getLinearEquation(
+                            center,
+                            meetPlaceMarker.position,
+                            bottomStart.longitude,
+                            "y"
+                        )
+                    } else {
+                        getLinearEquation(center, meetPlaceMarker.position, topStart.longitude, "y")
+                    }
 
+                } else {
+                    startEndLatLng = if (markerPoint.x > size.x / 2) {
+                        getLatLng(topEnd, bottomEnd, center, meetPlaceMarker.position)
+                    } else {
+                        getLatLng(topStart, bottomStart, center, meetPlaceMarker.position)
+                    }
+                    topBottomLatLng = if (markerPoint.y > size.y / 2) {
+                        getLatLng(bottomStart, bottomEnd, center, meetPlaceMarker.position)
+                    } else {
+                        getLatLng(topStart, topEnd, center, meetPlaceMarker.position)
+                    }
+                }
                 val startEnd = sqrt(
                     (startEndLatLng.latitude - center.latitude) * (startEndLatLng.latitude - center.latitude) +
                             (startEndLatLng.longitude - center.longitude) * (startEndLatLng.longitude - center.longitude)
@@ -405,16 +423,16 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    private fun setName(deviceToken: String):String {
+    private fun setName(deviceToken: String): String {
         return when (deviceToken) {
             "aed64e8da3a07df4" -> "연재"
             "f606564d8371e455" -> "우석"
-            "8F630481-548D-4B8A-B501-FFD90ADFDBA4" -> "윤상원"
-            "0954A791-B5BE-4B56-8F25-07554A4D6684" -> "정재인"
-            "C65CDF73-8C04-4F76-A26A-AE3400FEC14B" -> "양종찬"
-            "69751764-A224-4923-9844-C61646743D10" -> "최용권"
-            "2872483D-9E7B-46D1-A2B8-44832FE3F1AD" -> "김규리"
-            "8D44FAA1-2F87-4702-9DAC-B8B15D949880" -> "이효근"
+            "8F630481-548D-4B8A-B501-FFD90ADFDBA4" -> "상원"
+            "0954A791-B5BE-4B56-8F25-07554A4D6684" -> "재인"
+            "C65CDF73-8C04-4F76-A26A-AE3400FEC14B" -> "종찬"
+            "69751764-A224-4923-9844-C61646743D10" -> "용권"
+            "2872483D-9E7B-46D1-A2B8-44832FE3F1AD" -> "규리"
+            "8D44FAA1-2F87-4702-9DAC-B8B15D949880" -> "효근"
             else -> ""
         }
     }
@@ -422,6 +440,21 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun moveLocation(marker: Marker) {
         val cameraUpdate = CameraUpdate.scrollAndZoomTo(marker.position, 16.0)
         naverMap.moveCamera(cameraUpdate)
+    }
+
+    private fun getLinearEquation(
+        point1: LatLng,
+        point2: LatLng,
+        point: Double,
+        value: String
+    ): LatLng {
+        val a = (point2.longitude - point1.longitude) / (point2.latitude - point1.latitude)
+        val b = -(a * point1.latitude) + point1.longitude
+        return if (value == "x") {
+            LatLng(point, (a * point) + b)
+        } else {
+            LatLng((point - b) / a, point)
+        }
     }
 
     private fun getLatLng(
