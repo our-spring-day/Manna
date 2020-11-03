@@ -62,7 +62,6 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var locationSource: FusedLocationSource
     private lateinit var naverMap: NaverMap
     private lateinit var webSocketClient: WebSocketClient
-    private var myLatLng = LatLng(0.0, 0.0)
     private val markerMap: HashMap<String?, Marker> = hashMapOf()
     private val meetDetailAdapter = MeetDetailAdapter()
     private var fusedLocationClient: FusedLocationProviderClient? = null
@@ -231,21 +230,20 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 newMarker.map = null
                 if (topStart.latitude == topEnd.latitude || topStart.longitude == bottomStart.longitude) {
                     startEndLatLng = if (markerPoint.x > size.x / 2) {
-                        getLinearEquation(center, meetPlaceMarker.position, topEnd.latitude, "x")
+                        getLinearEquation(center, meetPlaceMarker.position, topEnd.longitude, "x")
                     } else {
-                        getLinearEquation(center, meetPlaceMarker.position, topStart.latitude, "x")
+                        getLinearEquation(center, meetPlaceMarker.position, topStart.longitude, "x")
                     }
                     topBottomLatLng = if (markerPoint.y > size.y / 2) {
                         getLinearEquation(
                             center,
                             meetPlaceMarker.position,
-                            bottomStart.longitude,
+                            bottomStart.latitude,
                             "y"
                         )
                     } else {
-                        getLinearEquation(center, meetPlaceMarker.position, topStart.longitude, "y")
+                        getLinearEquation(center, meetPlaceMarker.position, topStart.latitude, "y")
                     }
-
                 } else {
                     startEndLatLng = if (markerPoint.x > size.x / 2) {
                         getLatLng(topEnd, bottomEnd, center, meetPlaceMarker.position)
@@ -259,12 +257,12 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                     }
                 }
                 val startEnd = sqrt(
-                    (startEndLatLng.latitude - center.latitude) * (startEndLatLng.latitude - center.latitude) +
-                            (startEndLatLng.longitude - center.longitude) * (startEndLatLng.longitude - center.longitude)
+                    (startEndLatLng.longitude - center.longitude) * (startEndLatLng.longitude - center.longitude) +
+                            (startEndLatLng.latitude - center.latitude) * (startEndLatLng.latitude - center.latitude)
                 )
                 val topBottom = sqrt(
-                    (topBottomLatLng.latitude - center.latitude) * (topBottomLatLng.latitude - center.latitude) +
-                            (topBottomLatLng.longitude - center.longitude) * (topBottomLatLng.longitude - center.longitude)
+                    (topBottomLatLng.longitude - center.longitude) * (topBottomLatLng.longitude - center.longitude) +
+                            (topBottomLatLng.latitude - center.latitude) * (topBottomLatLng.latitude - center.latitude)
                 )
                 if (startEnd < topBottom) {
                     newMarker.position = startEndLatLng
@@ -298,11 +296,13 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
                     val socketResponse = Gson().fromJson(message, SocketResponse::class.java)
                     Logger.d("socketResponse: $socketResponse")
-                    Toast.makeText(
-                        applicationContext,
-                        socketResponse.latLng.toString(),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    if (socketResponse.sender?.username == "이연재") {
+                        Toast.makeText(
+                            applicationContext,
+                            socketResponse.latLng.toString(),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
 
                     when (socketResponse.type) {
                         SocketResponse.Type.LOCATION -> {
@@ -380,16 +380,9 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 marker.icon = OverlayImage.fromView(markerView)
                 marker.position = LatLng(latLng.latitude, latLng.longitude)
                 marker.map = naverMap
-                //markerMap[deviceToken] = marker
             }
         }
     }
-
-//    private fun setMyLocation() {
-//        val timer = timer(period = 10000) {
-//            webSocketClient.send("{\"latitude\":${myLatLng.latitude},\"longitude\":${myLatLng.longitude}}")
-//        }
-//    }
 
     private fun setImage(imageView: CircleImageView, deviceToken: String) {
         when (deviceToken) {
@@ -448,12 +441,12 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         point: Double,
         value: String
     ): LatLng {
-        val a = (point2.longitude - point1.longitude) / (point2.latitude - point1.latitude)
-        val b = -(a * point1.latitude) + point1.longitude
+        val a = (point2.latitude - point1.latitude) / (point2.longitude - point1.longitude)
+        val b = -(a * point1.longitude) + point1.latitude
         return if (value == "x") {
-            LatLng(point, (a * point) + b)
+            LatLng((a * point) + b, point)
         } else {
-            LatLng((point - b) / a, point)
+            LatLng(point, (point - b) / a)
         }
     }
 
@@ -463,12 +456,12 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         centerPoint: LatLng,
         markerPoint: LatLng
     ): LatLng {
-        val a = (point2.longitude - point1.longitude) / (point2.latitude - point1.latitude)
-        val b = -(a * point1.latitude) + point1.longitude
+        val a = (point2.latitude - point1.latitude) / (point2.longitude - point1.longitude)
+        val b = -(a * point1.longitude) + point1.latitude
         val c =
-            (markerPoint.longitude - centerPoint.longitude) / (markerPoint.latitude - centerPoint.latitude)
-        val d = -(c * centerPoint.latitude) + centerPoint.longitude
-        return LatLng(((d - b) / (a - c)), (a * (d - b) / (a - c)) + b)
+            (markerPoint.latitude - centerPoint.latitude) / (markerPoint.longitude - centerPoint.longitude)
+        val d = -(c * centerPoint.longitude) + centerPoint.latitude
+        return LatLng((a * (d - b) / (a - c)) + b, ((d - b) / (a - c)))
     }
 
     companion object {
