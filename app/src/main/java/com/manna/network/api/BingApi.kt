@@ -32,7 +32,7 @@ interface BingApi {
         @Query("datetime") datetime: String = SimpleDateFormat("hh:mm:ss", Locale.KOREA).format(Date()),
         @Query("key") key: String = "Ao2GRV09K_rtjtR8UpkI95is2ItgRHDHENkjy-Fg0CfDUZ7R20bRBKXeG6hsq2Ek",
         @Query("culture") culture: String = "ko",
-        @Query("routePathOutput") routePathOutput: String = "Points",
+        @Query("routeAttributes") routeAttributes: String = "routePath,transitStops",
         @Query("distanceUnit") distanceUnit: String = "km"
     ): Observable<RootResponse>
 
