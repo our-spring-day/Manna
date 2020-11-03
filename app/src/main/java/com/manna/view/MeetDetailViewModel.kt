@@ -17,8 +17,9 @@ class MeetDetailViewModel @ViewModelInject constructor(private val repository: B
     private val _drawWayPoints = MutableLiveData<List<WayPoint>>()
     val drawWayPoints: LiveData<List<WayPoint>> get() = _drawWayPoints
 
+    val remainValue = MutableLiveData<Pair<User, Pair<Double?, Int?>>>()
 
-    fun findRoute(startPoint: WayPoint, endPoint: WayPoint) {
+    fun findRoute(user: User, startPoint: WayPoint, endPoint: WayPoint) {
         compositeDisposable += repository
             .getRoute(
                 startLatLng = startPoint.getPoint(),
@@ -34,7 +35,12 @@ class MeetDetailViewModel @ViewModelInject constructor(private val repository: B
 
                 val points = mutableListOf<WayPoint>()
 
-                Logger.d("$paths")
+                val remainDistance = root.resourceSets?.first()?.resources?.first()?.routeLegs?.first()?.travelDistance
+
+                val remainTime = root.resourceSets?.first()?.resources?.first()?.routeLegs?.first()?.travelDuration
+
+                val remainValue = user to (remainDistance to remainTime)
+                this.remainValue.postValue(remainValue)
 
                 paths?.forEach { path ->
 
@@ -70,8 +76,6 @@ class MeetDetailViewModel @ViewModelInject constructor(private val repository: B
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ (list, titles) ->
                 _drawWayPoints.value = list
-//                drawLine(naverMap!!, list.map { it.point })
-//                routeAdapter.replaceAll(titles)
             }, {
                 Logger.d("$it")
             })

@@ -143,6 +143,7 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             override fun onClick(user: User) {
                 markerMap[user.deviceToken]?.let {
                     viewModel.findRoute(
+                        user = user,
                         startPoint = WayPoint(it.position, ""),
                         endPoint = WayPoint(LatLng(37.475370, 126.980438), "")
                     )
@@ -155,9 +156,21 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         builder.addLocationRequest(locationRequest)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-        viewModel.drawWayPoints.observe(this, {
-            drawLine(naverMap, it.map { it.point })
-        })
+        viewModel.run {
+            drawWayPoints.observe(this@MeetDetailActivity, {
+                drawLine(naverMap, it.map { it.point })
+            })
+            remainValue.observe(this@MeetDetailActivity, { (user: User, remainValue) ->
+                Logger.d("$user")
+                Logger.d("$remainValue")
+
+                val remainDistance = remainValue.first
+                val remainTime = remainValue.second
+                user.remainDistance = remainDistance
+                user.remainTime = remainTime
+                meetDetailAdapter.refreshItem(user)
+            })
+        }
     }
 
     private fun drawLine(naverMap: NaverMap, points: List<LatLng>) {

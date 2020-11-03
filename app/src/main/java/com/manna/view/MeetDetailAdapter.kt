@@ -3,6 +3,8 @@ package com.manna.view
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.manna.R
@@ -43,6 +45,7 @@ class MeetDetailAdapter :
                 items[i] = user
             }
         }
+        notifyDataSetChanged()
     }
 
     fun changeItem() {
@@ -68,11 +71,16 @@ class MeetDetailAdapter :
     class ViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
         LayoutInflater.from(parent.context).inflate(R.layout.item_round_view, parent, false)
     ) {
+
+        private val remainValue = itemView.findViewById<TextView>(R.id.remain_value)
+
         fun bind(item: User, listener: OnClickListener?) {
             itemView.run {
                 setOnClickListener {
                     listener?.onClick(item)
                 }
+
+                setRemainValue(item)
                 if (itemViewType == VIEW_TYPE_TEXT) {
                     tv_name.visibility = View.VISIBLE
                     iv_image.visibility = View.GONE
@@ -91,6 +99,20 @@ class MeetDetailAdapter :
                         "이효근" -> Glide.with(this).load(R.drawable.image_7).into(iv_image)
                         else -> Glide.with(this).load(R.drawable.test_1).into(iv_image)
                     }
+                }
+            }
+        }
+
+        private fun setRemainValue(item: User) {
+
+            remainValue.isVisible = item.remainDistance != null || item.remainTime != null
+            if (itemViewType == VIEW_TYPE_TEXT) {
+                if (item.remainDistance != null) {
+                    remainValue.text = item.remainDistance.toString()
+                }
+            } else {
+                if (item.remainTime != null){
+                    remainValue.text = item.remainTime.toString()
                 }
             }
         }
