@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
 import com.google.android.gms.location.*
+import com.google.android.material.tabs.TabLayout
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.manna.CircleImageView
@@ -63,7 +64,6 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var naverMap: NaverMap
     private lateinit var webSocketClient: WebSocketClient
     private val markerMap: HashMap<String?, Marker> = hashMapOf()
-    private val meetDetailAdapter = MeetDetailAdapter()
     private var fusedLocationClient: FusedLocationProviderClient? = null
     private val locationRequest by lazy {
         LocationRequest().setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
@@ -111,11 +111,46 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
         btn_back.setOnClickListener {
             //onBackPressed()
-            meetDetailAdapter.changeItem()
+            //meetDetailAdapter.changeItem()
+        }
+
+        tab_bottom.addTab(tab_bottom.newTab().setIcon(R.drawable.ic_test_01))
+        tab_bottom.addTab(tab_bottom.newTab().setIcon(R.drawable.ic_test_02))
+        tab_bottom.addTab(tab_bottom.newTab().setIcon(R.drawable.ic_test_03))
+
+        val badge = tab_bottom.getTabAt(0)?.orCreateBadge
+        badge?.number = 2
+
+        tab_bottom.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+            }
+
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                when(tab?.position){
+
+                }
+            }
+
+        })
+
+        //tab_bottom.setupWithViewPager(view_pager)
+
+        view_pager.run {
+            adapter = ViewPagerAdapter(supportFragmentManager).apply {
+                addFragment(RankingFragment())
+                addFragment(RankingFragment())
+                addFragment(RankingFragment())
+                isSaveEnabled = false
+            }
+            currentItem = 0
+            offscreenPageLimit = 3
         }
 
         btn_info.setOnClickListener {
-            meetDetailAdapter.setItemViewType()
+            //meetDetailAdapter.setItemViewType()
             if (layoutId == R.layout.view_round_marker) {
                 layoutId = R.layout.view_marker
                 markerView = LayoutInflater.from(this)
@@ -135,13 +170,11 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
 
-        rv_user.layoutManager = GridLayoutManager(this, 4)
-        rv_user.adapter = meetDetailAdapter
-        meetDetailAdapter.setOnClickListener(object : MeetDetailAdapter.OnClickListener {
-            override fun onClick(user: User) {
-                markerMap[user.deviceToken]?.let { moveLocation(it) }
-            }
-        })
+//        meetDetailAdapter.setOnClickListener(object : MeetDetailAdapter.OnClickListener {
+//            override fun onClick(user: User) {
+//                markerMap[user.deviceToken]?.let { moveLocation(it) }
+//            }
+//        })
 
         val builder: LocationSettingsRequest.Builder = LocationSettingsRequest.Builder()
         builder.addLocationRequest(locationRequest)
@@ -358,23 +391,23 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
 
                 if (!markerMap.containsKey(deviceToken)) {
-                    meetDetailAdapter.addData(
-                        User(
-                            fromUserName,
-                            deviceToken,
-                            latLng.latitude,
-                            latLng.longitude
-                        )
-                    )
+//                    meetDetailAdapter.addData(
+//                        User(
+//                            fromUserName,
+//                            deviceToken,
+//                            latLng.latitude,
+//                            latLng.longitude
+//                        )
+//                    )
                 } else {
-                    meetDetailAdapter.refreshItem(
-                        User(
-                            fromUserName,
-                            deviceToken,
-                            latLng.latitude,
-                            latLng.longitude
-                        )
-                    )
+//                    meetDetailAdapter.refreshItem(
+//                        User(
+//                            fromUserName,
+//                            deviceToken,
+//                            latLng.latitude,
+//                            latLng.longitude
+//                        )
+//                    )
                 }
                 marker = markerMap[deviceToken] ?: Marker().also { markerMap[deviceToken] = it }
                 marker.icon = OverlayImage.fromView(markerView)
