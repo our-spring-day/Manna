@@ -14,11 +14,13 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
 import com.google.android.gms.location.*
+import com.google.android.material.tabs.TabLayout
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.manna.*
@@ -63,7 +65,6 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var webSocketClient: WebSocketClient
 
     private val markerMap: HashMap<String?, Marker> = hashMapOf()
-    private val meetDetailAdapter = MeetDetailAdapter()
     private var fusedLocationClient: FusedLocationProviderClient? = null
     private val locationRequest by lazy {
         LocationRequest().setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
@@ -113,11 +114,46 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
         btn_back.setOnClickListener {
             //onBackPressed()
-            meetDetailAdapter.changeItem()
+            //meetDetailAdapter.changeItem()
+        }
+
+        tab_bottom.addTab(tab_bottom.newTab().setIcon(R.drawable.ic_test_01))
+        tab_bottom.addTab(tab_bottom.newTab().setIcon(R.drawable.ic_test_02))
+        tab_bottom.addTab(tab_bottom.newTab().setIcon(R.drawable.ic_test_03))
+
+        val badge = tab_bottom.getTabAt(0)?.orCreateBadge
+        badge?.number = 2
+
+        tab_bottom.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+            }
+
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                when(tab?.position){
+
+                }
+            }
+
+        })
+
+        //tab_bottom.setupWithViewPager(view_pager)
+
+        view_pager.run {
+            adapter = ViewPagerAdapter(supportFragmentManager).apply {
+                addFragment(RankingFragment())
+                addFragment(RankingFragment())
+                addFragment(RankingFragment())
+                isSaveEnabled = false
+            }
+            currentItem = 0
+            offscreenPageLimit = 3
         }
 
         btn_info.setOnClickListener {
-            meetDetailAdapter.setItemViewType()
+            //meetDetailAdapter.setItemViewType()
             if (layoutId == R.layout.view_round_marker) {
                 layoutId = R.layout.view_marker
                 markerView = LayoutInflater.from(this)
@@ -137,20 +173,18 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
 
-        rv_user.layoutManager = GridLayoutManager(this, 4)
-        rv_user.adapter = meetDetailAdapter
-        meetDetailAdapter.setOnClickListener(object : MeetDetailAdapter.OnClickListener {
-            override fun onClick(user: User) {
-                markerMap[user.deviceToken]?.let {
-                    viewModel.findRoute(
-                        user = user,
-                        startPoint = WayPoint(it.position, ""),
-                        endPoint = WayPoint(LatLng(37.475370, 126.980438), "")
-                    )
-                    moveLocation(it)
-                }
-            }
-        })
+//        meetDetailAdapter.setOnClickListener(object : MeetDetailAdapter.OnClickListener {
+//            override fun onClick(user: User) {
+//                markerMap[user.deviceToken]?.let {
+//                    viewModel.findRoute(
+//                        user = user,
+//                        startPoint = WayPoint(it.position, ""),
+//                        endPoint = WayPoint(LatLng(37.475370, 126.980438), "")
+//                    )
+//                    moveLocation(it)
+//                }
+//            }
+//        })
 
         val builder: LocationSettingsRequest.Builder = LocationSettingsRequest.Builder()
         builder.addLocationRequest(locationRequest)
@@ -168,7 +202,7 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 val remainTime = remainValue.second
                 user.remainDistance = remainDistance
                 user.remainTime = remainTime
-                meetDetailAdapter.refreshItem(user)
+//                meetDetailAdapter.refreshItem(user)
             })
         }
     }
@@ -267,24 +301,41 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 newMarker.map = null
             } else {
                 newMarker.map = null
-                startEndLatLng = if (markerPoint.x > size.x / 2) {
-                    getLatLng(topEnd, bottomEnd, center, meetPlaceMarker.position)
+                if (topStart.latitude == topEnd.latitude || topStart.longitude == bottomStart.longitude) {
+                    startEndLatLng = if (markerPoint.x > size.x / 2) {
+                        getLinearEquation(center, meetPlaceMarker.position, topEnd.longitude, "x")
+                    } else {
+                        getLinearEquation(center, meetPlaceMarker.position, topStart.longitude, "x")
+                    }
+                    topBottomLatLng = if (markerPoint.y > size.y / 2) {
+                        getLinearEquation(
+                            center,
+                            meetPlaceMarker.position,
+                            bottomStart.latitude,
+                            "y"
+                        )
+                    } else {
+                        getLinearEquation(center, meetPlaceMarker.position, topStart.latitude, "y")
+                    }
                 } else {
-                    getLatLng(topStart, bottomStart, center, meetPlaceMarker.position)
+                    startEndLatLng = if (markerPoint.x > size.x / 2) {
+                        getLatLng(topEnd, bottomEnd, center, meetPlaceMarker.position)
+                    } else {
+                        getLatLng(topStart, bottomStart, center, meetPlaceMarker.position)
+                    }
+                    topBottomLatLng = if (markerPoint.y > size.y / 2) {
+                        getLatLng(bottomStart, bottomEnd, center, meetPlaceMarker.position)
+                    } else {
+                        getLatLng(topStart, topEnd, center, meetPlaceMarker.position)
+                    }
                 }
-                topBottomLatLng = if (markerPoint.y > size.y / 2) {
-                    getLatLng(bottomStart, bottomEnd, center, meetPlaceMarker.position)
-                } else {
-                    getLatLng(topStart, topEnd, center, meetPlaceMarker.position)
-                }
-
                 val startEnd = sqrt(
-                    (startEndLatLng.latitude - center.latitude) * (startEndLatLng.latitude - center.latitude) +
-                            (startEndLatLng.longitude - center.longitude) * (startEndLatLng.longitude - center.longitude)
+                    (startEndLatLng.longitude - center.longitude) * (startEndLatLng.longitude - center.longitude) +
+                            (startEndLatLng.latitude - center.latitude) * (startEndLatLng.latitude - center.latitude)
                 )
                 val topBottom = sqrt(
-                    (topBottomLatLng.latitude - center.latitude) * (topBottomLatLng.latitude - center.latitude) +
-                            (topBottomLatLng.longitude - center.longitude) * (topBottomLatLng.longitude - center.longitude)
+                    (topBottomLatLng.longitude - center.longitude) * (topBottomLatLng.longitude - center.longitude) +
+                            (topBottomLatLng.latitude - center.latitude) * (topBottomLatLng.latitude - center.latitude)
                 )
                 if (startEnd < topBottom) {
                     newMarker.position = startEndLatLng
@@ -318,6 +369,14 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
                     val socketResponse = Gson().fromJson(message, SocketResponse::class.java)
                     Logger.d("socketResponse: $socketResponse")
+
+                    if (socketResponse.sender?.username == "이연재") {
+                        Toast.makeText(
+                            applicationContext,
+                            socketResponse.latLng.toString(),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
 
                     when (socketResponse.type) {
                         SocketResponse.Type.LOCATION -> {
@@ -373,38 +432,31 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
 
                 if (!markerMap.containsKey(deviceToken)) {
-                    meetDetailAdapter.addData(
-                        User(
-                            fromUserName,
-                            deviceToken,
-                            latLng.latitude,
-                            latLng.longitude
-                        )
-                    )
+//                    meetDetailAdapter.addData(
+//                        User(
+//                            fromUserName,
+//                            deviceToken,
+//                            latLng.latitude,
+//                            latLng.longitude
+//                        )
+//                    )
                 } else {
-                    meetDetailAdapter.refreshItem(
-                        User(
-                            fromUserName,
-                            deviceToken,
-                            latLng.latitude,
-                            latLng.longitude
-                        )
-                    )
+//                    meetDetailAdapter.refreshItem(
+//                        User(
+//                            fromUserName,
+//                            deviceToken,
+//                            latLng.latitude,
+//                            latLng.longitude
+//                        )
+//                    )
                 }
                 marker = markerMap[deviceToken] ?: Marker().also { markerMap[deviceToken] = it }
                 marker.icon = OverlayImage.fromView(markerView)
                 marker.position = LatLng(latLng.latitude, latLng.longitude)
                 marker.map = naverMap
-                //markerMap[deviceToken] = marker
             }
         }
     }
-
-//    private fun setMyLocation() {
-//        val timer = timer(period = 10000) {
-//            webSocketClient.send("{\"latitude\":${myLatLng.latitude},\"longitude\":${myLatLng.longitude}}")
-//        }
-//    }
 
     private fun setImage(imageView: CircleImageView, deviceToken: String) {
         when (deviceToken) {
@@ -438,16 +490,16 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    private fun setName(deviceToken: String):String {
+    private fun setName(deviceToken: String): String {
         return when (deviceToken) {
             "aed64e8da3a07df4" -> "연재"
             "f606564d8371e455" -> "우석"
-            "8F630481-548D-4B8A-B501-FFD90ADFDBA4" -> "윤상원"
-            "0954A791-B5BE-4B56-8F25-07554A4D6684" -> "정재인"
-            "C65CDF73-8C04-4F76-A26A-AE3400FEC14B" -> "양종찬"
-            "69751764-A224-4923-9844-C61646743D10" -> "최용권"
-            "2872483D-9E7B-46D1-A2B8-44832FE3F1AD" -> "김규리"
-            "8D44FAA1-2F87-4702-9DAC-B8B15D949880" -> "이효근"
+            "8F630481-548D-4B8A-B501-FFD90ADFDBA4" -> "상원"
+            "0954A791-B5BE-4B56-8F25-07554A4D6684" -> "재인"
+            "C65CDF73-8C04-4F76-A26A-AE3400FEC14B" -> "종찬"
+            "69751764-A224-4923-9844-C61646743D10" -> "용권"
+            "2872483D-9E7B-46D1-A2B8-44832FE3F1AD" -> "규리"
+            "8D44FAA1-2F87-4702-9DAC-B8B15D949880" -> "효근"
             else -> ""
         }
     }
@@ -457,18 +509,33 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         naverMap.moveCamera(cameraUpdate)
     }
 
+    private fun getLinearEquation(
+        point1: LatLng,
+        point2: LatLng,
+        point: Double,
+        value: String
+    ): LatLng {
+        val a = (point2.latitude - point1.latitude) / (point2.longitude - point1.longitude)
+        val b = -(a * point1.longitude) + point1.latitude
+        return if (value == "x") {
+            LatLng((a * point) + b, point)
+        } else {
+            LatLng(point, (point - b) / a)
+        }
+    }
+
     private fun getLatLng(
         point1: LatLng,
         point2: LatLng,
         centerPoint: LatLng,
         markerPoint: LatLng
     ): LatLng {
-        val a = (point2.longitude - point1.longitude) / (point2.latitude - point1.latitude)
-        val b = -(a * point1.latitude) + point1.longitude
+        val a = (point2.latitude - point1.latitude) / (point2.longitude - point1.longitude)
+        val b = -(a * point1.longitude) + point1.latitude
         val c =
-            (markerPoint.longitude - centerPoint.longitude) / (markerPoint.latitude - centerPoint.latitude)
-        val d = -(c * centerPoint.latitude) + centerPoint.longitude
-        return LatLng(((d - b) / (a - c)), (a * (d - b) / (a - c)) + b)
+            (markerPoint.latitude - centerPoint.latitude) / (markerPoint.longitude - centerPoint.longitude)
+        val d = -(c * centerPoint.longitude) + centerPoint.latitude
+        return LatLng((a * (d - b) / (a - c)) + b, ((d - b) / (a - c)))
     }
 
     companion object {
