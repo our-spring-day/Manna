@@ -9,6 +9,7 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.UiThread
 import androidx.databinding.library.baseAdapters.BR
 import com.google.android.gms.location.*
@@ -32,11 +33,23 @@ import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
+import io.socket.client.IO
+import io.socket.client.Manager
+import io.socket.client.Socket
+import io.socket.emitter.Emitter
+import io.socket.engineio.client.transports.Polling
 import kotlinx.android.synthetic.main.activity_websocket.*
+import okhttp3.OkHttpClient
+import java.net.URI
+import java.security.cert.X509Certificate
+import javax.net.ssl.HostnameVerifier
+import javax.net.ssl.SSLContext
+import javax.net.ssl.TrustManager
+import javax.net.ssl.X509TrustManager
 
-class WebSocketTestActivity : BaseActivity<ActivityWebsocketBinding>(R.layout.activity_websocket),
+class SocketIOTestActivity : BaseActivity<ActivityWebsocketBinding>(R.layout.activity_websocket),
     OnMapReadyCallback {
-    //    private val socketConnection: WebSocketConnection = WebSocketConnection()
+
     private var fusedLocationClient: FusedLocationProviderClient? = null
 
     private var location: Location? = null
@@ -62,9 +75,6 @@ class WebSocketTestActivity : BaseActivity<ActivityWebsocketBinding>(R.layout.ac
                         addProperty("longitude", it.longitude)
                     }
 
-//                    if (socketConnection.isConnected) {
-//                        socketConnection.sendMessage(message.toString())
-//                    }
                 }
             }
         }
@@ -80,6 +90,7 @@ class WebSocketTestActivity : BaseActivity<ActivityWebsocketBinding>(R.layout.ac
         }
     }
 
+    private lateinit var socket: Socket
     private var naverMap: NaverMap? = null
     private val markerMap: HashMap<String, Marker> = hashMapOf()
 
@@ -94,9 +105,78 @@ class WebSocketTestActivity : BaseActivity<ActivityWebsocketBinding>(R.layout.ac
             Looper.myLooper()
         )
     }
+//    private var mSocket: Socket? = IO.socket("https://manna.duckdns.org:19999/location")
+
+    private val onNewMessage: Emitter.Listener = object : Emitter.Listener {
+        override fun call(vararg args: Any) {
+            runOnUiThread(Runnable {
+                Toast.makeText(
+                    this@SocketIOTestActivity,
+                    args.map { it.toString() }.toString(),
+                    Toast.LENGTH_SHORT
+                )
+                    .show()
+            })
+        }
+    }
+
+    override fun onDestroy() {
+
+        socket.disconnect()
+        socket.off("locationConnect", onNewMessage)
+        super.onDestroy()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val myHostnameVerifier = HostnameVerifier { _, _ ->
+            return@HostnameVerifier true
+        }
+
+        val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
+            override fun checkClientTrusted(chain: Array<X509Certificate>, authType: String) {}
+
+            override fun checkServerTrusted(chain: Array<X509Certificate>, authType: String) {}
+
+            override fun getAcceptedIssuers(): Array<X509Certificate> {
+                return arrayOf()
+            }
+        })
+
+        val sslContext = SSLContext.getInstance("TLS")
+        sslContext.init(null, trustAllCerts, null)
+
+        val okHttpClient = OkHttpClient.Builder()
+            .hostnameVerifier(myHostnameVerifier)
+            .sslSocketFactory(sslContext.socketFactory, trustAllCerts[0] as X509TrustManager)
+            .build()
+
+
+        val options = IO.Options()
+        options.query = "mannaID=96f35135-390f-496c-af00-cdb3a4104550&deviceToken=f606564d8371e455"
+        options.callFactory = okHttpClient
+        options.webSocketFactory = okHttpClient
+        options.transports = arrayOf(Polling.NAME)
+
+        val manager = Manager(URI("https://manna.duckdns.org:19999"), options)
+        socket =
+            manager.socket("/location")
+        socket.on("locationConnect", onNewMessage)
+
+        socket.on(Socket.EVENT_CONNECT) {
+            Logger.d("EVENT_CONNECT ${it.map { it.toString() }}")
+        }
+
+        socket.on(Socket.EVENT_DISCONNECT) {
+            Logger.d("EVENT_DISCONNECT ${it.map { it.toString() }}")
+        }
+
+        socket.on(Socket.EVENT_MESSAGE) {
+            Logger.d("EVENT_MESSAGE ${it.map { it.toString() }}")
+        }
+
+        socket.connect()
+        socket.emit("locationConnect", "하이")
 
         val meetItem = intent.getParcelableExtra<MeetResponseItem>(MEET_ITEM)
         start()
@@ -250,8 +330,8 @@ class WebSocketTestActivity : BaseActivity<ActivityWebsocketBinding>(R.layout.ac
                 )
                 naverMap?.moveCamera(cameraUpdate)
 
-                val markerView = LayoutInflater.from(this@WebSocketTestActivity)
-                    .inflate(R.layout.view_marker, this@WebSocketTestActivity.root_view, false)
+                val markerView = LayoutInflater.from(this@SocketIOTestActivity)
+                    .inflate(R.layout.view_marker, this@SocketIOTestActivity.root_view, false)
                 markerView.findViewById<TextView>(R.id.name).text =
                     fromUserName.subSequence(1, fromUserName.length)
 
@@ -272,7 +352,7 @@ class WebSocketTestActivity : BaseActivity<ActivityWebsocketBinding>(R.layout.ac
         private const val FASTEST_UPDATE_INTERVAL_MS = 5000L
 
         fun getIntent(context: Context, meetItem: MeetResponseItem) =
-            Intent(context, WebSocketTestActivity::class.java).apply {
+            Intent(context, SocketIOTestActivity::class.java).apply {
                 putExtra(MEET_ITEM, meetItem)
             }
     }

@@ -17,14 +17,16 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
 import com.google.android.gms.location.*
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import com.manna.*
+import com.manna.CircleImageView
+import com.manna.Logger
 import com.manna.R
+import com.manna.SocketResponse
 import com.manna.ext.ViewUtil
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
@@ -132,7 +134,7 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             }
 
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                when(tab?.position){
+                when (tab?.position) {
 
                 }
             }
@@ -205,6 +207,9 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 //                meetDetailAdapter.refreshItem(user)
             })
         }
+
+        BottomSheetBehavior.from(bottom_sheet)
+            .peekHeight = 1000
     }
 
     private fun drawLine(naverMap: NaverMap, points: List<LatLng>) {
@@ -350,7 +355,7 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun connect() {
         val url =
-            "ws://ec2-54-180-125-3.ap-northeast-2.compute.amazonaws.com:40008/ws?token=${UserHolder.userResponse?.deviceId}"
+            "ws://ec2-54-180-125-3.ap-northeast-2.compute.amazonaws.com:40008/ws?token=f606564d8371e455" // ${UserHolder.userResponse?.deviceId}"
         val uri = try {
             URI(url)
         } catch (e: URISyntaxException) {
