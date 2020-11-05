@@ -36,33 +36,36 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <com.manna.CircleImageView
+                <ImageView
                     android:id="@+id/btn_back"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
                     android:layout_marginStart="22dp"
                     android:layout_marginTop="29.18dp"
                     android:src="@drawable/ic_back"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <com.manna.CircleImageView
-                    android:id="@+id/btn_info"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                <ToggleButton
+                    android:textOn=""
+                    android:textOff=""
+                    android:id="@+id/btn_mountain"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
                     android:layout_marginTop="29.18dp"
                     android:layout_marginEnd="22dp"
-                    android:src="@drawable/ic_info"
+                    android:background="@drawable/selector_toggle_btn"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <com.naver.maps.map.widget.LocationButtonView
+            <ImageView
+                android:visibility="gone"
                 android:id="@+id/btn_location"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:layout_marginEnd="22dp"
+                android:src="@drawable/ic_loaction"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/top_panel" />
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -95,12 +98,12 @@
         android:id="@+id/tab_bottom"
         android:layout_width="match_parent"
         android:layout_height="70dp"
+        android:paddingBottom="25dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:tabIconTint="@android:color/transparent"
-        app:tabIconTintMode="screen"
         app:tabIndicatorFullWidth="false"
-        app:tabIndicatorGravity="top" />
+        app:tabIndicatorGravity="top"
+        app:tabTextAppearance="@style/TabText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
