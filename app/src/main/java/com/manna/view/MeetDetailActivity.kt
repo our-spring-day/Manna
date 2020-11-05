@@ -224,7 +224,7 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                     }
 
                     override fun onSlide(view: View, slideOffset: Float) {
-                        chatFragment.viewAnim(getChatInputY(view).toInt())
+                        chatFragment.inputViewTransY(getChatInputY(view).toInt())
                     }
                 }
                 it.addBottomSheetCallback(sheetCallback)
