@@ -30,7 +30,7 @@
         </activity>
 
         <activity android:name=".picker.ImageDetailActivity" />
-        <activity android:name=".view.WebSocketTestActivity" />
+        <activity android:name=".view.SocketIOTestActivity" />
 
     </application>
 </manifest>
