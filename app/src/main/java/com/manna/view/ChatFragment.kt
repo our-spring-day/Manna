@@ -19,6 +19,7 @@ class ChatFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_chat, container, false)
+        binding.lifecycleOwner = this
         return binding.root
     }
 
