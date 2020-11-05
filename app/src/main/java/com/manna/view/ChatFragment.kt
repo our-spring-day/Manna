@@ -6,32 +6,28 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
 import com.manna.R
-import com.manna.databinding.FragmentRankingBinding
+import com.manna.databinding.FragmentChatBinding
 
 class ChatFragment : Fragment() {
 
-    private lateinit var binding: FragmentRankingBinding
-    private val meetDetailAdapter = MeetDetailAdapter()
+    private lateinit var binding: FragmentChatBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_ranking, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_chat, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.rvUser.layoutManager = GridLayoutManager(context, 4)
-        binding.rvUser.adapter = meetDetailAdapter
     }
 
     companion object {
-        fun newInstance() = RankingFragment()
+        fun newInstance() = ChatFragment()
     }
 }
