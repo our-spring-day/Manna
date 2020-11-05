@@ -8,18 +8,20 @@ import android.graphics.Point
 import android.graphics.PointF
 import android.location.Location
 import android.os.Bundle
+import android.os.Handler
 import android.os.Looper
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.google.android.gms.location.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.Gson
 import com.google.gson.JsonObject
@@ -99,6 +101,10 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    lateinit var sheetCallback: BottomSheetBehavior.BottomSheetCallback
+
+    fun resetBottomSheet(offset: Float) = sheetCallback.onSlide(bottom_sheet, offset)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_meet_detail)
@@ -140,12 +146,14 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             }
 
         })
+        tab_bottom.setupWithViewPager(view_pager)
 
         //tab_bottom.setupWithViewPager(view_pager)
 
+        val chatFragment = ChatFragment()
         view_pager.run {
             adapter = ViewPagerAdapter(supportFragmentManager).apply {
-                addFragment(RankingFragment())
+                addFragment(chatFragment)
                 addFragment(RankingFragment())
                 addFragment(RankingFragment())
                 isSaveEnabled = false
@@ -209,7 +217,41 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         BottomSheetBehavior.from(bottom_sheet)
-            .peekHeight = 1000
+            .also {
+                sheetCallback = object : BottomSheetCallback() {
+                    override fun onStateChanged(view: View, newState: Int) {
+
+                    }
+
+                    override fun onSlide(view: View, slideOffset: Float) {
+                        chatFragment.viewAnim(getChatInputY(view).toInt())
+                    }
+                }
+                it.addBottomSheetCallback(sheetCallback)
+                Handler().postDelayed({
+                    sheetCallback.onSlide(bottom_sheet, 0f)
+                }, 50)
+            }
+
+
+
+        bottom_sheet.maxHeight =
+            getBottomSheetFullHeight()
+    }
+
+    private fun getChatInputY(rootView: View) =
+        rootView.height - rootView.y + getBottomSheetTopMargin()
+
+    private fun getBottomSheetTopMargin() = (ViewUtil.getStatusBarHeight(this) +
+            ViewUtil.convertDpToPixel(this, 95f)).toInt()
+
+    private fun getBottomSheetFullHeight() =
+        (getWindowHeight() - getBottomSheetTopMargin())
+
+    private fun getWindowHeight(): Int {
+        val displayMetrics = DisplayMetrics()
+        windowManager?.defaultDisplay?.getMetrics(displayMetrics)
+        return displayMetrics.heightPixels
     }
 
     private fun drawLine(naverMap: NaverMap, points: List<LatLng>) {
@@ -375,13 +417,13 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                     val socketResponse = Gson().fromJson(message, SocketResponse::class.java)
                     Logger.d("socketResponse: $socketResponse")
 
-                    if (socketResponse.sender?.username == "이연재") {
-                        Toast.makeText(
-                            applicationContext,
-                            socketResponse.latLng.toString(),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
+//                    if (socketResponse.sender?.username == "이연재") {
+//                        Toast.makeText(
+//                            applicationContext,
+//                            socketResponse.latLng.toString(),
+//                            Toast.LENGTH_SHORT
+//                        ).show()
+//                    }
 
                     when (socketResponse.type) {
                         SocketResponse.Type.LOCATION -> {

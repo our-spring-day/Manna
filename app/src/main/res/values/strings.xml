@@ -34,4 +34,6 @@
     <string name="img_empty">이미지가 없습니다.\n수정을 눌러 추가 해보세요.</string>
     <string name="denied_camera">사진 촬영을 위해\n카메라 권한에 동의해주세요.</string>
     <string name="denied_storage">갤러리 접근을 위해\n저장공간 권한에 동의해주세요.</string>
+    <string name="input_chat_hint">메시지 작성</string>
+    <string name="dda_bong">👍</string>
 </resources>
