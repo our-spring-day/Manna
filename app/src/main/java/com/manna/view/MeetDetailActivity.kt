@@ -419,12 +419,11 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onResume() {
         super.onResume()
 
-
-//        fusedLocationClient?.requestLocationUpdates(
-//            locationRequest,
-//            locationCallback,
-//            Looper.myLooper()
-//        )
+        fusedLocationClient?.requestLocationUpdates(
+            locationRequest,
+            locationCallback,
+            Looper.myLooper()
+        )
     }
 
     override fun onStop() {
