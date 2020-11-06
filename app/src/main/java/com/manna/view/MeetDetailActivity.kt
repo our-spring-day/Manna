@@ -25,9 +25,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCa
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import com.manna.LocationResponse
-import com.manna.Logger
-import com.manna.MannaApp
+import com.manna.*
 import com.manna.R
 import com.manna.ext.ViewUtil
 import com.naver.maps.geometry.LatLng
@@ -324,7 +322,7 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         connect()
 
         val meetPlaceMarker = Marker().apply {
-            position = LatLng(37.476518, 126.981627)
+            position = LatLng(37.475370, 126.980438)
             map = naverMap
             icon = OverlayImage.fromResource(R.drawable.ic_arrival_place)
         }
@@ -451,7 +449,8 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         if (MannaApp.locationSocket?.connected() == true) return
 
         val options = IO.Options()
-        options.query = "mannaID=96f35135-390f-496c-af00-cdb3a4104550&deviceToken=aed64e8da3a07df4"
+        options.query =
+            "mannaID=96f35135-390f-496c-af00-cdb3a4104550&deviceToken=${UserHolder.userResponse?.deviceId}"
 
         val manager = Manager(URI("https://manna.duckdns.org:19999"), options)
         MannaApp.locationSocket =
@@ -515,42 +514,44 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun setImage(imageView: ImageView, deviceToken: String) {
-        when (deviceToken) {
-            "aed64e8da3a07df4" -> Glide.with(this).load(R.drawable.test_2)
-                .into(imageView)
-            "f606564d8371e455" -> Glide.with(this).load(R.drawable.image_3)
-                .into(imageView)
-            "8F630481-548D-4B8A-B501-FFD90ADFDBA4" -> Glide.with(this)
-                .load(R.drawable.image_2)
-                .into(
-                    imageView
-                )
-            "0954A791-B5BE-4B56-8F25-07554A4D6684" -> Glide.with(this)
-                .load(R.drawable.image_4)
-                .into(
-                    imageView
-                )
-            "C65CDF73-8C04-4F76-A26A-AE3400FEC14B" -> Glide.with(this)
-                .load(R.drawable.image_6)
-                .into(
-                    imageView
-                )
-            "69751764-A224-4923-9844-C61646743D10" -> Glide.with(this)
-                .load(R.drawable.image_1)
-                .into(
-                    imageView
-                )
-            "2872483D-9E7B-46D1-A2B8-44832FE3F1AD" -> Glide.with(this)
-                .load(R.drawable.image_5)
-                .into(
-                    imageView
-                )
-            "8D44FAA1-2F87-4702-9DAC-B8B15D949880" -> Glide.with(this)
-                .load(R.drawable.image_7)
-                .into(
-                    imageView
-                )
-            else -> Glide.with(this).load(R.drawable.test_1).into(imageView)
+        kotlin.runCatching {
+            when (deviceToken) {
+                "aed64e8da3a07df4" -> Glide.with(this).load(R.drawable.test_2)
+                    .into(imageView)
+                "f606564d8371e455" -> Glide.with(this).load(R.drawable.image_3)
+                    .into(imageView)
+                "8F630481-548D-4B8A-B501-FFD90ADFDBA4" -> Glide.with(this)
+                    .load(R.drawable.image_2)
+                    .into(
+                        imageView
+                    )
+                "0954A791-B5BE-4B56-8F25-07554A4D6684" -> Glide.with(this)
+                    .load(R.drawable.image_4)
+                    .into(
+                        imageView
+                    )
+                "C65CDF73-8C04-4F76-A26A-AE3400FEC14B" -> Glide.with(this)
+                    .load(R.drawable.image_6)
+                    .into(
+                        imageView
+                    )
+                "69751764-A224-4923-9844-C61646743D10" -> Glide.with(this)
+                    .load(R.drawable.image_1)
+                    .into(
+                        imageView
+                    )
+                "2872483D-9E7B-46D1-A2B8-44832FE3F1AD" -> Glide.with(this)
+                    .load(R.drawable.image_5)
+                    .into(
+                        imageView
+                    )
+                "8D44FAA1-2F87-4702-9DAC-B8B15D949880" -> Glide.with(this)
+                    .load(R.drawable.image_7)
+                    .into(
+                        imageView
+                    )
+                else -> Glide.with(this).load(R.drawable.test_1).into(imageView)
+            }
         }
     }
 
