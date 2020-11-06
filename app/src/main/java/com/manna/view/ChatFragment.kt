@@ -6,10 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.gson.Gson
+import com.manna.ChatResponse
 import com.manna.Logger
 import com.manna.R
 import com.manna.databinding.FragmentChatBinding
+import com.manna.databinding.ItemChatBinding
 import com.manna.ext.HeightProvider
 import com.manna.ext.ViewUtil
 import io.socket.client.IO
@@ -20,12 +27,44 @@ import kotlinx.android.synthetic.main.activity_meet_detail.*
 import java.net.URI
 
 
+class ChatAdapter :
+    ListAdapter<ChatResponse, ChatViewHolder>(
+        object : DiffUtil.ItemCallback<ChatResponse>() {
+            override fun areItemsTheSame(oldItem: ChatResponse, newItem: ChatResponse): Boolean =
+                oldItem.message?.createTimestamp == newItem.message?.createTimestamp
+
+
+            override fun areContentsTheSame(oldItem: ChatResponse, newItem: ChatResponse): Boolean =
+                oldItem == newItem
+
+        }) {
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatViewHolder =
+        ChatViewHolder(
+            LayoutInflater.from(parent.context).inflate(R.layout.item_chat, parent, false)
+        )
+
+    override fun onBindViewHolder(holder: ChatViewHolder, position: Int) {
+        holder.bind(currentList[position])
+    }
+}
+
+
+class ChatViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+
+    private val binding = DataBindingUtil.bind<ItemChatBinding>(itemView)!!
+
+    fun bind(item: ChatResponse) {
+        binding.message.text = item.message?.message.orEmpty()
+    }
+}
+
 class ChatFragment : Fragment() {
 
     private lateinit var binding: FragmentChatBinding
     private var keyboardHeight = 0
     private var chatSocket: Socket? = null
-
+    private lateinit var chatAdapter: ChatAdapter
     private val onChatConnectReceiver = Emitter.Listener { args ->
         activity?.runOnUiThread {
             Logger.d("${args.map { it.toString() }}")
@@ -35,7 +74,10 @@ class ChatFragment : Fragment() {
 
     private val onChatReceiver = Emitter.Listener { args ->
         activity?.runOnUiThread {
-            Logger.d("${args.map { it.toString() }}")
+            val response = args.getOrNull(0)
+            val chatResponse = Gson().fromJson(response.toString(), ChatResponse::class.java)
+            Logger.d("chatResponse: $chatResponse")
+            chatAdapter.submitList(chatAdapter.currentList + chatResponse)
         }
     }
 
@@ -61,6 +103,12 @@ class ChatFragment : Fragment() {
 
         binding.ddaBong.setOnClickListener {
             chatSocket?.emit(CHAT_MESSAGE, binding.inputChat.text.toString())
+        }
+
+        binding.chatView.run {
+            layoutManager = LinearLayoutManager(requireContext())
+            chatAdapter = ChatAdapter()
+            adapter = chatAdapter
         }
 
         connect()
@@ -119,7 +167,7 @@ class ChatFragment : Fragment() {
             }
     }
 
-    private fun connect(){
+    private fun connect() {
         if (chatSocket?.connected() == true) return
 
         val options = IO.Options()
@@ -162,6 +210,8 @@ class ChatFragment : Fragment() {
             .y((y - binding.chatInputView.height).toFloat())
             .setDuration(0)
             .start()
+
+        binding.chatView.requestLayout()
     }
 
     companion object {
