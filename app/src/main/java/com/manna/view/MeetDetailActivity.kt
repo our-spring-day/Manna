@@ -14,7 +14,6 @@ import android.util.DisplayMetrics
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -25,10 +24,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCa
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import com.manna.Logger
-import com.manna.MannaApp
+import com.manna.*
 import com.manna.R
-import com.manna.SocketResponse
 import com.manna.ext.ViewUtil
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.LatLngBounds
@@ -337,7 +334,7 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 markerView = LayoutInflater.from(this)
                     .inflate(layoutId, this.root_view, false)
                 for (i in markerMap.keys) {
-                    setImage(markerView.findViewById<ImageView>(R.id.iv_image), i.toString())
+                    setImage(markerView.findViewById<CircleImageView>(R.id.iv_image), i.toString())
                     markerMap[i]?.icon = OverlayImage.fromView(markerView)
                 }
             }
@@ -480,7 +477,7 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                     markerView.findViewById<TextView>(R.id.name).text = fromUserName
                 } else {
                     if (deviceToken != null) {
-                        setImage(markerView.findViewById<ImageView>(R.id.iv_image), deviceToken)
+                        setImage(markerView.findViewById<CircleImageView>(R.id.iv_image), deviceToken)
                     }
                 }
 
@@ -501,7 +498,7 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    private fun setImage(imageView: ImageView, deviceToken: String) {
+    private fun setImage(imageView: CircleImageView, deviceToken: String) {
         when (deviceToken) {
             "aed64e8da3a07df4" -> Glide.with(this).load(R.drawable.test_2).into(imageView)
             "f606564d8371e455" -> Glide.with(this).load(R.drawable.image_3).into(imageView)
