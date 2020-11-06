@@ -88,7 +88,6 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private var myLatLng = LatLng(0.0, 0.0)
     private val lastTimeStamp: HashMap<String?, Long> = hashMapOf()
 
-
     private val viewModel by viewModels<MeetDetailViewModel>()
 
     private val locationCallback: LocationCallback = object : LocationCallback() {
@@ -173,7 +172,7 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             adapter = ViewPagerAdapter(supportFragmentManager).apply {
                 addFragment(chatFragment)
                 addFragment(RankingFragment())
-                addFragment(RankingFragment())
+                addFragment(FriendsFragment())
                 isSaveEnabled = false
             }
             currentItem = 0
@@ -540,6 +539,10 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                                     setImage(findViewById(R.id.iv_image), deviceToken.orEmpty())
                                 }
 
+                            viewModel.addUser(
+                                User(fromUserName, deviceToken, latLng.latitude, latLng.longitude)
+                            )
+
                             markerHolders.add(
                                 MarkerHolder(
                                     deviceToken,
@@ -548,6 +551,7 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                                     imageMarkerView
                                 )
                             )
+
                             it.icon = OverlayImage.fromView(markerView)
                         }
 
@@ -638,6 +642,9 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         private const val LOCATION_MESSAGE = "location"
 
         fun getIntent(context: Context) =
-            Intent(context, MeetDetailActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            Intent(
+                context,
+                MeetDetailActivity::class.java
+            ).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
     }
 }
