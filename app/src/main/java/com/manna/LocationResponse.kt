@@ -1,13 +1,12 @@
 package com.manna
 
-
 import com.google.gson.annotations.SerializedName
 
-data class ChatResponse(
+data class LocationResponse(
+    @SerializedName("location")
+    val latLng: MyLatLng?,
     @SerializedName("sender")
     val sender: Sender?,
-    @SerializedName("message")
-    val message: Message?,
     @SerializedName("type")
     val type: Type?
 ) {
