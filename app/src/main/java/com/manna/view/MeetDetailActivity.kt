@@ -36,7 +36,6 @@ import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.MultipartPathOverlay
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
-import com.naver.maps.map.util.MarkerIcons
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_meet_detail.*
 import org.java_websocket.client.DefaultSSLWebSocketClientFactory
@@ -77,6 +76,7 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     }
     var layoutId = R.layout.view_round_marker
     lateinit var markerView: View
+    private var myLatLng = LatLng(0.0, 0.0)
 
     private val viewModel by viewModels<MeetDetailViewModel>()
 
@@ -121,13 +121,8 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         top_panel.fitsSystemWindows = true
 
         btn_back.setOnClickListener {
-            //onBackPressed()
-            //meetDetailAdapter.changeItem()
+            onBackPressed()
         }
-
-        tab_bottom.addTab(tab_bottom.newTab().setIcon(R.drawable.ic_test_01))
-        tab_bottom.addTab(tab_bottom.newTab().setIcon(R.drawable.ic_test_02))
-        tab_bottom.addTab(tab_bottom.newTab().setIcon(R.drawable.ic_test_03))
 
         val badge = tab_bottom.getTabAt(0)?.orCreateBadge
         badge?.number = 2
@@ -148,8 +143,6 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         })
         tab_bottom.setupWithViewPager(view_pager)
 
-        //tab_bottom.setupWithViewPager(view_pager)
-
         val chatFragment = ChatFragment()
         view_pager.run {
             adapter = ViewPagerAdapter(supportFragmentManager).apply {
@@ -162,29 +155,18 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             offscreenPageLimit = 3
         }
 
-        btn_info.setOnClickListener {
-            //meetDetailAdapter.setItemViewType()
-            if (layoutId == R.layout.view_round_marker) {
-                layoutId = R.layout.view_marker
-                markerView = LayoutInflater.from(this)
-                    .inflate(layoutId, this.root_view, false)
-                for (i in markerMap.keys) {
-                    markerView.findViewById<TextView>(R.id.name).text = setName(i.toString())
-                    markerMap[i]?.icon = OverlayImage.fromView(markerView)
-                }
+        btn_location.setOnClickListener {
+            moveLocation(myLatLng, 13.0)
+        }
+
+        btn_mountain.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                btn_location.visibility = View.VISIBLE
             } else {
-                layoutId = R.layout.view_round_marker
-                markerView = LayoutInflater.from(this)
-                    .inflate(layoutId, this.root_view, false)
-                for (i in markerMap.keys) {
-                    setImage(markerView.findViewById(R.id.iv_image), i.toString())
-                    markerMap[i]?.icon = OverlayImage.fromView(markerView)
-                }
+                btn_location.visibility = View.GONE
             }
         }
 
-//        meetDetailAdapter.setOnClickListener(object : MeetDetailAdapter.OnClickListener {
-//            override fun onClick(user: User) {
 //                markerMap[user.deviceToken]?.let {
 //                    viewModel.findRoute(
 //                        user = user,
@@ -193,8 +175,6 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 //                    )
 //                    moveLocation(it)
 //                }
-//            }
-//        })
 
         val builder: LocationSettingsRequest.Builder = LocationSettingsRequest.Builder()
         builder.addLocationRequest(locationRequest)
@@ -304,18 +284,41 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             isLocationButtonEnabled = false
             isCompassEnabled = false
             isScaleBarEnabled = false
+            isZoomControlEnabled = false
             logoGravity = Gravity.END
             setLogoMargin(0, 80, 60, 0)
         }
-        btn_location.map = naverMap
 
         connect()
 
         val meetPlaceMarker = Marker().apply {
-            position = LatLng(37.557527, 126.9222782)
+            position = LatLng(37.476518, 126.981627)
             map = naverMap
-            icon = MarkerIcons.BLACK
-            iconTintColor = Color.RED
+            icon = OverlayImage.fromResource(R.drawable.ic_arrival_place)
+        }
+
+        naverMap.addOnLocationChangeListener { location ->
+            myLatLng = LatLng(location.latitude, location.longitude)
+        }
+
+        naverMap.setOnMapLongClickListener { point, coord ->
+            if (layoutId == R.layout.view_round_marker) {
+                layoutId = R.layout.view_marker
+                markerView = LayoutInflater.from(this)
+                    .inflate(layoutId, this.root_view, false)
+                for (i in markerMap.keys) {
+                    markerView.findViewById<TextView>(R.id.name).text = setName(i.toString())
+                    markerMap[i]?.icon = OverlayImage.fromView(markerView)
+                }
+            } else {
+                layoutId = R.layout.view_round_marker
+                markerView = LayoutInflater.from(this)
+                    .inflate(layoutId, this.root_view, false)
+                for (i in markerMap.keys) {
+                    setImage(markerView.findViewById(R.id.iv_image), i.toString())
+                    markerMap[i]?.icon = OverlayImage.fromView(markerView)
+                }
+            }
         }
 
         val display = windowManager.defaultDisplay
@@ -407,7 +410,6 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         webSocketClient = object : WebSocketClient(uri) {
             override fun onOpen(handshakedata: ServerHandshake) {
                 Log.e(TAG, "Connect")
-//                setMyLocation()
             }
 
             override fun onMessage(message: String) {
@@ -479,23 +481,9 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
 
                 if (!markerMap.containsKey(deviceToken)) {
-//                    meetDetailAdapter.addData(
-//                        User(
-//                            fromUserName,
-//                            deviceToken,
-//                            latLng.latitude,
-//                            latLng.longitude
-//                        )
-//                    )
+
                 } else {
-//                    meetDetailAdapter.refreshItem(
-//                        User(
-//                            fromUserName,
-//                            deviceToken,
-//                            latLng.latitude,
-//                            latLng.longitude
-//                        )
-//                    )
+
                 }
                 marker = markerMap[deviceToken] ?: Marker().also { markerMap[deviceToken] = it }
                 marker.icon = OverlayImage.fromView(markerView)
@@ -551,8 +539,8 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    private fun moveLocation(marker: Marker) {
-        val cameraUpdate = CameraUpdate.scrollAndZoomTo(marker.position, 16.0)
+    private fun moveLocation(latLng: LatLng, zoom: Double) {
+        val cameraUpdate = CameraUpdate.scrollAndZoomTo(latLng, zoom)
         naverMap.moveCamera(cameraUpdate)
     }
 
