@@ -11,7 +11,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -37,14 +36,13 @@ import com.naver.maps.map.overlay.MultipartPathOverlay
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
 import dagger.hilt.android.AndroidEntryPoint
+import io.socket.client.IO
+import io.socket.client.Manager
+import io.socket.client.Socket
+import io.socket.emitter.Emitter
 import kotlinx.android.synthetic.main.activity_meet_detail.*
-import org.java_websocket.client.DefaultSSLWebSocketClientFactory
-import org.java_websocket.client.WebSocketClient
-import org.java_websocket.handshake.ServerHandshake
 import java.net.URI
-import java.net.URISyntaxException
 import java.util.*
-import javax.net.ssl.SSLContext
 import kotlin.math.sqrt
 
 enum class WayMode(val type: String) {
@@ -65,7 +63,6 @@ data class WayPoint(
 class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var locationSource: FusedLocationSource
     private lateinit var naverMap: NaverMap
-    private lateinit var webSocketClient: WebSocketClient
 
     private val markerMap: HashMap<String?, Marker> = hashMapOf()
     private var fusedLocationClient: FusedLocationProviderClient? = null
@@ -79,6 +76,7 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private var myLatLng = LatLng(0.0, 0.0)
 
     private val viewModel by viewModels<MeetDetailViewModel>()
+    private lateinit var locationSocket: Socket
 
     private val locationCallback: LocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
@@ -90,18 +88,32 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                     addProperty("latitude", it.latitude)
                     addProperty("longitude", it.longitude)
                 }
-                Logger.d("$message")
-                try {
-                    webSocketClient.send(message.toString())
-                } catch (e: Exception) {
-
+                if (locationSocket.connected()) {
+                    Logger.d("$message")
+                    locationSocket.emit("location", message)
                 }
-
             }
         }
     }
 
-    lateinit var sheetCallback: BottomSheetBehavior.BottomSheetCallback
+    private val onLocationReceiver = Emitter.Listener { args ->
+        runOnUiThread {
+            val message = args.getOrNull(0)
+
+            val socketResponse = Gson().fromJson(message.toString(), SocketResponse::class.java)
+            Logger.d("socketResponse: $socketResponse")
+
+            handleLocation(socketResponse)
+        }
+    }
+
+    private val onLocationConnectReceiver = Emitter.Listener { args ->
+        runOnUiThread {
+            Logger.d("${args.map { it.toString() }}")
+        }
+    }
+
+    lateinit var sheetCallback: BottomSheetCallback
 
     fun resetBottomSheet(offset: Float) = sheetCallback.onSlide(bottom_sheet, offset)
 
@@ -399,66 +411,28 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun connect() {
-        val url =
-            "ws://ec2-54-180-125-3.ap-northeast-2.compute.amazonaws.com:40008/ws?token=f606564d8371e455" // ${UserHolder.userResponse?.deviceId}"
-        val uri = try {
-            URI(url)
-        } catch (e: URISyntaxException) {
-            Log.e(TAG, e.message)
-            return
-        }
-        webSocketClient = object : WebSocketClient(uri) {
-            override fun onOpen(handshakedata: ServerHandshake) {
-                Log.e(TAG, "Connect")
-            }
+        val options = IO.Options()
+        options.query = "mannaID=96f35135-390f-496c-af00-cdb3a4104550&deviceToken=f606564d8371e455"
 
-            override fun onMessage(message: String) {
-                Log.e(TAG, "Message: $message")
-                runOnUiThread {
+        val manager = Manager(URI("https://manna.duckdns.org:19999"), options)
+        locationSocket =
+            manager.socket("/location")
+        locationSocket.on(LOCATION_CONNECT, onLocationConnectReceiver)
+        locationSocket.on(LOCATION_MESSAGE, onLocationReceiver)
 
-                    val socketResponse = Gson().fromJson(message, SocketResponse::class.java)
-                    Logger.d("socketResponse: $socketResponse")
-
-//                    if (socketResponse.sender?.username == "이연재") {
-//                        Toast.makeText(
-//                            applicationContext,
-//                            socketResponse.latLng.toString(),
-//                            Toast.LENGTH_SHORT
-//                        ).show()
-//                    }
-
-                    when (socketResponse.type) {
-                        SocketResponse.Type.LOCATION -> {
-                            handleLocation(socketResponse)
-                        }
-                        SocketResponse.Type.JOIN -> {
-//                            routeAdapter.add("${socketResponse.sender?.username}님이 들어왔습니다.")
-                        }
-                        SocketResponse.Type.LEAVE -> {
-//                            routeAdapter.add("${socketResponse.sender?.username}님이 나갔습니다.")
-                        }
-                    }
-                }
-            }
-
-            override fun onClose(code: Int, reason: String, remote: Boolean) {
-                Log.e(TAG, "Disconnect")
-            }
-
-            override fun onError(ex: java.lang.Exception) {
-                Log.e(TAG, "Error: " + ex.message)
-            }
-        }
-        if (url.indexOf("wss") == 0) {
-            try {
-                val sslContext: SSLContext = SSLContext.getDefault()
-                webSocketClient.setWebSocketFactory(DefaultSSLWebSocketClientFactory(sslContext))
-            } catch (e: java.lang.Exception) {
-                e.printStackTrace()
-            }
+        locationSocket.on(Socket.EVENT_CONNECT) {
+            Logger.d("EVENT_CONNECT ${it.map { it.toString() }}")
         }
 
-        webSocketClient.connect()
+        locationSocket.on(Socket.EVENT_DISCONNECT) {
+            Logger.d("EVENT_DISCONNECT ${it.map { it.toString() }}")
+        }
+
+        locationSocket.on(Socket.EVENT_MESSAGE) {
+            Logger.d("EVENT_MESSAGE ${it.map { it.toString() }}")
+        }
+
+        locationSocket.connect()
     }
 
     private var marker = Marker()
@@ -574,10 +548,12 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     companion object {
-        private const val TAG = "MeetDetailActivity:"
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
-        private const val UPDATE_INTERVAL_MS = 5000L
-        private const val FASTEST_UPDATE_INTERVAL_MS = 5000L
+        private const val UPDATE_INTERVAL_MS = 1000L
+        private const val FASTEST_UPDATE_INTERVAL_MS = 1000L
+
+        private const val LOCATION_CONNECT = "locationConnect"
+        private const val LOCATION_MESSAGE = "location"
 
         fun getIntent(context: Context) =
             Intent(context, MeetDetailActivity::class.java)
