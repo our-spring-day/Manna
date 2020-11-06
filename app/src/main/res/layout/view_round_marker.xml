@@ -1,19 +1,18 @@
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    app:cardCornerRadius="24px">
+    android:layout_height="wrap_content">
 
-    <ImageView
+    <com.manna.CircleImageView
         android:id="@+id/iv_image"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:layout_gravity="center"
+        android:layout_width="56.81dp"
+        android:layout_height="56.81dp"
+        android:alpha="0.9"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@drawable/test_1" />
 
-</androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>
