@@ -68,13 +68,22 @@ class SocketIOTestActivity : BaseActivity<ActivityWebsocketBinding>(R.layout.act
                 location = locationList[locationList.size - 1]
 
                 location?.let {
-                    Logger.d("${it.latitude}, ${it.longitude}")
 
                     val message = JsonObject().apply {
                         addProperty("latitude", it.latitude)
                         addProperty("longitude", it.longitude)
                     }
 
+
+                    val sendMessage = JsonObject().apply {
+                        add("location", message)
+                    }
+
+
+                    if (locationSocket.connected()) {
+                        Logger.d("${it.latitude}, ${it.longitude}")
+                        locationSocket.emit("location", sendMessage)
+                    }
                 }
             }
         }
@@ -86,11 +95,11 @@ class SocketIOTestActivity : BaseActivity<ActivityWebsocketBinding>(R.layout.act
                 R.layout.item_route,
                 variableId = BR.item
             ) {
-
         }
     }
 
-    private lateinit var socket: Socket
+    private lateinit var locationSocket: Socket
+    private lateinit var chatSocket: Socket
     private var naverMap: NaverMap? = null
     private val markerMap: HashMap<String, Marker> = hashMapOf()
 
@@ -105,25 +114,59 @@ class SocketIOTestActivity : BaseActivity<ActivityWebsocketBinding>(R.layout.act
             Looper.myLooper()
         )
     }
-//    private var mSocket: Socket? = IO.socket("https://manna.duckdns.org:19999/location")
 
-    private val onNewMessage: Emitter.Listener = object : Emitter.Listener {
-        override fun call(vararg args: Any) {
-            runOnUiThread(Runnable {
-                Toast.makeText(
-                    this@SocketIOTestActivity,
-                    args.map { it.toString() }.toString(),
-                    Toast.LENGTH_SHORT
-                )
-                    .show()
-            })
+    private val onLocationReceiver = Emitter.Listener { args ->
+        runOnUiThread {
+            Toast.makeText(
+                this@SocketIOTestActivity,
+                args.map { it.toString() }.toString(),
+                Toast.LENGTH_SHORT
+            )
+                .show()
         }
     }
 
-    override fun onDestroy() {
+    private val onLocationConnectReceiver = Emitter.Listener { args ->
+        runOnUiThread {
+            Toast.makeText(
+                this@SocketIOTestActivity,
+                args.map { it.toString() }.toString(),
+                Toast.LENGTH_SHORT
+            )
+                .show()
+        }
+    }
 
-        socket.disconnect()
-        socket.off("locationConnect", onNewMessage)
+    private val onChatConnectReceiver = Emitter.Listener { args ->
+        runOnUiThread {
+            Toast.makeText(
+                this@SocketIOTestActivity,
+                args.map { it.toString() }.toString(),
+                Toast.LENGTH_SHORT
+            )
+                .show()
+        }
+    }
+
+
+    private val onChatReceiver = Emitter.Listener { args ->
+        runOnUiThread {
+            Toast.makeText(
+                this@SocketIOTestActivity,
+                args.map { it.toString() }.toString(),
+                Toast.LENGTH_SHORT
+            )
+                .show()
+        }
+    }
+
+
+    override fun onDestroy() {
+        locationSocket.disconnect()
+        locationSocket.off(LOCATION_CONNECT, onLocationReceiver)
+
+        chatSocket.disconnect()
+        chatSocket.off(CHAT_CONNECT, onChatReceiver)
         super.onDestroy()
     }
 
@@ -156,30 +199,53 @@ class SocketIOTestActivity : BaseActivity<ActivityWebsocketBinding>(R.layout.act
         options.query = "mannaID=96f35135-390f-496c-af00-cdb3a4104550&deviceToken=f606564d8371e455"
         options.callFactory = okHttpClient
         options.webSocketFactory = okHttpClient
-        options.transports = arrayOf(Polling.NAME)
+//        options.transports = arrayOf(Polling.NAME)
 
         val manager = Manager(URI("https://manna.duckdns.org:19999"), options)
-        socket =
+        locationSocket =
             manager.socket("/location")
-        socket.on("locationConnect", onNewMessage)
+        locationSocket.on(LOCATION_CONNECT, onLocationConnectReceiver)
+        locationSocket.on(LOCATION_MESSAGE, onLocationReceiver)
 
-        socket.on(Socket.EVENT_CONNECT) {
+        locationSocket.on(Socket.EVENT_CONNECT) {
             Logger.d("EVENT_CONNECT ${it.map { it.toString() }}")
         }
 
-        socket.on(Socket.EVENT_DISCONNECT) {
+        locationSocket.on(Socket.EVENT_DISCONNECT) {
             Logger.d("EVENT_DISCONNECT ${it.map { it.toString() }}")
         }
 
-        socket.on(Socket.EVENT_MESSAGE) {
+        locationSocket.on(Socket.EVENT_MESSAGE) {
             Logger.d("EVENT_MESSAGE ${it.map { it.toString() }}")
         }
 
-        socket.connect()
-        socket.emit("locationConnect", "하이")
+        locationSocket.connect()
+
+        val chatManager = Manager(URI("https://manna.duckdns.org:19999"), options)
+        chatSocket =
+            chatManager.socket("/chat")
+        chatSocket.on(CHAT_CONNECT, onChatConnectReceiver)
+        chatSocket.on(CHAT_MESSAGE, onChatReceiver)
+
+        chatSocket.on(Socket.EVENT_CONNECT) {
+            Logger.d("EVENT_CONNECT ${it.map { it.toString() }}")
+        }
+
+        chatSocket.on(Socket.EVENT_DISCONNECT) {
+            Logger.d("EVENT_DISCONNECT ${it.map { it.toString() }}")
+        }
+
+        chatSocket.on(Socket.EVENT_MESSAGE) {
+            Logger.d("EVENT_MESSAGE ${it.map { it.toString() }}")
+        }
+
+        chatSocket.connect()
+
+        chatSocket.emit("chat", "갓종찬님 안녕하세욘 ^^")
+
+        chatSocket.emit("chat", "방가방가 ^^")
 
         val meetItem = intent.getParcelableExtra<MeetResponseItem>(MEET_ITEM)
-        start()
 
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as MapFragment?
             ?: MapFragment.newInstance().also {
@@ -247,75 +313,6 @@ class SocketIOTestActivity : BaseActivity<ActivityWebsocketBinding>(R.layout.act
             }
         }
 
-
-    private fun start() {
-        val wsuri =
-            "ws://ec2-54-180-125-3.ap-northeast-2.compute.amazonaws.com:40008/ws?token=${UserHolder.userResponse?.deviceId}" //"ws://ec2-13-124-151-24.ap-northeast-2.compute.amazonaws.com:9999/manna"
-//        try {
-//            socketConnection.connect(wsuri, object : IWebSocketConnectionHandler {
-//
-//                override fun onMessage(payload: ByteArray?, isBinary: Boolean) {
-//                    Logger.d("$payload $isBinary")
-//                }
-//
-//                override fun onConnect(response: ConnectionResponse?) {
-//                    Logger.d("$response")
-//                }
-//
-//                override fun onPing() {
-//                    Logger.d("")
-//                }
-//
-//                override fun onPing(payload: ByteArray?) {
-//                    Logger.d("$payload")
-//                }
-//
-//                override fun onPong() {
-//                    Logger.d("")
-//                }
-//
-//                override fun onPong(payload: ByteArray?) {
-//                    Logger.d("$payload")
-//                }
-//
-//                override fun setConnection(connection: WebSocketConnection?) {
-//                    Logger.d("$connection")
-//                }
-//
-//                @SuppressLint("SetTextI18n")
-//                override fun onOpen() {
-//                    Logger.d("Status: Connected to $wsuri")
-////                    outputView.text = outputView.text.toString() + "\nconnected to " + wsuri
-//                }
-//
-//                override fun onMessage(payload: String?) {
-//                    Logger.d("Got echo: $payload")
-//
-//                    val socketResponse = Gson().fromJson(payload, SocketResponse::class.java)
-//                    Logger.d("socketResponse: $socketResponse")
-//
-//                    when (socketResponse.type) {
-//                        SocketResponse.Type.LOCATION -> {
-//                            handleLocation(socketResponse)
-//                        }
-//                        SocketResponse.Type.JOIN -> {
-//                            routeAdapter.add("${socketResponse.sender?.username}님이 들어왔습니다.")
-//                        }
-//                        SocketResponse.Type.LEAVE -> {
-//                            routeAdapter.add("${socketResponse.sender?.username}님이 나갔습니다.")
-//                        }
-//                    }
-//                }
-//
-//                override fun onClose(code: Int, reason: String?) {
-//                    Logger.d("Connection lost.")
-//                }
-//            })
-//        } catch (e: WebSocketException) {
-//            Logger.d(e.toString())
-//        }
-    }
-
     private fun handleLocation(socketResponse: SocketResponse) {
         socketResponse.sender?.username?.let { fromUserName ->
             val latLng = socketResponse.latLng
@@ -350,6 +347,13 @@ class SocketIOTestActivity : BaseActivity<ActivityWebsocketBinding>(R.layout.act
         private const val MEET_ITEM = "meet_item"
         private const val UPDATE_INTERVAL_MS = 5000L
         private const val FASTEST_UPDATE_INTERVAL_MS = 5000L
+
+        private const val LOCATION_CONNECT = "locationConnect"
+        private const val CHAT_CONNECT = "chatConnect"
+
+        private const val LOCATION_MESSAGE = "location"
+        private const val CHAT_MESSAGE = "chat"
+
 
         fun getIntent(context: Context, meetItem: MeetResponseItem) =
             Intent(context, SocketIOTestActivity::class.java).apply {
