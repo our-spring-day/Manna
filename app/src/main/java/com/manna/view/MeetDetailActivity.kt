@@ -59,20 +59,32 @@ data class WayPoint(
     fun getPoint(): String = "${point.latitude},${point.longitude}"
 }
 
+class MarkerHolder(
+    val uuid: String,
+    val marker: Marker,
+    val markerView: View,
+    val imageMarkerView: View,
+    var marketState: MarkerState = MarkerState.NORMAL,
+)
+
+enum class MarkerState {
+    NORMAL,
+    IMAGE,
+}
+
 @AndroidEntryPoint
 class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var locationSource: FusedLocationSource
     private lateinit var naverMap: NaverMap
 
-    private val markerMap: HashMap<String?, Marker> = hashMapOf()
+    private val markerHolders: MutableSet<MarkerHolder> = mutableSetOf()
     private var fusedLocationClient: FusedLocationProviderClient? = null
     private val locationRequest by lazy {
         LocationRequest().setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
             .setInterval(UPDATE_INTERVAL_MS)
             .setFastestInterval(FASTEST_UPDATE_INTERVAL_MS)
     }
-    var layoutId = R.layout.view_round_marker
-    lateinit var markerView: View
+
     private var myLatLng = LatLng(0.0, 0.0)
     private val lastTimeStamp: HashMap<String?, Long> = hashMapOf()
 
@@ -121,6 +133,8 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_meet_detail)
+
+        markerHolders.clear()
 
         locationSource =
             FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE)
@@ -178,19 +192,23 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 moveLocation(myLatLng, 13.0)
             } else {
                 btn_location.visibility = View.GONE
-                markerMap.forEach {
-                    latitudeList.add(it.value.position.latitude)
-                    longitudeList.add(it.value.position.longitude)
+                markerHolders.forEach {
+                    latitudeList.add(it.marker.position.latitude)
+                    longitudeList.add(it.marker.position.longitude)
                 }
-                val cameraUpdate = CameraUpdate.fitBounds(
-                    LatLngBounds(
-                        LatLng(
-                            Collections.min(latitudeList),
-                            Collections.min(longitudeList)
-                        ), LatLng(Collections.max(latitudeList), Collections.max(longitudeList))
-                    ), 20
-                )
-                naverMap.moveCamera(cameraUpdate)
+
+                // TODO : 여기 에러뜬다 런캣칭 제거하고 테스트하자
+                kotlin.runCatching {
+                    val cameraUpdate = CameraUpdate.fitBounds(
+                        LatLngBounds(
+                            LatLng(
+                                Collections.min(latitudeList),
+                                Collections.min(longitudeList)
+                            ), LatLng(Collections.max(latitudeList), Collections.max(longitudeList))
+                        ), 20
+                    )
+                    naverMap.moveCamera(cameraUpdate)
+                }
             }
         }
 
@@ -213,8 +231,6 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             })
             remainValue.observe(
                 this@MeetDetailActivity, { (user: User, remainValue) ->
-
-
                     val remainDistance = remainValue.first
                     val remainTime = remainValue.second
                     user.remainDistance = remainDistance
@@ -295,6 +311,7 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     @SuppressLint("MissingPermission")
     override fun onMapReady(naverMap: NaverMap) {
 
+        Logger.d("naverMap ready")
         fusedLocationClient?.requestLocationUpdates(
             locationRequest,
             locationCallback,
@@ -329,22 +346,20 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         naverMap.setOnMapLongClickListener { point, coord ->
-            if (layoutId == R.layout.view_round_marker) {
-                layoutId = R.layout.view_marker
-                markerView = LayoutInflater.from(this)
-                    .inflate(layoutId, this.root_view, false)
-                for (i in markerMap.keys) {
-                    markerView.findViewById<TextView>(R.id.name).text = setName(i.toString())
-                    markerMap[i]?.icon = OverlayImage.fromView(markerView)
+
+            Logger.d("zzz ${this.hashCode()}")
+            markerHolders.forEach {
+                it.marker.icon = when (it.marketState) {
+                    MarkerState.NORMAL -> {
+                        it.marketState = MarkerState.IMAGE
+                        OverlayImage.fromView(it.imageMarkerView)
+                    }
+                    MarkerState.IMAGE -> {
+                        it.marketState = MarkerState.NORMAL
+                        OverlayImage.fromView(it.markerView)
+                    }
                 }
-            } else {
-                layoutId = R.layout.view_round_marker
-                markerView = LayoutInflater.from(this)
-                    .inflate(layoutId, this.root_view, false)
-                for (i in markerMap.keys) {
-                    setImage(markerView.findViewById(R.id.iv_image), i.toString())
-                    markerMap[i]?.icon = OverlayImage.fromView(markerView)
-                }
+                it.marker.map = naverMap
             }
         }
 
@@ -442,7 +457,25 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun connect() {
-        if (MannaApp.locationSocket?.connected() == true) return
+        if (MannaApp.locationSocket?.connected() == true) {
+            MannaApp.locationSocket?.run {
+                off()
+
+                on(LOCATION_CONNECT, onLocationConnectReceiver)
+                on(LOCATION_MESSAGE, onLocationReceiver)
+                on(Socket.EVENT_CONNECT) {
+                    Logger.d("EVENT_CONNECT ${it.map { it.toString() }}")
+                }
+                on(Socket.EVENT_DISCONNECT) {
+                    Logger.d("EVENT_DISCONNECT ${it.map { it.toString() }}")
+                }
+                on(Socket.EVENT_MESSAGE) {
+                    Logger.d("EVENT_MESSAGE ${it.map { it.toString() }}")
+                }
+            }
+
+            return
+        }
 
         val options = IO.Options()
         options.query =
@@ -465,13 +498,21 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 on(Socket.EVENT_MESSAGE) {
                     Logger.d("EVENT_MESSAGE ${it.map { it.toString() }}")
                 }
-
                 connect()
             }
 
     }
 
-    private var marker = Marker()
+    private fun checkState(marker: Marker, deviceToken: String) {
+        if (lastTimeStamp.containsKey(deviceToken)) {
+            if (System.currentTimeMillis() - lastTimeStamp[deviceToken]!! > 60000) {
+                marker.alpha = 0.5f
+            }
+        } else {
+            marker.alpha = 1f
+        }
+        lastTimeStamp[deviceToken] = System.currentTimeMillis()
+    }
 
     private fun handleLocation(locationResponse: LocationResponse) {
         locationResponse.sender?.username?.let { fromUserName ->
@@ -480,31 +521,42 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
             if (latLng?.latitude != null && latLng.longitude != null) {
                 val deviceToken = locationResponse.sender.deviceToken
+                if (deviceToken.isNullOrEmpty()) return@let
 
-                markerView = LayoutInflater.from(this)
-                    .inflate(layoutId, this.root_view, false)
-                if (layoutId == R.layout.view_marker) {
-                    markerView.findViewById<TextView>(R.id.name).text = fromUserName
-                } else {
-                    if (deviceToken != null) {
-                        setImage(markerView.findViewById(R.id.iv_image), deviceToken)
-                    }
+
+                Logger.d("zzz ${this.hashCode()}")
+                val marker =
+                    markerHolders.find { it.uuid == deviceToken }?.marker
+                        ?: Marker().also {
+                            val markerView = LayoutInflater.from(this)
+                                .inflate(R.layout.view_marker, this.root_view, false)
+                                .apply {
+                                    findViewById<TextView>(R.id.name).text = fromUserName
+                                }
+
+                            val imageMarkerView = LayoutInflater.from(this)
+                                .inflate(R.layout.view_round_marker, root_view, false)
+                                .apply {
+                                    setImage(findViewById(R.id.iv_image), deviceToken.orEmpty())
+                                }
+
+                            markerHolders.add(
+                                MarkerHolder(
+                                    deviceToken,
+                                    it,
+                                    markerView,
+                                    imageMarkerView
+                                )
+                            )
+                            it.icon = OverlayImage.fromView(markerView)
+                        }
+
+                marker.run {
+                    checkState(this, deviceToken)
+                    position = LatLng(latLng.latitude, latLng.longitude)
+                    map = naverMap
                 }
 
-                if (lastTimeStamp.containsKey(deviceToken)) {
-                    if (System.currentTimeMillis() - lastTimeStamp[deviceToken]!! > 60000) {
-                        marker.alpha = 0.5f
-                    }
-                } else {
-                    marker.alpha = 1f
-                }
-                lastTimeStamp[deviceToken] = System.currentTimeMillis()
-
-                marker =
-                    markerMap[deviceToken] ?: Marker().also { markerMap[deviceToken] = it }
-                marker.icon = OverlayImage.fromView(markerView)
-                marker.position = LatLng(latLng.latitude, latLng.longitude)
-                marker.map = naverMap
             }
         }
     }
@@ -586,6 +638,6 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         private const val LOCATION_MESSAGE = "location"
 
         fun getIntent(context: Context) =
-            Intent(context, MeetDetailActivity::class.java)
+            Intent(context, MeetDetailActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
     }
 }
