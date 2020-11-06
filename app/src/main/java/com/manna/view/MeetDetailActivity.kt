@@ -100,7 +100,7 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         runOnUiThread {
             val message = args.getOrNull(0)
 
-            val socketResponse = Gson().fromJson(message.toString(), SocketResponse::class.java)
+            val socketResponse = Gson().fromJson(message.toString(), LocationResponse::class.java)
             Logger.d("socketResponse: $socketResponse")
 
             handleLocation(socketResponse)
@@ -459,12 +459,12 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private var marker = Marker()
-    private fun handleLocation(socketResponse: SocketResponse) {
-        socketResponse.sender?.username?.let { fromUserName ->
-            val latLng = socketResponse.latLng
+    private fun handleLocation(locationResponse: LocationResponse) {
+        locationResponse.sender?.username?.let { fromUserName ->
+            val latLng = locationResponse.latLng
             Logger.d("locate: ${latLng?.latitude} ${latLng?.longitude}")
             if (latLng?.latitude != null && latLng.longitude != null) {
-                val deviceToken = socketResponse.sender.deviceToken
+                val deviceToken = locationResponse.sender.deviceToken
 
                 markerView = LayoutInflater.from(this)
                     .inflate(layoutId, this.root_view, false)

@@ -14,9 +14,9 @@ import androidx.databinding.library.baseAdapters.BR
 import com.google.android.gms.location.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.gson.JsonObject
+import com.manna.LocationResponse
 import com.manna.Logger
 import com.manna.R
-import com.manna.SocketResponse
 import com.manna.common.BaseActivity
 import com.manna.common.BaseRecyclerViewAdapter
 import com.manna.common.BaseRecyclerViewHolder
@@ -287,9 +287,9 @@ class SocketIOTestActivity : BaseActivity<ActivityWebsocketBinding>(R.layout.act
             }
         }
 
-    private fun handleLocation(socketResponse: SocketResponse) {
-        socketResponse.sender?.username?.let { fromUserName ->
-            val latLng = socketResponse.latLng
+    private fun handleLocation(locationResponse: LocationResponse) {
+        locationResponse.sender?.username?.let { fromUserName ->
+            val latLng = locationResponse.latLng
 
             Logger.d("locate: ${latLng?.latitude} ${latLng?.longitude}")
             if (latLng?.latitude != null && latLng.longitude != null) {

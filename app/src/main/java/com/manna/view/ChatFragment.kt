@@ -15,8 +15,10 @@ import com.google.gson.Gson
 import com.manna.ChatResponse
 import com.manna.Logger
 import com.manna.R
+import com.manna.UserHolder
 import com.manna.databinding.FragmentChatBinding
 import com.manna.databinding.ItemChatBinding
+import com.manna.databinding.ItemMyChatBinding
 import com.manna.ext.HeightProvider
 import com.manna.ext.ViewUtil
 import io.socket.client.IO
@@ -25,10 +27,12 @@ import io.socket.client.Socket
 import io.socket.emitter.Emitter
 import kotlinx.android.synthetic.main.activity_meet_detail.*
 import java.net.URI
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class ChatAdapter :
-    ListAdapter<ChatResponse, ChatViewHolder>(
+    ListAdapter<ChatResponse, ChatAdapterViewHolder>(
         object : DiffUtil.ItemCallback<ChatResponse>() {
             override fun areItemsTheSame(oldItem: ChatResponse, newItem: ChatResponse): Boolean =
                 oldItem.message?.createTimestamp == newItem.message?.createTimestamp
@@ -39,23 +43,90 @@ class ChatAdapter :
 
         }) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatViewHolder =
-        ChatViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.item_chat, parent, false)
-        )
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatAdapterViewHolder =
+        when (viewType) {
+            CHAT -> ChatAdapterViewHolder.ChatViewHolder(
+                LayoutInflater.from(parent.context).inflate(R.layout.item_chat, parent, false)
+            )
+            MY_CHAT -> ChatAdapterViewHolder.MyChatViewHolder(
+                LayoutInflater.from(parent.context).inflate(R.layout.item_my_chat, parent, false)
+            )
+            else -> error("Invalid viewType")
+        }
 
-    override fun onBindViewHolder(holder: ChatViewHolder, position: Int) {
-        holder.bind(currentList[position])
+
+    override fun onBindViewHolder(holder: ChatAdapterViewHolder, position: Int) {
+        when (holder) {
+            is ChatAdapterViewHolder.ChatViewHolder -> holder.bind(currentList[position])
+            is ChatAdapterViewHolder.MyChatViewHolder -> holder.bind(currentList[position])
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return when (currentList[position].sender?.deviceToken) {
+            UserHolder.userResponse?.deviceId -> MY_CHAT
+            else -> CHAT
+        }
+    }
+
+    companion object {
+        private const val CHAT = 0
+        private const val MY_CHAT = 1
     }
 }
 
 
-class ChatViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+sealed class ChatAdapterViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-    private val binding = DataBindingUtil.bind<ItemChatBinding>(itemView)!!
+    class ChatViewHolder(view: View) : ChatAdapterViewHolder(view) {
 
-    fun bind(item: ChatResponse) {
-        binding.message.text = item.message?.message.orEmpty()
+        private val binding = DataBindingUtil.bind<ItemChatBinding>(itemView)!!
+
+        fun bind(item: ChatResponse) {
+
+            Logger.d("${item.type}")
+            when (item.type) {
+                ChatResponse.Type.CHAT -> {
+                    binding.message.text = item.message?.message.orEmpty()
+                    binding.name.text = item.sender?.username.orEmpty()
+
+                    item.message?.createTimestamp?.let {
+                        binding.date.text =
+                            SimpleDateFormat(
+                                "h:mm",
+                                Locale.KOREA
+                            ).format(item.message?.createTimestamp)
+                    }
+                }
+                ChatResponse.Type.JOIN, ChatResponse.Type.LEAVE -> {
+
+                }
+            }
+        }
+    }
+
+    class MyChatViewHolder(view: View) : ChatAdapterViewHolder(view) {
+        private val binding = DataBindingUtil.bind<ItemMyChatBinding>(itemView)!!
+
+        fun bind(item: ChatResponse) {
+            when (item.type) {
+                ChatResponse.Type.CHAT -> {
+                    binding.message.text = item.message?.message.orEmpty()
+
+                    item.message?.createTimestamp?.let {
+                        binding.date.text =
+                            SimpleDateFormat(
+                                "h:mm",
+                                Locale.KOREA
+                            ).format(item.message?.createTimestamp)
+                    }
+                }
+                ChatResponse.Type.JOIN, ChatResponse.Type.LEAVE -> {
+
+                }
+            }
+
+        }
     }
 }
 
@@ -75,9 +146,12 @@ class ChatFragment : Fragment() {
     private val onChatReceiver = Emitter.Listener { args ->
         activity?.runOnUiThread {
             val response = args.getOrNull(0)
+
             val chatResponse = Gson().fromJson(response.toString(), ChatResponse::class.java)
             Logger.d("chatResponse: $chatResponse")
-            chatAdapter.submitList(chatAdapter.currentList + chatResponse)
+            if (chatResponse.type == ChatResponse.Type.CHAT) {
+                chatAdapter.submitList(chatAdapter.currentList + chatResponse)
+            }
         }
     }
 
@@ -102,7 +176,11 @@ class ChatFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.ddaBong.setOnClickListener {
-            chatSocket?.emit(CHAT_MESSAGE, binding.inputChat.text.toString())
+            val chat = binding.inputChat.text.toString()
+            if (chat.isNotEmpty()) {
+                chatSocket?.emit(CHAT_MESSAGE, chat)
+                binding.inputChat.text.clear()
+            }
         }
 
         binding.chatView.run {
@@ -171,7 +249,8 @@ class ChatFragment : Fragment() {
         if (chatSocket?.connected() == true) return
 
         val options = IO.Options()
-        options.query = "mannaID=96f35135-390f-496c-af00-cdb3a4104550&deviceToken=f606564d8371e455"
+        options.query =
+            "mannaID=96f35135-390f-496c-af00-cdb3a4104550&deviceToken=f606564d8371e455"
 
         val chatManager = Manager(URI("https://manna.duckdns.org:19999"), options)
 
