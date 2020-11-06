@@ -1,26 +1,83 @@
 package com.manna.view
 
-import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.ViewModel
-import com.manna.data.source.repo.AddressRepository
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import com.manna.Logger
+import com.manna.common.BaseViewModel
+import com.manna.ext.plusAssign
+import com.manna.network.api.BingApi
+import com.naver.maps.geometry.LatLng
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
-class MeetDetailViewModel @ViewModelInject constructor(private val repository: AddressRepository) :
-    ViewModel() {
+class MeetDetailViewModel @ViewModelInject constructor(private val repository: BingApi) :
+    BaseViewModel() {
+
+    private val _drawWayPoints = MutableLiveData<List<WayPoint>>()
+    val drawWayPoints: LiveData<List<WayPoint>> get() = _drawWayPoints
+
+    val remainValue = MutableLiveData<Pair<User, Pair<Double?, Int?>>>()
+
+    fun findRoute(user: User, startPoint: WayPoint, endPoint: WayPoint) {
+        compositeDisposable += repository
+            .getRoute(
+                startLatLng = startPoint.getPoint(),
+                endLatLng = endPoint.getPoint()
+            )
+            .subscribeOn(Schedulers.io())
+            .map { root ->
+                val items =
+                    root.resourceSets?.first()?.resources?.first()?.routeLegs?.first()?.itineraryItems
+
+                val paths =
+                    root.resourceSets?.first()?.resources?.first()?.routePath?.line?.coordinates
+
+                val points = mutableListOf<WayPoint>()
+
+                val remainDistance = root.resourceSets?.first()?.resources?.first()?.routeLegs?.first()?.travelDistance
+
+                val remainTime = root.resourceSets?.first()?.resources?.first()?.routeLegs?.first()?.travelDuration
+
+                val remainValue = user to (remainDistance to remainTime)
+                this.remainValue.postValue(remainValue)
+
+                paths?.forEach { path ->
+
+                    if (path.size > 1) {
+                        points.add(WayPoint(LatLng(path[0], path[1]), ""))
+                    }
+                }
 
 
-    fun getPlaceDetail() {
-//        repository.getAddress(37.5129949, 127.1005435)
-//            .subscribeOn(Schedulers.io())
-//            .observeOn(AndroidSchedulers.mainThread())
-//            .subscribe({
-//                Log.d("TEST", "$it")
-//            }, {
-//                Log.d("TEST", "$it")
-//            })
+                val titles = mutableListOf<String>()
+
+                items?.forEach {
+                    val mode = it.details?.first()?.mode
+                    val title = it.instruction?.text
+
+                    if (!title.isNullOrEmpty()) {
+                        titles.add(title)
+                    }
+                    val childTitles = it.childItineraryItems?.mapNotNull {
+                        it.instruction?.text
+                    }
+                    if (childTitles != null) {
+                        titles.addAll(childTitles)
+                    }
+
+                    if (mode == "Transit") {
+                        Logger.d("$it")
+                    }
+                }
+
+                points to titles
+            }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ (list, titles) ->
+                _drawWayPoints.value = list
+            }, {
+                Logger.d("$it")
+            })
     }
-
-
 }

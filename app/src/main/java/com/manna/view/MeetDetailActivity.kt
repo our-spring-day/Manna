@@ -3,20 +3,25 @@ package com.manna.view
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.Point
 import android.graphics.PointF
 import android.location.Location
 import android.os.Bundle
+import android.os.Handler
 import android.os.Looper
-import android.util.Log
+import android.util.DisplayMetrics
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.google.android.gms.location.*
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
+import com.google.android.material.tabs.TabLayout
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.manna.CircleImageView
@@ -27,17 +32,17 @@ import com.manna.ext.ViewUtil
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
 import com.naver.maps.map.overlay.Marker
+import com.naver.maps.map.overlay.MultipartPathOverlay
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
 import dagger.hilt.android.AndroidEntryPoint
+import io.socket.client.IO
+import io.socket.client.Manager
+import io.socket.client.Socket
+import io.socket.emitter.Emitter
 import kotlinx.android.synthetic.main.activity_meet_detail.*
-import org.java_websocket.client.DefaultSSLWebSocketClientFactory
-import org.java_websocket.client.WebSocketClient
-import org.java_websocket.handshake.ServerHandshake
 import java.net.URI
-import java.net.URISyntaxException
 import java.util.*
-import javax.net.ssl.SSLContext
 import kotlin.math.sqrt
 
 enum class WayMode(val type: String) {
@@ -58,7 +63,7 @@ data class WayPoint(
 class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var locationSource: FusedLocationSource
     private lateinit var naverMap: NaverMap
-    private lateinit var webSocketClient: WebSocketClient
+
     private val markerMap: HashMap<String?, Marker> = hashMapOf()
     private var fusedLocationClient: FusedLocationProviderClient? = null
     private val locationRequest by lazy {
@@ -71,6 +76,9 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private var myLatLng = LatLng(0.0, 0.0)
     private val lastTimeStamp: HashMap<String?, Long> = hashMapOf()
 
+    private val viewModel by viewModels<MeetDetailViewModel>()
+    private lateinit var locationSocket: Socket
+
     private val locationCallback: LocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
             super.onLocationResult(locationResult)
@@ -81,16 +89,34 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                     addProperty("latitude", it.latitude)
                     addProperty("longitude", it.longitude)
                 }
-                Logger.d("$message")
-                try {
-                    webSocketClient.send(message.toString())
-                } catch (e: Exception) {
-
+                if (locationSocket.connected()) {
+                    Logger.d("$message")
+                    locationSocket.emit("location", message)
                 }
-
             }
         }
     }
+
+    private val onLocationReceiver = Emitter.Listener { args ->
+        runOnUiThread {
+            val message = args.getOrNull(0)
+
+            val socketResponse = Gson().fromJson(message.toString(), SocketResponse::class.java)
+            Logger.d("socketResponse: $socketResponse")
+
+            handleLocation(socketResponse)
+        }
+    }
+
+    private val onLocationConnectReceiver = Emitter.Listener { args ->
+        runOnUiThread {
+            Logger.d("${args.map { it.toString() }}")
+        }
+    }
+
+    lateinit var sheetCallback: BottomSheetCallback
+
+    fun resetBottomSheet(offset: Float) = sheetCallback.onSlide(bottom_sheet, offset)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -111,11 +137,29 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             onBackPressed()
         }
 
+        val badge = tab_bottom.getTabAt(0)?.orCreateBadge
+        badge?.number = 2
+
+        tab_bottom.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+            }
+
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                when (tab?.position) {
+
+                }
+            }
+
+        })
         tab_bottom.setupWithViewPager(view_pager)
 
+        val chatFragment = ChatFragment()
         view_pager.run {
             adapter = ViewPagerAdapter(supportFragmentManager).apply {
-                addFragment(RankingFragment())
+                addFragment(chatFragment)
                 addFragment(RankingFragment())
                 addFragment(RankingFragment())
                 isSaveEnabled = false
@@ -136,9 +180,87 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
 
+//                markerMap[user.deviceToken]?.let {
+//                    viewModel.findRoute(
+//                        user = user,
+//                        startPoint = WayPoint(it.position, ""),
+//                        endPoint = WayPoint(LatLng(37.475370, 126.980438), "")
+//                    )
+//                    moveLocation(it)
+//                }
+
         val builder: LocationSettingsRequest.Builder = LocationSettingsRequest.Builder()
         builder.addLocationRequest(locationRequest)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
+        viewModel.run {
+            drawWayPoints.observe(this@MeetDetailActivity, androidx.lifecycle.Observer {
+                drawLine(naverMap, it.map { it.point })
+            })
+            remainValue.observe(
+                this@MeetDetailActivity,
+                androidx.lifecycle.Observer { (user: User, remainValue) ->
+                    Logger.d("$user")
+                    Logger.d("$remainValue")
+
+                    val remainDistance = remainValue.first
+                    val remainTime = remainValue.second
+                    user.remainDistance = remainDistance
+                    user.remainTime = remainTime
+//                meetDetailAdapter.refreshItem(user)
+                })
+        }
+
+        BottomSheetBehavior.from(bottom_sheet)
+            .also {
+                sheetCallback = object : BottomSheetCallback() {
+                    override fun onStateChanged(view: View, newState: Int) {
+
+                    }
+
+                    override fun onSlide(view: View, slideOffset: Float) {
+                        chatFragment.inputViewTransY(getChatInputY(view).toInt())
+                    }
+                }
+                it.addBottomSheetCallback(sheetCallback)
+                Handler().postDelayed({
+                    sheetCallback.onSlide(bottom_sheet, 0f)
+                }, 50)
+            }
+
+
+
+        bottom_sheet.maxHeight =
+            getBottomSheetFullHeight()
+    }
+
+    private fun getChatInputY(rootView: View) =
+        rootView.height - rootView.y + getBottomSheetTopMargin()
+
+    private fun getBottomSheetTopMargin() = (ViewUtil.getStatusBarHeight(this) +
+            ViewUtil.convertDpToPixel(this, 95f)).toInt()
+
+    private fun getBottomSheetFullHeight() =
+        (getWindowHeight() - getBottomSheetTopMargin())
+
+    private fun getWindowHeight(): Int {
+        val displayMetrics = DisplayMetrics()
+        windowManager?.defaultDisplay?.getMetrics(displayMetrics)
+        return displayMetrics.heightPixels
+    }
+
+    private fun drawLine(naverMap: NaverMap, points: List<LatLng>) {
+        val multipartPath = MultipartPathOverlay()
+
+        multipartPath.coordParts = listOf(points)
+
+        multipartPath.colorParts = listOf(
+            MultipartPathOverlay.ColorPart(
+                Color.RED, Color.WHITE, Color.GRAY, Color.LTGRAY
+            )
+        )
+
+        multipartPath.map = naverMap
     }
 
     override fun onRequestPermissionsResult(
@@ -292,65 +414,28 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun connect() {
-        val url =
-            "ws://ec2-54-180-125-3.ap-northeast-2.compute.amazonaws.com:40008/ws?token=aed64e8da3a07df4"
-        val uri = try {
-            URI(url)
-        } catch (e: URISyntaxException) {
-            Log.e(TAG, e.message)
-            return
-        }
-        webSocketClient = object : WebSocketClient(uri) {
-            override fun onOpen(handshakedata: ServerHandshake) {
-                Log.e(TAG, "Connect")
-            }
+        val options = IO.Options()
+        options.query = "mannaID=96f35135-390f-496c-af00-cdb3a4104550&deviceToken=f606564d8371e455"
 
-            override fun onMessage(message: String) {
-                Log.e(TAG, "Message: $message")
-                runOnUiThread {
+        val manager = Manager(URI("https://manna.duckdns.org:19999"), options)
+        locationSocket =
+            manager.socket("/location")
+        locationSocket.on(LOCATION_CONNECT, onLocationConnectReceiver)
+        locationSocket.on(LOCATION_MESSAGE, onLocationReceiver)
 
-                    val socketResponse = Gson().fromJson(message, SocketResponse::class.java)
-                    Logger.d("socketResponse: $socketResponse")
-                    if (socketResponse.sender?.username == "이연재") {
-                        Toast.makeText(
-                            applicationContext,
-                            socketResponse.latLng.toString(),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-
-                    when (socketResponse.type) {
-                        SocketResponse.Type.LOCATION -> {
-                            handleLocation(socketResponse)
-                        }
-                        SocketResponse.Type.JOIN -> {
-//                            routeAdapter.add("${socketResponse.sender?.username}님이 들어왔습니다.")
-                        }
-                        SocketResponse.Type.LEAVE -> {
-//                            routeAdapter.add("${socketResponse.sender?.username}님이 나갔습니다.")
-                        }
-                    }
-                }
-            }
-
-            override fun onClose(code: Int, reason: String, remote: Boolean) {
-                Log.e(TAG, "Disconnect")
-            }
-
-            override fun onError(ex: java.lang.Exception) {
-                Log.e(TAG, "Error: " + ex.message)
-            }
-        }
-        if (url.indexOf("wss") == 0) {
-            try {
-                val sslContext: SSLContext = SSLContext.getDefault()
-                webSocketClient.setWebSocketFactory(DefaultSSLWebSocketClientFactory(sslContext))
-            } catch (e: java.lang.Exception) {
-                e.printStackTrace()
-            }
+        locationSocket.on(Socket.EVENT_CONNECT) {
+            Logger.d("EVENT_CONNECT ${it.map { it.toString() }}")
         }
 
-        webSocketClient.connect()
+        locationSocket.on(Socket.EVENT_DISCONNECT) {
+            Logger.d("EVENT_DISCONNECT ${it.map { it.toString() }}")
+        }
+
+        locationSocket.on(Socket.EVENT_MESSAGE) {
+            Logger.d("EVENT_MESSAGE ${it.map { it.toString() }}")
+        }
+
+        locationSocket.connect()
     }
 
     private var marker = Marker()
@@ -379,7 +464,7 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
 
                 if (lastTimeStamp.containsKey(deviceToken)) {
-                    if(System.currentTimeMillis() - lastTimeStamp[deviceToken]!! > 60000){
+                    if (System.currentTimeMillis() - lastTimeStamp[deviceToken]!! > 60000) {
                         marker.alpha = 0.5f
                     }
                 } else {
@@ -476,197 +561,14 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     companion object {
-        private const val TAG = "MeetDetailActivity:"
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
         private const val UPDATE_INTERVAL_MS = 1000L
         private const val FASTEST_UPDATE_INTERVAL_MS = 1000L
+
+        private const val LOCATION_CONNECT = "locationConnect"
+        private const val LOCATION_MESSAGE = "location"
 
         fun getIntent(context: Context) =
             Intent(context, MeetDetailActivity::class.java)
     }
 }
-
-
-//class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
-//
-//    private val viewModel: MeetDetailViewModel by viewModels()
-//
-//    @SuppressLint("CheckResult")
-//    @UiThread
-//    override fun onMapReady(naverMap: NaverMap) {
-//
-//        val endPoint = WayPoint(LatLng(37.492642, 127.026208), "End")
-//
-//        ApiModule.provideBingApi()
-//            .getRoute(
-//                startLatLng = "37.482087,126.976742",
-//                endLatLng = endPoint.getPoint()
-//            )
-//            .subscribeOn(Schedulers.io())
-//            .map { root ->
-//                val items =
-//                    root.resourceSets?.first()?.resources?.first()?.routeLegs?.first()?.itineraryItems
-//
-//                val points = mutableListOf<WayPoint>()
-//
-//                items?.forEach {
-//                    val mode = it.details?.first()?.mode
-//
-//                    it.maneuverPoint?.coordinates?.let { point ->
-//                        points.add(WayPoint(LatLng(point[0], point[1]), mode.orEmpty()))
-//                    }
-//                }
-//
-//                points.add(endPoint)
-//                points
-//            }
-//            .observeOn(AndroidSchedulers.mainThread())
-//            .subscribe({ list ->
-//
-//                val sources = list.mapIndexedNotNull { index, wayPoint ->
-//                    when (wayPoint.mode) {
-//                        "Transit" -> {
-//                            ApiModule.provideBingApi()
-//                                .getRouteDriving(
-//                                    "${wayPoint.point.latitude},${wayPoint.point.longitude}",
-//                                    "${list.get(index + 1).point.latitude},${list.get(index + 1).point.longitude}"
-//                                )
-//                                .subscribeOn(Schedulers.io())
-//                                .map { root ->
-//                                    val items =
-//                                        root.resourceSets?.first()?.resources?.first()?.routeLegs?.first()?.itineraryItems
-//
-//                                    val points = mutableListOf<WayPoint>()
-////                                    points.add(wayPoint)
-//
-//                                    items?.forEach {
-//                                        val mode = it.details?.first()?.mode
-//
-//                                        it.maneuverPoint?.coordinates?.let { point ->
-//                                            points.add(
-//                                                WayPoint(
-//                                                    LatLng(point[0], point[1]),
-//                                                    mode.orEmpty()
-//                                                )
-//                                            )
-//                                        }
-//                                    }
-//
-//                                    points
-//                                }
-//                                .observeOn(AndroidSchedulers.mainThread())
-//                        }
-//                        "Walking" -> {
-//                            ApiModule.provideBingApi()
-//                                .getRouteWalking(
-//                                    "${wayPoint.point.latitude},${wayPoint.point.longitude}",
-//                                    "${list.get(index + 1).point.latitude},${list.get(index + 1).point.longitude}"
-//                                )
-//                                .subscribeOn(Schedulers.io())
-//                                .map { root ->
-//                                    val items =
-//                                        root.resourceSets?.first()?.resources?.first()?.routeLegs?.first()?.itineraryItems
-//
-//                                    val points = mutableListOf<WayPoint>()
-////                                    points.add(wayPoint)
-//
-//                                    items?.forEach {
-//                                        val mode = it.details?.first()?.mode
-//
-//                                        it.maneuverPoint?.coordinates?.let { point ->
-//                                            points.add(
-//                                                WayPoint(
-//                                                    LatLng(point[0], point[1]),
-//                                                    mode.orEmpty()
-//                                                )
-//                                            )
-//                                        }
-//                                    }
-//
-//                                    points
-//                                }
-//                                .observeOn(AndroidSchedulers.mainThread())
-//                        }
-//                        else -> {
-//                            null
-//                        }
-//                    }
-//                }
-//
-//                Observable.zip(sources) {
-//                    it
-//                }
-//                    .subscribeOn(Schedulers.io())
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .subscribe({ array ->
-//                        val list = array.flatMap {
-//                            it as List<WayPoint>
-//                        }.toMutableList()
-//                        list.add(endPoint)
-//
-//                        list.forEach {
-//                            Logger.d("$it")
-//                        }
-//
-//                        drawLine(naverMap, list.map { it.point })
-//
-//                        val cameraUpdate = CameraUpdate.scrollTo(list.first().point)
-//                        naverMap.moveCamera(cameraUpdate)
-//
-//                    }, {
-//                        Logger.d("$it")
-//                    })
-//
-//            }, {
-//                Logger.d("$it")
-//            })
-//    }
-//
-//    private fun drawLine(naverMap: NaverMap, points: List<LatLng>) {
-//        val multipartPath = MultipartPathOverlay()
-//
-//        multipartPath.coordParts = listOf(
-//            points
-////            listOf(
-////                LatLng(37.5744287, 126.982625),
-////                LatLng(37.57152, 126.97714),
-////                LatLng(37.56607, 126.98268)
-////            ),
-////            listOf(
-////                LatLng(37.56607, 126.98268),
-////                LatLng(37.55845, 126.98207),
-////                LatLng(37.55855, 126.97822)
-////            ),
-////            listOf(
-////                LatLng(37.56607, 126.98268),
-////                LatLng(37.56345, 126.97607),
-////                LatLng(37.56755, 126.96722)
-////            ),
-////            listOf(
-////                LatLng(37.56607, 126.98268),
-////                LatLng(37.56445, 126.99707),
-////                LatLng(37.55855, 126.99822)
-////            )
-//        )
-//
-//        multipartPath.colorParts = listOf(
-//            MultipartPathOverlay.ColorPart(
-//                Color.RED, Color.WHITE, Color.GRAY, Color.LTGRAY
-//            )
-////            ,
-////            MultipartPathOverlay.ColorPart(
-////                Color.GREEN, Color.WHITE, Color.DKGRAY, Color.LTGRAY
-////            ),
-////            MultipartPathOverlay.ColorPart(
-////                Color.BLUE, Color.WHITE, Color.DKGRAY, Color.LTGRAY
-////            ),
-////            MultipartPathOverlay.ColorPart(
-////                Color.BLACK, Color.WHITE, Color.DKGRAY, Color.LTGRAY
-////            )
-//        )
-//
-//        multipartPath.map = naverMap
-//
-//    }
-//
-//}

@@ -20,17 +20,19 @@
         <activity android:name=".SettingActivity" />
         <activity android:name=".view.search.SearchActivity" />
         <activity android:name=".view.search.RouteActivity" />
-        <activity android:name=".HomeActivity"/>
-        <activity android:name=".IntroActivity">
+        <activity android:name=".HomeActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".IntroActivity">
+
+        </activity>
 
         <activity android:name=".picker.ImageDetailActivity" />
-        <activity android:name=".view.WebSocketTestActivity" />
+        <activity android:name=".view.SocketIOTestActivity" />
 
     </application>
 </manifest>
