@@ -89,7 +89,6 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                     addProperty("latitude", it.latitude)
                     addProperty("longitude", it.longitude)
                 }
-                Logger.d("${MannaApp.locationSocket?.connected()}")
                 if (MannaApp.locationSocket?.connected() == true) {
                     Logger.d("$message")
                     MannaApp.locationSocket?.emit("location", message)
@@ -209,14 +208,12 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         viewModel.run {
-            drawWayPoints.observe(this@MeetDetailActivity, androidx.lifecycle.Observer {
+            drawWayPoints.observe(this@MeetDetailActivity, {
                 drawLine(naverMap, it.map { it.point })
             })
             remainValue.observe(
-                this@MeetDetailActivity,
-                androidx.lifecycle.Observer { (user: User, remainValue) ->
-                    Logger.d("$user")
-                    Logger.d("$remainValue")
+                this@MeetDetailActivity, { (user: User, remainValue) ->
+
 
                     val remainDistance = remainValue.first
                     val remainTime = remainValue.second
@@ -445,7 +442,6 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun connect() {
-        Logger.d("locationSocket?.connected() ${MannaApp.locationSocket?.connected()}")
         if (MannaApp.locationSocket?.connected() == true) return
 
         val options = IO.Options()
@@ -515,43 +511,19 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun setImage(imageView: ImageView, deviceToken: String) {
         kotlin.runCatching {
-            when (deviceToken) {
-                "aed64e8da3a07df4" -> Glide.with(this).load(R.drawable.test_2)
-                    .into(imageView)
-                "f606564d8371e455" -> Glide.with(this).load(R.drawable.image_3)
-                    .into(imageView)
-                "8F630481-548D-4B8A-B501-FFD90ADFDBA4" -> Glide.with(this)
-                    .load(R.drawable.image_2)
-                    .into(
-                        imageView
-                    )
-                "0954A791-B5BE-4B56-8F25-07554A4D6684" -> Glide.with(this)
-                    .load(R.drawable.image_4)
-                    .into(
-                        imageView
-                    )
-                "C65CDF73-8C04-4F76-A26A-AE3400FEC14B" -> Glide.with(this)
-                    .load(R.drawable.image_6)
-                    .into(
-                        imageView
-                    )
-                "69751764-A224-4923-9844-C61646743D10" -> Glide.with(this)
-                    .load(R.drawable.image_1)
-                    .into(
-                        imageView
-                    )
-                "2872483D-9E7B-46D1-A2B8-44832FE3F1AD" -> Glide.with(this)
-                    .load(R.drawable.image_5)
-                    .into(
-                        imageView
-                    )
-                "8D44FAA1-2F87-4702-9DAC-B8B15D949880" -> Glide.with(this)
-                    .load(R.drawable.image_7)
-                    .into(
-                        imageView
-                    )
-                else -> Glide.with(this).load(R.drawable.test_1).into(imageView)
+            val imageResId = when (deviceToken) {
+                "aed64e8da3a07df4" -> R.drawable.test_2
+                "f606564d8371e455" -> R.drawable.image_3
+                "8F630481-548D-4B8A-B501-FFD90ADFDBA4" -> R.drawable.image_2
+                "0954A791-B5BE-4B56-8F25-07554A4D6684" -> R.drawable.image_4
+                "C65CDF73-8C04-4F76-A26A-AE3400FEC14B" -> R.drawable.image_6
+                "69751764-A224-4923-9844-C61646743D10" -> R.drawable.image_1
+                "2872483D-9E7B-46D1-A2B8-44832FE3F1AD" -> R.drawable.image_5
+                "8D44FAA1-2F87-4702-9DAC-B8B15D949880" -> R.drawable.image_7
+                else -> R.drawable.test_1
             }
+
+            Glide.with(this).load(imageResId).into(imageView)
         }
     }
 
