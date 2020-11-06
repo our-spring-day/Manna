@@ -211,14 +211,7 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
 
-//                markerMap[user.deviceToken]?.let {
-//                    viewModel.findRoute(
-//                        user = user,
-//                        startPoint = WayPoint(it.position, ""),
-//                        endPoint = WayPoint(LatLng(37.475370, 126.980438), "")
-//                    )
-//                    moveLocation(it)
-//                }
+
 
         val builder: LocationSettingsRequest.Builder = LocationSettingsRequest.Builder()
         builder.addLocationRequest(locationRequest)
@@ -228,13 +221,36 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             drawWayPoints.observe(this@MeetDetailActivity, {
                 drawLine(naverMap, it.map { it.point })
             })
-            remainValue.observe(
-                this@MeetDetailActivity, { (user: User, remainValue) ->
-                    val remainDistance = remainValue.first
-                    val remainTime = remainValue.second
-                    user.remainDistance = remainDistance
-                    user.remainTime = remainTime
-                })
+            remainValue.observe(this@MeetDetailActivity, { (user: User, remainValue) ->
+                val remainDistance = remainValue.first
+                val remainTime = remainValue.second
+                user.remainDistance = remainDistance
+                user.remainTime = remainTime
+
+                val userList = viewModel.userList.value.orEmpty().run {
+                    val index = indexOfFirst { it.deviceToken == user.deviceToken  }
+                    val list = toMutableList()
+                    if (index != -1) {
+                        list[index] = user
+                    } else {
+                        list.add(user)
+                    }
+
+                    list
+                }
+
+                viewModel.submitUserList(userList)
+            })
+            bottomUserItemClickEvent.observe(this@MeetDetailActivity, EventObserver { clickUser ->
+                markerHolders.find { it.uuid == clickUser.deviceToken }?.let {
+                    viewModel.findRoute(
+                        user = clickUser,
+                        startPoint = WayPoint(it.marker.position, ""),
+                        endPoint = WayPoint(LatLng(37.475370, 126.980438), "")
+                    )
+                    moveLocation(it.marker.position, 13.0)
+                }
+            })
         }
 
         BottomSheetBehavior.from(bottom_sheet)
@@ -275,9 +291,9 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         return displayMetrics.heightPixels
     }
 
-    private fun drawLine(naverMap: NaverMap, points: List<LatLng>) {
-        val multipartPath = MultipartPathOverlay()
+    private val multipartPath = MultipartPathOverlay()
 
+    private fun drawLine(naverMap: NaverMap, points: List<LatLng>) {
         multipartPath.coordParts = listOf(points)
 
         multipartPath.colorParts = listOf(

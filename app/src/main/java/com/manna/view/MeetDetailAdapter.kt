@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.manna.Logger
 import com.manna.R
 import kotlinx.android.synthetic.main.item_round_view.view.*
 
@@ -19,7 +20,7 @@ class MeetDetailAdapter :
                 oldItem.deviceToken == newItem.deviceToken
 
             override fun areContentsTheSame(oldItem: User, newItem: User): Boolean =
-                oldItem == newItem
+                false
         }
     ) {
     private var onClickListener: OnClickListener? = null
@@ -94,9 +95,10 @@ class MeetDetailAdapter :
 
         private fun setRemainValue(item: User) {
             remainValue.isVisible = item.remainDistance != null || item.remainTime != null
+            Logger.d("Ran ${remainValue.isVisible}")
             if (itemViewType == VIEW_TYPE_TEXT) {
                 if (item.remainDistance != null) {
-                    remainValue.text = item.remainDistance.toString()
+                    remainValue.text = String.format("%.1fkm", item.remainDistance)
                 }
             } else {
                 if (item.remainTime != null) {

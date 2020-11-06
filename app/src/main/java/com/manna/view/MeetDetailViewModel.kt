@@ -3,6 +3,7 @@ package com.manna.view
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.manna.Event
 import com.manna.Logger
 import com.manna.common.BaseViewModel
 import com.manna.ext.plusAssign
@@ -20,6 +21,8 @@ class MeetDetailViewModel @ViewModelInject constructor(private val repository: B
     val remainValue = MutableLiveData<Pair<User, Pair<Double?, Int?>>>()
 
     val userList = MutableLiveData<List<User>>()
+
+    val bottomUserItemClickEvent = MutableLiveData<Event<User>>()
 
     fun submitUserList(userList: List<User>) {
         this.userList.value = userList
@@ -53,12 +56,10 @@ class MeetDetailViewModel @ViewModelInject constructor(private val repository: B
                 this.remainValue.postValue(remainValue)
 
                 paths?.forEach { path ->
-
                     if (path.size > 1) {
                         points.add(WayPoint(LatLng(path[0], path[1]), ""))
                     }
                 }
-
 
                 val titles = mutableListOf<String>()
 
