@@ -88,6 +88,9 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private var myLatLng = LatLng(0.0, 0.0)
     private val lastTimeStamp: HashMap<String?, Long> = hashMapOf()
 
+    val latitudeList = arrayListOf<Double>()
+    val longitudeList = arrayListOf<Double>()
+
     private val viewModel by viewModels<MeetDetailViewModel>()
 
     private val locationCallback: LocationCallback = object : LocationCallback() {
@@ -180,34 +183,18 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         btn_location.setOnClickListener {
-            moveLocation(myLatLng, 13.0)
-        }
-
-        val latitudeList = arrayListOf<Double>()
-        val longitudeList = arrayListOf<Double>()
-        btn_mountain.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked) {
-                btn_location.visibility = View.VISIBLE
+            if (btn_mountain.isChecked) {
                 moveLocation(myLatLng, 13.0)
             } else {
-                btn_location.visibility = View.GONE
-                markerHolders.forEach {
-                    latitudeList.add(it.marker.position.latitude)
-                    longitudeList.add(it.marker.position.longitude)
-                }
+                moveLocation()
+            }
+        }
 
-                // TODO : 여기 에러뜬다 런캣칭 제거하고 테스트하자
-                kotlin.runCatching {
-                    val cameraUpdate = CameraUpdate.fitBounds(
-                        LatLngBounds(
-                            LatLng(
-                                Collections.min(latitudeList),
-                                Collections.min(longitudeList)
-                            ), LatLng(Collections.max(latitudeList), Collections.max(longitudeList))
-                        ), 20
-                    )
-                    naverMap.moveCamera(cameraUpdate)
-                }
+        btn_mountain.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                moveLocation(myLatLng, 13.0)
+            } else {
+                moveLocation()
             }
         }
 
@@ -361,8 +348,6 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         naverMap.setOnMapLongClickListener { point, coord ->
-
-            Logger.d("zzz ${this.hashCode()}")
             markerHolders.forEach {
                 it.marker.icon = when (it.marketState) {
                     MarkerState.NORMAL -> {
@@ -538,8 +523,6 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 val deviceToken = locationResponse.sender.deviceToken
                 if (deviceToken.isNullOrEmpty()) return@let
 
-
-                Logger.d("zzz ${this.hashCode()}")
                 val marker =
                     markerHolders.find { it.uuid == deviceToken }?.marker
                         ?: Marker().also {
@@ -614,7 +597,27 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun moveLocation(latLng: LatLng, zoom: Double) {
+        naverMap.locationTrackingMode = LocationTrackingMode.Follow
         val cameraUpdate = CameraUpdate.scrollAndZoomTo(latLng, zoom)
+        naverMap.moveCamera(cameraUpdate)
+    }
+
+    private fun moveLocation() {
+        latitudeList.clear()
+        longitudeList.clear()
+        naverMap.locationTrackingMode = LocationTrackingMode.NoFollow
+        markerHolders.forEach {
+            latitudeList.add(it.marker.position.latitude)
+            longitudeList.add(it.marker.position.longitude)
+        }
+        val cameraUpdate = CameraUpdate.fitBounds(
+            LatLngBounds(
+                LatLng(
+                    Collections.min(latitudeList),
+                    Collections.min(longitudeList)
+                ), LatLng(Collections.max(latitudeList), Collections.max(longitudeList))
+            ), 20
+        )
         naverMap.moveCamera(cameraUpdate)
     }
 
