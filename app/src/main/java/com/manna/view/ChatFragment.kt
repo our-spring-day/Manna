@@ -24,7 +24,7 @@ class ChatFragment : Fragment() {
 
     private lateinit var binding: FragmentChatBinding
     private var keyboardHeight = 0
-    private lateinit var chatSocket: Socket
+    private var chatSocket: Socket? = null
 
     private val onChatConnectReceiver = Emitter.Listener { args ->
         activity?.runOnUiThread {
@@ -40,8 +40,8 @@ class ChatFragment : Fragment() {
     }
 
     override fun onDestroy() {
-        chatSocket.disconnect()
-        chatSocket.off(CHAT_CONNECT, onChatReceiver)
+        chatSocket?.disconnect()
+        chatSocket?.off(CHAT_CONNECT, onChatReceiver)
         super.onDestroy()
     }
 
@@ -60,7 +60,7 @@ class ChatFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.ddaBong.setOnClickListener {
-            chatSocket.emit(CHAT_MESSAGE, binding.inputChat.text.toString())
+            chatSocket?.emit(CHAT_MESSAGE, binding.inputChat.text.toString())
         }
 
         connect()
@@ -120,7 +120,7 @@ class ChatFragment : Fragment() {
     }
 
     private fun connect(){
-        if (::chatSocket.isInitialized && chatSocket.connected()) return
+        if (chatSocket?.connected() == true) return
 
         val options = IO.Options()
         options.query = "mannaID=96f35135-390f-496c-af00-cdb3a4104550&deviceToken=f606564d8371e455"
@@ -151,9 +151,9 @@ class ChatFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
 
-        chatSocket.disconnect()
-        chatSocket.off(CHAT_CONNECT, onChatConnectReceiver)
-        chatSocket.off(CHAT_MESSAGE, onChatReceiver)
+        chatSocket?.disconnect()
+        chatSocket?.off(CHAT_CONNECT, onChatConnectReceiver)
+        chatSocket?.off(CHAT_MESSAGE, onChatReceiver)
     }
 
 
