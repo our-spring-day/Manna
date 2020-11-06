@@ -9,7 +9,6 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
 import androidx.annotation.UiThread
 import androidx.databinding.library.baseAdapters.BR
 import com.google.android.gms.location.*
@@ -18,7 +17,6 @@ import com.google.gson.JsonObject
 import com.manna.Logger
 import com.manna.R
 import com.manna.SocketResponse
-import com.manna.UserHolder
 import com.manna.common.BaseActivity
 import com.manna.common.BaseRecyclerViewAdapter
 import com.manna.common.BaseRecyclerViewHolder
@@ -37,7 +35,6 @@ import io.socket.client.IO
 import io.socket.client.Manager
 import io.socket.client.Socket
 import io.socket.emitter.Emitter
-import io.socket.engineio.client.transports.Polling
 import kotlinx.android.synthetic.main.activity_websocket.*
 import okhttp3.OkHttpClient
 import java.net.URI
@@ -74,15 +71,9 @@ class SocketIOTestActivity : BaseActivity<ActivityWebsocketBinding>(R.layout.act
                         addProperty("longitude", it.longitude)
                     }
 
-
-                    val sendMessage = JsonObject().apply {
-                        add("location", message)
-                    }
-
-
                     if (locationSocket.connected()) {
-                        Logger.d("${it.latitude}, ${it.longitude}")
-                        locationSocket.emit("location", sendMessage)
+                        Logger.d("$message")
+                        locationSocket.emit("location", message)
                     }
                 }
             }
@@ -117,46 +108,26 @@ class SocketIOTestActivity : BaseActivity<ActivityWebsocketBinding>(R.layout.act
 
     private val onLocationReceiver = Emitter.Listener { args ->
         runOnUiThread {
-            Toast.makeText(
-                this@SocketIOTestActivity,
-                args.map { it.toString() }.toString(),
-                Toast.LENGTH_SHORT
-            )
-                .show()
+            Logger.d("${args.map { it.toString() }}")
         }
     }
 
     private val onLocationConnectReceiver = Emitter.Listener { args ->
         runOnUiThread {
-            Toast.makeText(
-                this@SocketIOTestActivity,
-                args.map { it.toString() }.toString(),
-                Toast.LENGTH_SHORT
-            )
-                .show()
+            Logger.d("${args.map { it.toString() }}")
         }
     }
 
     private val onChatConnectReceiver = Emitter.Listener { args ->
         runOnUiThread {
-            Toast.makeText(
-                this@SocketIOTestActivity,
-                args.map { it.toString() }.toString(),
-                Toast.LENGTH_SHORT
-            )
-                .show()
+            Logger.d("${args.map { it.toString() }}")
         }
     }
 
 
     private val onChatReceiver = Emitter.Listener { args ->
         runOnUiThread {
-            Toast.makeText(
-                this@SocketIOTestActivity,
-                args.map { it.toString() }.toString(),
-                Toast.LENGTH_SHORT
-            )
-                .show()
+            Logger.d("${args.map { it.toString() }}")
         }
     }
 
@@ -172,6 +143,11 @@ class SocketIOTestActivity : BaseActivity<ActivityWebsocketBinding>(R.layout.act
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        binding.edtSubmit.setOnClickListener {
+            chatSocket.emit(CHAT_MESSAGE, binding.edtChat.text.toString())
+        }
+
         val myHostnameVerifier = HostnameVerifier { _, _ ->
             return@HostnameVerifier true
         }
@@ -241,9 +217,7 @@ class SocketIOTestActivity : BaseActivity<ActivityWebsocketBinding>(R.layout.act
 
         chatSocket.connect()
 
-        chatSocket.emit("chat", "갓종찬님 안녕하세욘 ^^")
 
-        chatSocket.emit("chat", "방가방가 ^^")
 
         val meetItem = intent.getParcelableExtra<MeetResponseItem>(MEET_ITEM)
 
@@ -345,8 +319,8 @@ class SocketIOTestActivity : BaseActivity<ActivityWebsocketBinding>(R.layout.act
 
     companion object {
         private const val MEET_ITEM = "meet_item"
-        private const val UPDATE_INTERVAL_MS = 5000L
-        private const val FASTEST_UPDATE_INTERVAL_MS = 5000L
+        private const val UPDATE_INTERVAL_MS = 1000L
+        private const val FASTEST_UPDATE_INTERVAL_MS = 1000L
 
         private const val LOCATION_CONNECT = "locationConnect"
         private const val CHAT_CONNECT = "chatConnect"
