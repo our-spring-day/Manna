@@ -63,32 +63,9 @@ class ChatFragment : Fragment() {
             chatSocket.emit(CHAT_MESSAGE, binding.inputChat.text.toString())
         }
 
+        connect()
 
         val behavior = BottomSheetBehavior.from(requireActivity().bottom_sheet)
-
-        val options = IO.Options()
-        options.query = "mannaID=96f35135-390f-496c-af00-cdb3a4104550&deviceToken=f606564d8371e455"
-
-        val chatManager = Manager(URI("https://manna.duckdns.org:19999"), options)
-        chatSocket =
-            chatManager.socket("/chat").apply {
-                on(CHAT_CONNECT, onChatConnectReceiver)
-                on(CHAT_MESSAGE, onChatReceiver)
-
-                on(Socket.EVENT_CONNECT) {
-                    Logger.d("EVENT_CONNECT ${it.map { it.toString() }}")
-                }
-
-                on(Socket.EVENT_DISCONNECT) {
-                    Logger.d("EVENT_DISCONNECT ${it.map { it.toString() }}")
-                }
-
-                on(Socket.EVENT_MESSAGE) {
-                    Logger.d("EVENT_MESSAGE ${it.map { it.toString() }}")
-                }
-
-                connect()
-            }
 
         behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
@@ -140,6 +117,43 @@ class ChatFragment : Fragment() {
                     binding.inputChat.clearFocus()
                 }
             }
+    }
+
+    private fun connect(){
+        if (::chatSocket.isInitialized && chatSocket.connected()) return
+
+        val options = IO.Options()
+        options.query = "mannaID=96f35135-390f-496c-af00-cdb3a4104550&deviceToken=f606564d8371e455"
+
+        val chatManager = Manager(URI("https://manna.duckdns.org:19999"), options)
+
+        chatSocket =
+            chatManager.socket("/chat").apply {
+                on(CHAT_CONNECT, onChatConnectReceiver)
+                on(CHAT_MESSAGE, onChatReceiver)
+
+                on(Socket.EVENT_CONNECT) {
+                    Logger.d("EVENT_CONNECT ${it.map { it.toString() }}")
+                }
+
+                on(Socket.EVENT_DISCONNECT) {
+                    Logger.d("EVENT_DISCONNECT ${it.map { it.toString() }}")
+                }
+
+                on(Socket.EVENT_MESSAGE) {
+                    Logger.d("EVENT_MESSAGE ${it.map { it.toString() }}")
+                }
+
+                connect()
+            }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        chatSocket.disconnect()
+        chatSocket.off(CHAT_CONNECT, onChatConnectReceiver)
+        chatSocket.off(CHAT_MESSAGE, onChatReceiver)
     }
 
 

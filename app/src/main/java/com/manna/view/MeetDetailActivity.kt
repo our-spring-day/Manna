@@ -24,10 +24,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCa
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import com.manna.CircleImageView
-import com.manna.Logger
+import com.manna.*
 import com.manna.R
-import com.manna.SocketResponse
 import com.manna.ext.ViewUtil
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
@@ -76,8 +74,9 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private var myLatLng = LatLng(0.0, 0.0)
     private val lastTimeStamp: HashMap<String?, Long> = hashMapOf()
 
+
+
     private val viewModel by viewModels<MeetDetailViewModel>()
-    private lateinit var locationSocket: Socket
 
     private val locationCallback: LocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
@@ -89,9 +88,10 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                     addProperty("latitude", it.latitude)
                     addProperty("longitude", it.longitude)
                 }
-                if (locationSocket.connected()) {
+                Logger.d("${MannaApp.locationSocket?.connected()}")
+                if (MannaApp.locationSocket?.connected() == true) {
                     Logger.d("$message")
-                    locationSocket.emit("location", message)
+                    MannaApp.locationSocket?.emit("location", message)
                 }
             }
         }
@@ -155,6 +155,7 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
         })
         tab_bottom.setupWithViewPager(view_pager)
+
 
         val chatFragment = ChatFragment()
         view_pager.run {
@@ -304,6 +305,7 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             setLogoMargin(0, 80, 60, 0)
         }
 
+
         connect()
 
         val meetPlaceMarker = Marker().apply {
@@ -413,29 +415,51 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    @SuppressLint("MissingPermission")
+    override fun onResume() {
+        super.onResume()
+
+
+//        fusedLocationClient?.requestLocationUpdates(
+//            locationRequest,
+//            locationCallback,
+//            Looper.myLooper()
+//        )
+    }
+
+    override fun onStop() {
+        super.onStop()
+        fusedLocationClient?.removeLocationUpdates(locationCallback)
+    }
+
     private fun connect() {
+        Logger.d("locationSocket?.connected() ${MannaApp.locationSocket?.connected()}")
+        if (MannaApp.locationSocket?.connected() == true) return
+
         val options = IO.Options()
         options.query = "mannaID=96f35135-390f-496c-af00-cdb3a4104550&deviceToken=f606564d8371e455"
 
         val manager = Manager(URI("https://manna.duckdns.org:19999"), options)
-        locationSocket =
-            manager.socket("/location")
-        locationSocket.on(LOCATION_CONNECT, onLocationConnectReceiver)
-        locationSocket.on(LOCATION_MESSAGE, onLocationReceiver)
+        MannaApp.locationSocket =
+            manager.socket("/location")?.apply {
+                on(LOCATION_CONNECT, onLocationConnectReceiver)
+                on(LOCATION_MESSAGE, onLocationReceiver)
 
-        locationSocket.on(Socket.EVENT_CONNECT) {
-            Logger.d("EVENT_CONNECT ${it.map { it.toString() }}")
-        }
+                on(Socket.EVENT_CONNECT) {
+                    Logger.d("EVENT_CONNECT ${it.map { it.toString() }}")
+                }
 
-        locationSocket.on(Socket.EVENT_DISCONNECT) {
-            Logger.d("EVENT_DISCONNECT ${it.map { it.toString() }}")
-        }
+                on(Socket.EVENT_DISCONNECT) {
+                    Logger.d("EVENT_DISCONNECT ${it.map { it.toString() }}")
+                }
 
-        locationSocket.on(Socket.EVENT_MESSAGE) {
-            Logger.d("EVENT_MESSAGE ${it.map { it.toString() }}")
-        }
+                on(Socket.EVENT_MESSAGE) {
+                    Logger.d("EVENT_MESSAGE ${it.map { it.toString() }}")
+                }
 
-        locationSocket.connect()
+                connect()
+            }
+
     }
 
     private var marker = Marker()
@@ -481,6 +505,7 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun setImage(imageView: CircleImageView, deviceToken: String) {
+        if (isFinishing) return
         when (deviceToken) {
             "aed64e8da3a07df4" -> Glide.with(this).load(R.drawable.test_2).into(imageView)
             "f606564d8371e455" -> Glide.with(this).load(R.drawable.image_3).into(imageView)
@@ -562,8 +587,8 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
-        private const val UPDATE_INTERVAL_MS = 1000L
-        private const val FASTEST_UPDATE_INTERVAL_MS = 1000L
+        private const val UPDATE_INTERVAL_MS = 2000L
+        private const val FASTEST_UPDATE_INTERVAL_MS = 2000L
 
         private const val LOCATION_CONNECT = "locationConnect"
         private const val LOCATION_MESSAGE = "location"
