@@ -12,8 +12,8 @@ data class ChatResponse(
     val type: Type?
 ) {
     enum class Type {
-        @SerializedName("LOCATION")
-        LOCATION,
+        @SerializedName("CHAT")
+        CHAT,
         @SerializedName("JOIN")
         JOIN,
         @SerializedName("LEAVE")
