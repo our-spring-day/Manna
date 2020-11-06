@@ -14,6 +14,7 @@ import android.util.DisplayMetrics
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -24,10 +25,13 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCa
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import com.manna.*
+import com.manna.LocationResponse
+import com.manna.Logger
+import com.manna.MannaApp
 import com.manna.R
 import com.manna.ext.ViewUtil
 import com.naver.maps.geometry.LatLng
+import com.naver.maps.geometry.LatLngBounds
 import com.naver.maps.map.*
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.MultipartPathOverlay
@@ -72,7 +76,7 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     var layoutId = R.layout.view_round_marker
     lateinit var markerView: View
     private var myLatLng = LatLng(0.0, 0.0)
-
+    private val lastTimeStamp: HashMap<String?, Long> = hashMapOf()
 
 
     private val viewModel by viewModels<MeetDetailViewModel>()
@@ -136,9 +140,6 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             onBackPressed()
         }
 
-        val badge = tab_bottom.getTabAt(0)?.orCreateBadge
-        badge?.number = 2
-
         tab_bottom.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabReselected(tab: TabLayout.Tab?) {
             }
@@ -172,11 +173,27 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             moveLocation(myLatLng, 13.0)
         }
 
+        val latitudeList = arrayListOf<Double>()
+        val longitudeList = arrayListOf<Double>()
         btn_mountain.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
                 btn_location.visibility = View.VISIBLE
+                moveLocation(myLatLng, 13.0)
             } else {
                 btn_location.visibility = View.GONE
+                markerMap.forEach {
+                    latitudeList.add(it.value.position.latitude)
+                    longitudeList.add(it.value.position.longitude)
+                }
+                val cameraUpdate = CameraUpdate.fitBounds(
+                    LatLngBounds(
+                        LatLng(
+                            Collections.min(latitudeList),
+                            Collections.min(longitudeList)
+                        ), LatLng(Collections.max(latitudeList), Collections.max(longitudeList))
+                    ), 20
+                )
+                naverMap.moveCamera(cameraUpdate)
             }
         }
 
@@ -194,19 +211,20 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         viewModel.run {
-            drawWayPoints.observe(this@MeetDetailActivity, {
+            drawWayPoints.observe(this@MeetDetailActivity, androidx.lifecycle.Observer {
                 drawLine(naverMap, it.map { it.point })
             })
-            remainValue.observe(this@MeetDetailActivity, { (user: User, remainValue) ->
-                Logger.d("$user")
-                Logger.d("$remainValue")
+            remainValue.observe(
+                this@MeetDetailActivity,
+                androidx.lifecycle.Observer { (user: User, remainValue) ->
+                    Logger.d("$user")
+                    Logger.d("$remainValue")
 
-                val remainDistance = remainValue.first
-                val remainTime = remainValue.second
-                user.remainDistance = remainDistance
-                user.remainTime = remainTime
-//                meetDetailAdapter.refreshItem(user)
-            })
+                    val remainDistance = remainValue.first
+                    val remainTime = remainValue.second
+                    user.remainDistance = remainDistance
+                    user.remainTime = remainTime
+                })
         }
 
         BottomSheetBehavior.from(bottom_sheet)
@@ -299,9 +317,9 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             isScaleBarEnabled = false
             isZoomControlEnabled = false
             logoGravity = Gravity.END
-            setLogoMargin(0, 80, 60, 0)
+            setLogoMargin(0, 0, 0, 0)
         }
-
+        naverMap.setContentPadding(250, 250, 250, 400)
 
         connect()
 
@@ -433,7 +451,7 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         if (MannaApp.locationSocket?.connected() == true) return
 
         val options = IO.Options()
-        options.query = "mannaID=96f35135-390f-496c-af00-cdb3a4104550&deviceToken=f606564d8371e455"
+        options.query = "mannaID=96f35135-390f-496c-af00-cdb3a4104550&deviceToken=aed64e8da3a07df4"
 
         val manager = Manager(URI("https://manna.duckdns.org:19999"), options)
         MannaApp.locationSocket =
@@ -459,30 +477,36 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private var marker = Marker()
+
     private fun handleLocation(locationResponse: LocationResponse) {
         locationResponse.sender?.username?.let { fromUserName ->
             val latLng = locationResponse.latLng
             Logger.d("locate: ${latLng?.latitude} ${latLng?.longitude}")
+
             if (latLng?.latitude != null && latLng.longitude != null) {
                 val deviceToken = locationResponse.sender.deviceToken
 
                 markerView = LayoutInflater.from(this)
                     .inflate(layoutId, this.root_view, false)
                 if (layoutId == R.layout.view_marker) {
-                    markerView.findViewById<TextView>(R.id.name).text =
-                        fromUserName.subSequence(1, fromUserName.length)
+                    markerView.findViewById<TextView>(R.id.name).text = fromUserName
                 } else {
                     if (deviceToken != null) {
                         setImage(markerView.findViewById(R.id.iv_image), deviceToken)
                     }
                 }
 
-                if (!markerMap.containsKey(deviceToken)) {
-
+                if (lastTimeStamp.containsKey(deviceToken)) {
+                    if (System.currentTimeMillis() - lastTimeStamp[deviceToken]!! > 60000) {
+                        marker.alpha = 0.5f
+                    }
                 } else {
-
+                    marker.alpha = 1f
                 }
-                marker = markerMap[deviceToken] ?: Marker().also { markerMap[deviceToken] = it }
+                lastTimeStamp[deviceToken] = System.currentTimeMillis()
+
+                marker =
+                    markerMap[deviceToken] ?: Marker().also { markerMap[deviceToken] = it }
                 marker.icon = OverlayImage.fromView(markerView)
                 marker.position = LatLng(latLng.latitude, latLng.longitude)
                 marker.map = naverMap
@@ -490,37 +514,43 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    private fun setImage(imageView: CircleImageView, deviceToken: String) {
-        val result = runCatching {
-            when (deviceToken) {
-                "aed64e8da3a07df4" -> Glide.with(this).load(R.drawable.test_2).into(imageView)
-                "f606564d8371e455" -> Glide.with(this).load(R.drawable.image_3).into(imageView)
-                "8F630481-548D-4B8A-B501-FFD90ADFDBA4" -> Glide.with(this).load(R.drawable.image_2)
-                    .into(
-                        imageView
-                    )
-                "0954A791-B5BE-4B56-8F25-07554A4D6684" -> Glide.with(this).load(R.drawable.image_4)
-                    .into(
-                        imageView
-                    )
-                "C65CDF73-8C04-4F76-A26A-AE3400FEC14B" -> Glide.with(this).load(R.drawable.image_6)
-                    .into(
-                        imageView
-                    )
-                "69751764-A224-4923-9844-C61646743D10" -> Glide.with(this).load(R.drawable.image_1)
-                    .into(
-                        imageView
-                    )
-                "2872483D-9E7B-46D1-A2B8-44832FE3F1AD" -> Glide.with(this).load(R.drawable.image_5)
-                    .into(
-                        imageView
-                    )
-                "8D44FAA1-2F87-4702-9DAC-B8B15D949880" -> Glide.with(this).load(R.drawable.image_7)
-                    .into(
-                        imageView
-                    )
-                else -> Glide.with(this).load(R.drawable.test_1).into(imageView)
-            }
+    private fun setImage(imageView: ImageView, deviceToken: String) {
+        when (deviceToken) {
+            "aed64e8da3a07df4" -> Glide.with(this).load(R.drawable.test_2)
+                .into(imageView)
+            "f606564d8371e455" -> Glide.with(this).load(R.drawable.image_3)
+                .into(imageView)
+            "8F630481-548D-4B8A-B501-FFD90ADFDBA4" -> Glide.with(this)
+                .load(R.drawable.image_2)
+                .into(
+                    imageView
+                )
+            "0954A791-B5BE-4B56-8F25-07554A4D6684" -> Glide.with(this)
+                .load(R.drawable.image_4)
+                .into(
+                    imageView
+                )
+            "C65CDF73-8C04-4F76-A26A-AE3400FEC14B" -> Glide.with(this)
+                .load(R.drawable.image_6)
+                .into(
+                    imageView
+                )
+            "69751764-A224-4923-9844-C61646743D10" -> Glide.with(this)
+                .load(R.drawable.image_1)
+                .into(
+                    imageView
+                )
+            "2872483D-9E7B-46D1-A2B8-44832FE3F1AD" -> Glide.with(this)
+                .load(R.drawable.image_5)
+                .into(
+                    imageView
+                )
+            "8D44FAA1-2F87-4702-9DAC-B8B15D949880" -> Glide.with(this)
+                .load(R.drawable.image_7)
+                .into(
+                    imageView
+                )
+            else -> Glide.with(this).load(R.drawable.test_1).into(imageView)
         }
     }
 
@@ -549,7 +579,8 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         point: Double,
         value: String
     ): LatLng {
-        val a = (point2.latitude - point1.latitude) / (point2.longitude - point1.longitude)
+        val a =
+            (point2.latitude - point1.latitude) / (point2.longitude - point1.longitude)
         val b = -(a * point1.longitude) + point1.latitude
         return if (value == "x") {
             LatLng((a * point) + b, point)
@@ -564,7 +595,8 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         centerPoint: LatLng,
         markerPoint: LatLng
     ): LatLng {
-        val a = (point2.latitude - point1.latitude) / (point2.longitude - point1.longitude)
+        val a =
+            (point2.latitude - point1.latitude) / (point2.longitude - point1.longitude)
         val b = -(a * point1.longitude) + point1.latitude
         val c =
             (markerPoint.latitude - centerPoint.latitude) / (markerPoint.longitude - centerPoint.longitude)
