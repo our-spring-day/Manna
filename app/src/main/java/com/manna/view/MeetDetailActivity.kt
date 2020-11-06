@@ -69,6 +69,7 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     var layoutId = R.layout.view_round_marker
     lateinit var markerView: View
     private var myLatLng = LatLng(0.0, 0.0)
+    private val lastTimeStamp: HashMap<String?, Long> = hashMapOf()
 
     private val locationCallback: LocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
@@ -356,7 +357,7 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun handleLocation(socketResponse: SocketResponse) {
         socketResponse.sender?.username?.let { fromUserName ->
             val latLng = socketResponse.latLng
-            Logger.d("locate: ${latLng?.latitude} ${latLng?.longitude}")
+            Logger.d("locate: ${latLng?.latitude} ${latLng?.longitude} ${System.currentTimeMillis()}")
             if (latLng?.latitude != null && latLng.longitude != null) {
                 val deviceToken = socketResponse.sender.deviceToken
 
@@ -376,6 +377,16 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 } else {
 
                 }
+
+                if (lastTimeStamp.containsKey(deviceToken)) {
+                    if(System.currentTimeMillis() - lastTimeStamp[deviceToken]!! > 60000){
+                        marker.alpha = 0.5f
+                    }
+                } else {
+                    marker.alpha = 1f
+                }
+                lastTimeStamp[deviceToken] = System.currentTimeMillis()
+
                 marker = markerMap[deviceToken] ?: Marker().also { markerMap[deviceToken] = it }
                 marker.icon = OverlayImage.fromView(markerView)
                 marker.position = LatLng(latLng.latitude, latLng.longitude)
@@ -467,8 +478,8 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     companion object {
         private const val TAG = "MeetDetailActivity:"
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
-        private const val UPDATE_INTERVAL_MS = 5000L
-        private const val FASTEST_UPDATE_INTERVAL_MS = 5000L
+        private const val UPDATE_INTERVAL_MS = 1000L
+        private const val FASTEST_UPDATE_INTERVAL_MS = 1000L
 
         fun getIntent(context: Context) =
             Intent(context, MeetDetailActivity::class.java)
