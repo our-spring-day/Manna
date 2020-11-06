@@ -26,10 +26,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCa
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import com.manna.Logger
-import com.manna.MannaApp
+import com.manna.*
 import com.manna.R
-import com.manna.SocketResponse
 import com.manna.ext.ViewUtil
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.LatLngBounds
@@ -79,6 +77,8 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private var myLatLng = LatLng(0.0, 0.0)
     private val lastTimeStamp: HashMap<String?, Long> = hashMapOf()
 
+    val latitudeList = arrayListOf<Double>()
+    val longitudeList = arrayListOf<Double>()
 
     private val viewModel by viewModels<MeetDetailViewModel>()
 
@@ -171,30 +171,18 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         btn_location.setOnClickListener {
-            moveLocation(myLatLng, 13.0)
-        }
-
-        val latitudeList = arrayListOf<Double>()
-        val longitudeList = arrayListOf<Double>()
-        btn_mountain.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked) {
-                btn_location.visibility = View.VISIBLE
+            if(btn_mountain.isChecked){
                 moveLocation(myLatLng, 13.0)
             } else {
-                btn_location.visibility = View.GONE
-                markerMap.forEach {
-                    latitudeList.add(it.value.position.latitude)
-                    longitudeList.add(it.value.position.longitude)
-                }
-                val cameraUpdate = CameraUpdate.fitBounds(
-                    LatLngBounds(
-                        LatLng(
-                            Collections.min(latitudeList),
-                            Collections.min(longitudeList)
-                        ), LatLng(Collections.max(latitudeList), Collections.max(longitudeList))
-                    ), 20
-                )
-                naverMap.moveCamera(cameraUpdate)
+                moveLocation()
+            }
+        }
+
+        btn_mountain.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                moveLocation(myLatLng, 13.0)
+            } else {
+                moveLocation()
             }
         }
 
@@ -348,7 +336,7 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 markerView = LayoutInflater.from(this)
                     .inflate(layoutId, this.root_view, false)
                 for (i in markerMap.keys) {
-                    setImage(markerView.findViewById(R.id.iv_image), i.toString())
+                    setImage(markerView.findViewById<CircleImageView>(R.id.iv_image), i.toString())
                     markerMap[i]?.icon = OverlayImage.fromView(markerView)
                 }
             }
@@ -491,7 +479,7 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                     markerView.findViewById<TextView>(R.id.name).text = fromUserName
                 } else {
                     if (deviceToken != null) {
-                        setImage(markerView.findViewById(R.id.iv_image), deviceToken)
+                        setImage(markerView.findViewById<CircleImageView>(R.id.iv_image), deviceToken)
                     }
                 }
 
@@ -512,7 +500,7 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    private fun setImage(imageView: ImageView, deviceToken: String) {
+    private fun setImage(imageView: CircleImageView, deviceToken: String) {
         when (deviceToken) {
             "aed64e8da3a07df4" -> Glide.with(this).load(R.drawable.test_2).into(imageView)
             "f606564d8371e455" -> Glide.with(this).load(R.drawable.image_3).into(imageView)
@@ -559,7 +547,27 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun moveLocation(latLng: LatLng, zoom: Double) {
+        naverMap.locationTrackingMode = LocationTrackingMode.Follow
         val cameraUpdate = CameraUpdate.scrollAndZoomTo(latLng, zoom)
+        naverMap.moveCamera(cameraUpdate)
+    }
+
+    private fun moveLocation() {
+        latitudeList.clear()
+        longitudeList.clear()
+        naverMap.locationTrackingMode = LocationTrackingMode.NoFollow
+        markerMap.forEach {
+            latitudeList.add(it.value.position.latitude)
+            longitudeList.add(it.value.position.longitude)
+        }
+        val cameraUpdate = CameraUpdate.fitBounds(
+            LatLngBounds(
+                LatLng(
+                    Collections.min(latitudeList),
+                    Collections.min(longitudeList)
+                ), LatLng(Collections.max(latitudeList), Collections.max(longitudeList))
+            ), 20
+        )
         naverMap.moveCamera(cameraUpdate)
     }
 
