@@ -91,6 +91,10 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     val latitudeList = arrayListOf<Double>()
     val longitudeList = arrayListOf<Double>()
 
+    private val roomId: String
+        get() = intent?.getStringExtra(EXTRA_ROOM_ID).orEmpty()
+
+
     private val viewModel by viewModels<MeetDetailViewModel>()
 
     private val locationCallback: LocationCallback = object : LocationCallback() {
@@ -199,7 +203,6 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
 
-
         val builder: LocationSettingsRequest.Builder = LocationSettingsRequest.Builder()
         builder.addLocationRequest(locationRequest)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
@@ -216,7 +219,7 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 user.remainTime = remainTime
 
                 val userList = viewModel.userList.value.orEmpty().run {
-                    val index = indexOfFirst { it.deviceToken == user.deviceToken  }
+                    val index = indexOfFirst { it.deviceToken == user.deviceToken }
                     val list = toMutableList()
                     if (index != -1) {
                         list[index] = user
@@ -480,7 +483,8 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
         val options = IO.Options()
         options.query =
-            "mannaID=96f35135-390f-496c-af00-cdb3a4104550&deviceToken=aed64e8da3a07df4"
+            "mannaID=${roomId}&deviceToken=${UserHolder.userResponse?.deviceId}"
+        Logger.d("quey = ${options.query}")
 
         val manager = Manager(URI("https://manna.duckdns.org:19999"), options)
         MannaApp.locationSocket =
@@ -611,14 +615,20 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             latitudeList.add(it.marker.position.latitude)
             longitudeList.add(it.marker.position.longitude)
         }
-        val cameraUpdate = CameraUpdate.fitBounds(
-            LatLngBounds(
-                LatLng(
-                    Collections.min(latitudeList),
-                    Collections.min(longitudeList)
-                ), LatLng(Collections.max(latitudeList), Collections.max(longitudeList))
-            ), 20
-        )
+        val cameraUpdate =
+            CameraUpdate.fitBounds(
+                LatLngBounds(
+                    LatLng(
+                        Collections.min(latitudeList),
+                        Collections.min(longitudeList)
+                    ),
+                    LatLng(
+                        Collections.max(latitudeList),
+                        Collections.max(longitudeList)
+                    )
+                ),
+                20
+            )
         naverMap.moveCamera(cameraUpdate)
     }
 
@@ -661,10 +671,15 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         private const val LOCATION_CONNECT = "locationConnect"
         private const val LOCATION_MESSAGE = "location"
 
-        fun getIntent(context: Context) =
+        private const val EXTRA_ROOM_ID = "room_id"
+
+        fun getIntent(context: Context, roomId: String) =
             Intent(
                 context,
                 MeetDetailActivity::class.java
-            ).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            ).apply {
+                putExtra(EXTRA_ROOM_ID, roomId)
+                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            }
     }
 }

@@ -16,5 +16,5 @@ data class MeetResponseItem(
     @SerializedName("locationJoinUserList")
     val locationJoinUserList: String?,
     @SerializedName("chatJoinUserList")
-    val chatJoinUserList: String?
+    val chatJoinUserList: String?,
 ) : Parcelable

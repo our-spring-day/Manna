@@ -26,6 +26,6 @@ interface MeetApi {
     fun registerMeet(@Body body: JsonObject): Single<MeetResponseItem>
 
     companion object {
-        const val BASE_URL = "https://manna.duckdns.org:8888/"
+        const val BASE_URL = "https://manna.duckdns.org:18888/"
     }
 }

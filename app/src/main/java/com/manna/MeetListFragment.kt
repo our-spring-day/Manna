@@ -50,7 +50,7 @@ class MeetListFragment : Fragment() {
         binding.run {
             meetList.run {
                 layoutManager = LinearLayoutManager(context)
-                meetAdapter = MeetAdapter {
+                meetAdapter = MeetAdapter { clickedItem ->
 
                     TedRx2Permission.with(requireContext())
                         .setRationaleTitle("위치정보 권한 요청")
@@ -61,7 +61,12 @@ class MeetListFragment : Fragment() {
                         .request()
                         .subscribe({ tedPermissionResult: TedPermissionResult ->
                             if (tedPermissionResult.isGranted) {
-                                startActivity(MeetDetailActivity.getIntent(requireContext()))
+                                startActivity(
+                                    MeetDetailActivity.getIntent(
+                                        requireContext(),
+                                        clickedItem.uuid.orEmpty()
+                                    )
+                                )
                             } else {
                                 Toast.makeText(
                                     requireContext(),

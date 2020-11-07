@@ -9,9 +9,11 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="유효성 검증 중 ..."
+        android:text="유효성 검증 중 ...\n 유효성 검증 중 ..."
         android:textColor="@color/black"
         android:textSize="20sp"
+        android:lineSpacingMultiplier="1.0476"
+        android:letterSpacing="-0.1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

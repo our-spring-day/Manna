@@ -22,8 +22,6 @@ class MeetListViewModel @ViewModelInject constructor(private val repository: Mee
 
     fun getMeetList(deviceId: String) {
 
-        //_meetList.value = listOf(MeetResponseItem("테스트 약속", System.currentTimeMillis(), null))
-
         compositeDisposable += repository.getMeetList(deviceId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

@@ -250,7 +250,7 @@ class ChatFragment : Fragment() {
 
         val options = IO.Options()
         options.query =
-            "mannaID=96f35135-390f-496c-af00-cdb3a4104550&deviceToken=f606564d8371e455"
+            "mannaID=96f35135-390f-496c-af00-cdb3a4104550&deviceToken="
 
         val chatManager = Manager(URI("https://manna.duckdns.org:19999"), options)
 
