@@ -20,12 +20,12 @@ interface MeetApi {
     fun registerUser(@Body body: JsonObject): Single<UserResponse>
 
     @GET("manna")
-    fun getMeetList(@Query("device_id") deviceId: String): Single<MeetResponse>
+    fun getMeetList(@Query("deviceToken") deviceId: String): Single<MeetResponse>
 
     @POST("manna")
     fun registerMeet(@Body body: JsonObject): Single<MeetResponseItem>
 
     companion object {
-        const val BASE_URL = "http://ec2-13-124-151-24.ap-northeast-2.compute.amazonaws.com:8888/"
+        const val BASE_URL = "https://manna.duckdns.org:8888/"
     }
 }

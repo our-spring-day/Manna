@@ -194,34 +194,11 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             if (isChecked) {
                 moveLocation(myLatLng, 13.0)
             } else {
-                markerHolders.forEach {
-                    latitudeList.add(it.marker.position.latitude)
-                    longitudeList.add(it.marker.position.longitude)
-                }
-
-                // TODO : 여기 에러뜬다 런캣칭 제거하고 테스트하자
-                kotlin.runCatching {
-                    val cameraUpdate = CameraUpdate.fitBounds(
-                        LatLngBounds(
-                            LatLng(
-                                Collections.min(latitudeList),
-                                Collections.min(longitudeList)
-                            ), LatLng(Collections.max(latitudeList), Collections.max(longitudeList))
-                        ), 20
-                    )
-                    naverMap.moveCamera(cameraUpdate)
-                }
+                moveLocation()
             }
         }
 
-//                markerMap[user.deviceToken]?.let {
-//                    viewModel.findRoute(
-//                        user = user,
-//                        startPoint = WayPoint(it.position, ""),
-//                        endPoint = WayPoint(LatLng(37.475370, 126.980438), "")
-//                    )
-//                    moveLocation(it)
-//                }
+
 
         val builder: LocationSettingsRequest.Builder = LocationSettingsRequest.Builder()
         builder.addLocationRequest(locationRequest)
@@ -231,13 +208,37 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             drawWayPoints.observe(this@MeetDetailActivity, androidx.lifecycle.Observer{
                 drawLine(naverMap, it.map { it.point })
             })
-            remainValue.observe(
-                this@MeetDetailActivity, Observer{ (user: User, remainValue) ->
-                    val remainDistance = remainValue.first
-                    val remainTime = remainValue.second
-                    user.remainDistance = remainDistance
-                    user.remainTime = remainTime
-                })
+
+            remainValue.observe(this@MeetDetailActivity, androidx.lifecycle.Observer{ (user: User, remainValue) ->
+                val remainDistance = remainValue.first
+                val remainTime = remainValue.second
+                user.remainDistance = remainDistance
+                user.remainTime = remainTime
+
+                val userList = viewModel.userList.value.orEmpty().run {
+                    val index = indexOfFirst { it.deviceToken == user.deviceToken  }
+                    val list = toMutableList()
+                    if (index != -1) {
+                        list[index] = user
+                    } else {
+                        list.add(user)
+                    }
+
+                    list
+                }
+
+                viewModel.submitUserList(userList)
+            })
+            bottomUserItemClickEvent.observe(this@MeetDetailActivity, EventObserver { clickUser ->
+                markerHolders.find { it.uuid == clickUser.deviceToken }?.let {
+                    viewModel.findRoute(
+                        user = clickUser,
+                        startPoint = WayPoint(it.marker.position, ""),
+                        endPoint = WayPoint(LatLng(37.475370, 126.980438), "")
+                    )
+                    moveLocation(it.marker.position, 13.0)
+                }
+            })
         }
 
         BottomSheetBehavior.from(bottom_sheet)
@@ -278,9 +279,9 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         return displayMetrics.heightPixels
     }
 
-    private fun drawLine(naverMap: NaverMap, points: List<LatLng>) {
-        val multipartPath = MultipartPathOverlay()
+    private val multipartPath = MultipartPathOverlay()
 
+    private fun drawLine(naverMap: NaverMap, points: List<LatLng>) {
         multipartPath.coordParts = listOf(points)
 
         multipartPath.colorParts = listOf(
@@ -348,8 +349,6 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         naverMap.setOnMapLongClickListener { point, coord ->
-
-            Logger.d("zzz ${this.hashCode()}")
             markerHolders.forEach {
                 it.marker.icon = when (it.marketState) {
                     MarkerState.NORMAL -> {
@@ -525,8 +524,6 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 val deviceToken = locationResponse.sender.deviceToken
                 if (deviceToken.isNullOrEmpty()) return@let
 
-
-                Logger.d("zzz ${this.hashCode()}")
                 val marker =
                     markerHolders.find { it.uuid == deviceToken }?.marker
                         ?: Marker().also {

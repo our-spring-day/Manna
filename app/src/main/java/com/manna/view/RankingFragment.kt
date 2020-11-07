@@ -8,6 +8,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
+import com.manna.Event
+import com.manna.Logger
 import com.manna.R
 import com.manna.databinding.FragmentRankingBinding
 
@@ -34,7 +36,14 @@ class RankingFragment : Fragment() {
         binding.rvUser.adapter = meetDetailAdapter
 
 
-        viewModel.userList.observe(viewLifecycleOwner, {
+        meetDetailAdapter.setOnClickListener(object : MeetDetailAdapter.OnClickListener {
+            override fun onClick(user: User) {
+                viewModel.bottomUserItemClickEvent.value = Event(user)
+            }
+        })
+
+        viewModel.userList.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
+            Logger.d("$it")
             meetDetailAdapter.submitList(it)
         })
 

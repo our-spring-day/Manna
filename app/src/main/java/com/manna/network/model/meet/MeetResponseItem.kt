@@ -7,10 +7,14 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class MeetResponseItem(
-    @SerializedName("manna_name")
+    @SerializedName("mannaName")
     val mannaName: String?,
-    @SerializedName("create_timestamp")
+    @SerializedName("createTimestamp")
     val createTimestamp: Long?,
     @SerializedName("uuid")
-    val uuid: String?
+    val uuid: String?,
+    @SerializedName("locationJoinUserList")
+    val locationJoinUserList: String?,
+    @SerializedName("chatJoinUserList")
+    val chatJoinUserList: String?
 ) : Parcelable
