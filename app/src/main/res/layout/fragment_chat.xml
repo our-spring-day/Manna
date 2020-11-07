@@ -8,13 +8,15 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:paddingTop="60dp">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/chat_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:overScrollMode="never"
+            app:layout_constraintBottom_toTopOf="@id/chat_input_view"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -54,9 +56,9 @@
 
             <TextView
                 android:id="@+id/dda_bong"
-                android:background="?android:selectableItemBackgroundBorderless"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="?android:selectableItemBackgroundBorderless"
                 android:padding="3dp"
                 android:text="@string/dda_bong"
                 android:textSize="23dp"

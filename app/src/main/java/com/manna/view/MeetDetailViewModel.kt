@@ -19,6 +19,16 @@ class MeetDetailViewModel @ViewModelInject constructor(private val repository: B
 
     val remainValue = MutableLiveData<Pair<User, Pair<Double?, Int?>>>()
 
+    val userList = MutableLiveData<List<User>>()
+
+    fun submitUserList(userList: List<User>) {
+        this.userList.value = userList
+    }
+
+    fun addUser(user: User) {
+        this.userList.value = userList.value.orEmpty() + user
+    }
+
     fun findRoute(user: User, startPoint: WayPoint, endPoint: WayPoint) {
         compositeDisposable += repository
             .getRoute(
