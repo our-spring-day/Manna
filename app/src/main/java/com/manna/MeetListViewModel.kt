@@ -5,8 +5,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.manna.data.source.repo.MeetRepository
+import com.manna.ext.plusAssign
 import com.manna.network.model.meet.MeetResponseItem
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 
 class MeetListViewModel @ViewModelInject constructor(private val repository: MeetRepository) :
     ViewModel() {
@@ -19,15 +22,16 @@ class MeetListViewModel @ViewModelInject constructor(private val repository: Mee
 
     fun getMeetList(deviceId: String) {
 
-        _meetList.value = listOf(MeetResponseItem("테스트 약속", System.currentTimeMillis(), null))
-//
-//        compositeDisposable += repository.getMeetList(deviceId)
-//            .subscribeOn(Schedulers.io())
-//            .observeOn(AndroidSchedulers.mainThread())
-//            .subscribe({
-//                _meetList.value = it
-//            }, {
-//                Logger.d("$it")
-//            })
+//        _meetList.value = listOf(MeetResponseItem("테스트 약속", System.currentTimeMillis(), null))
+
+        compositeDisposable += repository.getMeetList(deviceId)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                Logger.d("$it")
+                _meetList.value = it
+            }, {
+                Logger.d("$it")
+            })
     }
 }
