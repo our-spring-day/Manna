@@ -189,7 +189,9 @@ class ChatFragment : Fragment() {
             adapter = chatAdapter
         }
 
-        connect()
+
+        val roomId = arguments?.getString(ARG_ROOM_ID).orEmpty()
+        connect(roomId)
 
         val behavior = BottomSheetBehavior.from(requireActivity().bottom_sheet)
 
@@ -245,12 +247,12 @@ class ChatFragment : Fragment() {
             }
     }
 
-    private fun connect() {
+    private fun connect(roomId: String) {
         if (chatSocket?.connected() == true) return
 
         val options = IO.Options()
         options.query =
-            "mannaID=96f35135-390f-496c-af00-cdb3a4104550&deviceToken=f606564d8371e455"
+            "mannaID=${roomId}&deviceToken=${UserHolder.userResponse?.deviceId}"
 
         val chatManager = Manager(URI("https://manna.duckdns.org:19999"), options)
 
@@ -296,7 +298,12 @@ class ChatFragment : Fragment() {
     companion object {
         private const val CHAT_CONNECT = "chatConnect"
         private const val CHAT_MESSAGE = "chat"
+        private const val ARG_ROOM_ID = "room_id"
 
-        fun newInstance() = ChatFragment()
+        fun newInstance(roomId: String) = ChatFragment().apply {
+            arguments = Bundle().apply {
+                putString(ARG_ROOM_ID, roomId)
+            }
+        }
     }
 }
