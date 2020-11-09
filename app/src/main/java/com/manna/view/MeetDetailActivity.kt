@@ -41,6 +41,8 @@ import io.socket.client.Manager
 import io.socket.client.Socket
 import io.socket.emitter.Emitter
 import kotlinx.android.synthetic.main.activity_meet_detail.*
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import java.net.URI
 import java.util.*
 import kotlin.math.sqrt
@@ -174,7 +176,7 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         tab_bottom.setupWithViewPager(view_pager)
 
 
-        val chatFragment = ChatFragment()
+        val chatFragment = ChatFragment.newInstance(roomId)
         view_pager.run {
             adapter = ViewPagerAdapter(supportFragmentManager).apply {
                 addFragment(chatFragment)
@@ -481,10 +483,16 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             return
         }
 
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
+
         val options = IO.Options()
+        options.callFactory = client
+        options.webSocketFactory = client
         options.query =
             "mannaID=${roomId}&deviceToken=${UserHolder.userResponse?.deviceId}"
-        Logger.d("quey = ${options.query}")
+        Logger.d("query = ${options.query}")
 
         val manager = Manager(URI("https://manna.duckdns.org:19999"), options)
         MannaApp.locationSocket =
