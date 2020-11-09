@@ -1,4 +1,4 @@
-package com.manna.view
+package com.manna.view.location
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -9,7 +9,6 @@ import android.graphics.PointF
 import android.location.Location
 import android.os.Bundle
 import android.os.Handler
-import android.os.Looper
 import android.util.DisplayMetrics
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -17,17 +16,20 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
-import com.google.android.gms.location.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import com.google.android.material.tabs.TabLayout
-import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.manna.*
 import com.manna.R
+import com.manna.common.BaseActivity
+import com.manna.databinding.ActivityMeetDetailBinding
 import com.manna.ext.ViewUtil
+import com.manna.view.ChatFragment
+import com.manna.view.RankingFragment
+import com.manna.view.User
+import com.manna.view.ViewPagerAdapter
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.LatLngBounds
 import com.naver.maps.map.*
@@ -36,179 +38,130 @@ import com.naver.maps.map.overlay.MultipartPathOverlay
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
 import dagger.hilt.android.AndroidEntryPoint
-import io.socket.client.IO
-import io.socket.client.Manager
-import io.socket.client.Socket
-import io.socket.emitter.Emitter
-import kotlinx.android.synthetic.main.activity_meet_detail.*
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import java.net.URI
 import java.util.*
 import kotlin.math.sqrt
 
-enum class WayMode(val type: String) {
-    WALKING("Walking"),
-    TRANSIT("Transit")
-}
-
-data class WayPoint(
-    val point: LatLng,
-    val mode: String,
-    val titles: List<String> = emptyList()
-) {
-
-    fun getPoint(): String = "${point.latitude},${point.longitude}"
-}
-
-class MarkerHolder(
-    val uuid: String,
-    val marker: Marker,
-    val markerView: View,
-    val imageMarkerView: View,
-    var marketState: MarkerState = MarkerState.NORMAL,
-)
-
-enum class MarkerState {
-    NORMAL,
-    IMAGE,
-}
-
 @AndroidEntryPoint
-class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
+class MeetDetailActivity :
+    BaseActivity<ActivityMeetDetailBinding>(R.layout.activity_meet_detail),
+    OnMapReadyCallback {
+
+    private lateinit var fusedLocationProvider: FusedLocationProvider
+    private val fusedLocationCallback: (Location) -> Unit = { location ->
+        val message = JsonObject().apply {
+            addProperty("latitude", location.latitude)
+            addProperty("longitude", location.longitude)
+        }
+
+        LocationSocketManager.sendMessage("location", message.toString())
+    }
+
     private lateinit var locationSource: FusedLocationSource
     private lateinit var naverMap: NaverMap
 
     private val markerHolders: MutableSet<MarkerHolder> = mutableSetOf()
-    private var fusedLocationClient: FusedLocationProviderClient? = null
-    private val locationRequest by lazy {
-        LocationRequest().setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-            .setInterval(UPDATE_INTERVAL_MS)
-            .setFastestInterval(FASTEST_UPDATE_INTERVAL_MS)
-    }
 
     private var myLatLng = LatLng(0.0, 0.0)
     private val lastTimeStamp: HashMap<String?, Long> = hashMapOf()
-
-    val latitudeList = arrayListOf<Double>()
-    val longitudeList = arrayListOf<Double>()
 
     private val roomId: String
         get() = intent?.getStringExtra(EXTRA_ROOM_ID).orEmpty()
 
 
+    private val multipartPath = MultipartPathOverlay()
+
     private val viewModel by viewModels<MeetDetailViewModel>()
 
-    private val locationCallback: LocationCallback = object : LocationCallback() {
-        override fun onLocationResult(locationResult: LocationResult) {
-            super.onLocationResult(locationResult)
-            val locationList: List<Location> = locationResult.locations
-
-            locationList.getOrNull(locationList.size - 1)?.let {
-                val message = JsonObject().apply {
-                    addProperty("latitude", it.latitude)
-                    addProperty("longitude", it.longitude)
-                }
-                if (MannaApp.locationSocket?.connected() == true) {
-                    Logger.d("$message")
-                    MannaApp.locationSocket?.emit("location", message)
-                }
-            }
-        }
-    }
-
-    private val onLocationReceiver = Emitter.Listener { args ->
-        runOnUiThread {
-            val message = args.getOrNull(0)
-
-            val socketResponse = Gson().fromJson(message.toString(), LocationResponse::class.java)
-            Logger.d("socketResponse: $socketResponse")
-
-            handleLocation(socketResponse)
-        }
-    }
-
-    private val onLocationConnectReceiver = Emitter.Listener { args ->
-        runOnUiThread {
-            Logger.d("${args.map { it.toString() }}")
-        }
-    }
 
     lateinit var sheetCallback: BottomSheetCallback
 
-    fun resetBottomSheet(offset: Float) = sheetCallback.onSlide(bottom_sheet, offset)
+    fun resetBottomSheet(offset: Float) = sheetCallback.onSlide(binding.bottomSheet, offset)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_meet_detail)
 
         markerHolders.clear()
+        fusedLocationProvider = FusedLocationProvider(this, fusedLocationCallback)
 
         locationSource =
             FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE)
 
+        initView()
+
+        initViewModel()
+
+        LocationSocketManager.setLocationResponseCallback {
+            runOnUiThread {
+                handleLocation(it)
+            }
+        }
+        LocationSocketManager.connect(roomId)
+    }
+
+    private fun initView() {
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as MapFragment?
             ?: MapFragment.newInstance().also {
                 supportFragmentManager.beginTransaction().add(R.id.map, it).commit()
             }
         mapFragment.getMapAsync(this)
         ViewUtil.setStatusBarTransparent(this)
-        top_panel.fitsSystemWindows = true
+        binding.run {
+            topPanel.fitsSystemWindows = true
 
-        btn_back.setOnClickListener {
-            onBackPressed()
-        }
 
-        tab_bottom.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabReselected(tab: TabLayout.Tab?) {
+            btnBack.setOnClickListener {
+                onBackPressed()
             }
 
-            override fun onTabUnselected(tab: TabLayout.Tab?) {
+            tabBottom.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+                override fun onTabReselected(tab: TabLayout.Tab?) {
+                }
+
+                override fun onTabUnselected(tab: TabLayout.Tab?) {
+                }
+
+                override fun onTabSelected(tab: TabLayout.Tab?) {
+                    when (tab?.position) {
+
+                    }
+                }
+
+            })
+            tabBottom.setupWithViewPager(viewPager)
+
+            viewPager.run {
+                adapter = ViewPagerAdapter(supportFragmentManager).apply {
+                    addFragment(ChatFragment.newInstance(roomId))
+                    addFragment(RankingFragment())
+                    addFragment(FriendsFragment())
+                    isSaveEnabled = false
+                }
+                currentItem = 0
+                offscreenPageLimit = 3
             }
 
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                when (tab?.position) {
-
+            btnLocation.setOnClickListener {
+                if (btnMountain.isChecked) {
+                    moveLocation(myLatLng, 13.0)
+                } else {
+                    moveLocation()
                 }
             }
 
-        })
-        tab_bottom.setupWithViewPager(view_pager)
-
-
-        val chatFragment = ChatFragment.newInstance(roomId)
-        view_pager.run {
-            adapter = ViewPagerAdapter(supportFragmentManager).apply {
-                addFragment(chatFragment)
-                addFragment(RankingFragment())
-                addFragment(FriendsFragment())
-                isSaveEnabled = false
-            }
-            currentItem = 0
-            offscreenPageLimit = 3
-        }
-
-        btn_location.setOnClickListener {
-            if (btn_mountain.isChecked) {
-                moveLocation(myLatLng, 13.0)
-            } else {
-                moveLocation()
-            }
-        }
-
-        btn_mountain.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked) {
-                moveLocation(myLatLng, 13.0)
-            } else {
-                moveLocation()
+            btnMountain.setOnCheckedChangeListener { _, isChecked ->
+                if (isChecked) {
+                    moveLocation(myLatLng, 13.0)
+                } else {
+                    moveLocation()
+                }
             }
         }
 
 
-        val builder: LocationSettingsRequest.Builder = LocationSettingsRequest.Builder()
-        builder.addLocationRequest(locationRequest)
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        setupBottomSheet()
+    }
 
+    private fun initViewModel() {
         viewModel.run {
             drawWayPoints.observe(this@MeetDetailActivity, {
                 drawLine(naverMap, it.map { it.point })
@@ -244,8 +197,10 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
             })
         }
+    }
 
-        BottomSheetBehavior.from(bottom_sheet)
+    private fun setupBottomSheet() {
+        BottomSheetBehavior.from(binding.bottomSheet)
             .also {
                 sheetCallback = object : BottomSheetCallback() {
                     override fun onStateChanged(view: View, newState: Int) {
@@ -253,18 +208,19 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                     }
 
                     override fun onSlide(view: View, slideOffset: Float) {
-                        chatFragment.inputViewTransY(getChatInputY(view).toInt())
+                        supportFragmentManager.fragments.find { it is ChatFragment }
+                            ?.let { chatFragment ->
+                                (chatFragment as ChatFragment).inputViewTransY(getChatInputY(view).toInt())
+                            }
                     }
                 }
                 it.addBottomSheetCallback(sheetCallback)
                 Handler().postDelayed({
-                    sheetCallback.onSlide(bottom_sheet, 0f)
+                    sheetCallback.onSlide(binding.bottomSheet, 0f)
                 }, 50)
             }
 
-
-
-        bottom_sheet.maxHeight =
+        binding.bottomSheet.maxHeight =
             getBottomSheetFullHeight()
     }
 
@@ -282,8 +238,6 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         windowManager?.defaultDisplay?.getMetrics(displayMetrics)
         return displayMetrics.heightPixels
     }
-
-    private val multipartPath = MultipartPathOverlay()
 
     private fun drawLine(naverMap: NaverMap, points: List<LatLng>) {
         multipartPath.coordParts = listOf(points)
@@ -318,29 +272,23 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     @SuppressLint("MissingPermission")
     override fun onMapReady(naverMap: NaverMap) {
 
-        Logger.d("naverMap ready")
-        fusedLocationClient?.requestLocationUpdates(
-            locationRequest,
-            locationCallback,
-            Looper.myLooper()
-        )
+        fusedLocationProvider.enableLocationCallback()
 
-        this.naverMap = naverMap
-        naverMap.locationSource = locationSource
-        naverMap.locationTrackingMode = LocationTrackingMode.NoFollow
-        naverMap.isIndoorEnabled = true
-        naverMap.uiSettings.run {
-            isIndoorLevelPickerEnabled = true
-            isLocationButtonEnabled = false
-            isCompassEnabled = false
-            isScaleBarEnabled = false
-            isZoomControlEnabled = false
-            logoGravity = Gravity.END
-            setLogoMargin(0, 0, 0, 0)
+        this.naverMap = naverMap.apply {
+            locationSource = locationSource
+            locationTrackingMode = LocationTrackingMode.NoFollow
+            isIndoorEnabled = true
+            uiSettings.run {
+                isIndoorLevelPickerEnabled = true
+                isLocationButtonEnabled = false
+                isCompassEnabled = false
+                isScaleBarEnabled = false
+                isZoomControlEnabled = false
+                logoGravity = Gravity.END
+                setLogoMargin(0, 0, 0, 0)
+            }
+            setContentPadding(250, 250, 250, 400)
         }
-        naverMap.setContentPadding(250, 250, 250, 400)
-
-        connect()
 
         val meetPlaceMarker = Marker().apply {
             position = LatLng(37.475370, 126.980438)
@@ -373,9 +321,9 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         display.getSize(size)
         val projection = naverMap.projection
 
-        val newMarker = Marker()
-        newMarker.icon =
-            OverlayImage.fromResource(R.drawable.ic_baseline_account_circle_24)
+        val newMarker = Marker().apply {
+            icon = OverlayImage.fromResource(R.drawable.ic_baseline_account_circle_24)
+        }
 
         naverMap.addOnCameraChangeListener { reason, animated ->
             val topBottomLatLng: LatLng
@@ -448,74 +396,21 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     @SuppressLint("MissingPermission")
     override fun onResume() {
         super.onResume()
-
-        fusedLocationClient?.requestLocationUpdates(
-            locationRequest,
-            locationCallback,
-            Looper.myLooper()
-        )
+        fusedLocationProvider.enableLocationCallback()
     }
 
     override fun onStop() {
+        fusedLocationProvider.disableLocationCallback()
         super.onStop()
-        fusedLocationClient?.removeLocationUpdates(locationCallback)
     }
 
-    private fun connect() {
-        if (MannaApp.locationSocket?.connected() == true) {
-            MannaApp.locationSocket?.run {
-                off()
-
-                on(LOCATION_CONNECT, onLocationConnectReceiver)
-                on(LOCATION_MESSAGE, onLocationReceiver)
-                on(Socket.EVENT_CONNECT) {
-                    Logger.d("EVENT_CONNECT ${it.map { it.toString() }}")
-                }
-                on(Socket.EVENT_DISCONNECT) {
-                    Logger.d("EVENT_DISCONNECT ${it.map { it.toString() }}")
-                }
-                on(Socket.EVENT_MESSAGE) {
-                    Logger.d("EVENT_MESSAGE ${it.map { it.toString() }}")
-                }
-            }
-
-            return
-        }
-
-        val interceptor = HttpLoggingInterceptor()
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
-        val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
-
-        val options = IO.Options()
-        options.callFactory = client
-        options.webSocketFactory = client
-        options.query =
-            "mannaID=${roomId}&deviceToken=${UserHolder.userResponse?.deviceId}"
-        Logger.d("query = ${options.query}")
-
-        val manager = Manager(URI("https://manna.duckdns.org:19999"), options)
-        MannaApp.locationSocket =
-            manager.socket("/location")?.apply {
-                on(LOCATION_CONNECT, onLocationConnectReceiver)
-                on(LOCATION_MESSAGE, onLocationReceiver)
-
-                on(Socket.EVENT_CONNECT) {
-                    Logger.d("EVENT_CONNECT ${it.map { it.toString() }}")
-                }
-
-                on(Socket.EVENT_DISCONNECT) {
-                    Logger.d("EVENT_DISCONNECT ${it.map { it.toString() }}")
-                }
-
-                on(Socket.EVENT_MESSAGE) {
-                    Logger.d("EVENT_MESSAGE ${it.map { it.toString() }}")
-                }
-                connect()
-            }
-
-    }
 
     private fun checkState(marker: Marker, deviceToken: String) {
+        for (key in lastTimeStamp.keys) {
+            lastTimeStamp[key]
+            markerHolders
+
+        }
         if (lastTimeStamp.containsKey(deviceToken)) {
             if (System.currentTimeMillis() - lastTimeStamp[deviceToken]!! > 60000) {
                 marker.alpha = 0.5f
@@ -538,14 +433,18 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 val marker =
                     markerHolders.find { it.uuid == deviceToken }?.marker
                         ?: Marker().also {
+
+                            it.setOnClickListener {
+                                true
+                            }
                             val markerView = LayoutInflater.from(this)
-                                .inflate(R.layout.view_marker, this.root_view, false)
+                                .inflate(R.layout.view_marker, binding.rootView, false)
                                 .apply {
                                     findViewById<TextView>(R.id.name).text = fromUserName
                                 }
 
                             val imageMarkerView = LayoutInflater.from(this)
-                                .inflate(R.layout.view_round_marker, root_view, false)
+                                .inflate(R.layout.view_round_marker, binding.rootView, false)
                                 .apply {
                                     setImage(findViewById(R.id.iv_image), deviceToken.orEmpty())
                                 }
@@ -615,13 +514,14 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun moveLocation() {
-        latitudeList.clear()
-        longitudeList.clear()
-        naverMap.locationTrackingMode = LocationTrackingMode.NoFollow
+        val latitudeList = mutableListOf<Double>()
+        val longitudeList = mutableListOf<Double>()
         markerHolders.forEach {
             latitudeList.add(it.marker.position.latitude)
             longitudeList.add(it.marker.position.longitude)
         }
+
+
         val cameraUpdate =
             CameraUpdate.fitBounds(
                 LatLngBounds(
@@ -636,6 +536,7 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 ),
                 20
             )
+        naverMap.locationTrackingMode = LocationTrackingMode.NoFollow
         naverMap.moveCamera(cameraUpdate)
     }
 
@@ -672,12 +573,6 @@ class MeetDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
-        private const val UPDATE_INTERVAL_MS = 2000L
-        private const val FASTEST_UPDATE_INTERVAL_MS = 2000L
-
-        private const val LOCATION_CONNECT = "locationConnect"
-        private const val LOCATION_MESSAGE = "location"
-
         private const val EXTRA_ROOM_ID = "room_id"
 
         fun getIntent(context: Context, roomId: String) =

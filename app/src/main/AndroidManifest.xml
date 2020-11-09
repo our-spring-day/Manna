@@ -16,7 +16,7 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
 
-        <activity android:name=".view.MeetDetailActivity" />
+        <activity android:name=".view.location.MeetDetailActivity" />
         <activity android:name=".SettingActivity" />
         <activity android:name=".view.search.SearchActivity" />
         <activity android:name=".view.search.RouteActivity" />

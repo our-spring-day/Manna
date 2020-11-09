@@ -5,7 +5,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 
-class ViewPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
+class ViewPagerAdapter(fm: FragmentManager) :
+    FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+
     private val title = arrayOf("\uD83D\uDCAC", "\uD83D\uDC68\u200D\uD83D\uDD2C", "\uD83D\uDCCA")
     private val setOfFragments: MutableSet<Fragment> = mutableSetOf()
 

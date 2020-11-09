@@ -5,7 +5,6 @@ import android.content.Context
 import com.naver.maps.map.NaverMapSdk
 import com.naver.maps.map.NaverMapSdk.NaverCloudPlatformClient
 import dagger.hilt.android.HiltAndroidApp
-import io.socket.client.Socket
 
 
 @HiltAndroidApp
@@ -22,7 +21,6 @@ class MannaApp : Application() {
 
     companion object {
         private lateinit var instance: MannaApp
-        var locationSocket: Socket? = null
 
         fun context(): Context =
             instance.applicationContext

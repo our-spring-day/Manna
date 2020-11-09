@@ -27,5 +27,6 @@ interface MeetApi {
 
     companion object {
         const val BASE_URL = "https://manna.duckdns.org:18888/"
+        const val SOCKET_URL = "https://manna.duckdns.org:19999/"
     }
 }
