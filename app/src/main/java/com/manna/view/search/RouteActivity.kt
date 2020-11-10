@@ -23,7 +23,7 @@ import com.manna.databinding.ActivityRouteBinding
 import com.manna.databinding.ItemRouteBinding
 import com.manna.di.ApiModule
 import com.manna.ext.ViewUtil
-import com.manna.view.WayPoint
+import com.manna.view.location.WayPoint
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.MapFragment

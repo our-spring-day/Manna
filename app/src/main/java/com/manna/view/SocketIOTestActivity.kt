@@ -23,6 +23,7 @@ import com.manna.common.BaseRecyclerViewHolder
 import com.manna.databinding.ActivityWebsocketBinding
 import com.manna.databinding.ItemRouteBinding
 import com.manna.ext.ViewUtil
+import com.manna.network.api.MeetApi
 import com.manna.network.model.meet.MeetResponseItem
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraUpdate
@@ -177,7 +178,7 @@ class SocketIOTestActivity : BaseActivity<ActivityWebsocketBinding>(R.layout.act
         options.webSocketFactory = okHttpClient
 //        options.transports = arrayOf(Polling.NAME)
 
-        val manager = Manager(URI("https://manna.duckdns.org:19999"), options)
+        val manager = Manager(URI(MeetApi.SOCKET_URL), options)
         locationSocket =
             manager.socket("/location")
         locationSocket.on(LOCATION_CONNECT, onLocationConnectReceiver)

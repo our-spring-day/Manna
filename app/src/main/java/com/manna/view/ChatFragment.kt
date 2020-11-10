@@ -21,6 +21,8 @@ import com.manna.databinding.ItemChatBinding
 import com.manna.databinding.ItemMyChatBinding
 import com.manna.ext.HeightProvider
 import com.manna.ext.ViewUtil
+import com.manna.network.api.MeetApi
+import com.manna.view.location.MeetDetailActivity
 import io.socket.client.IO
 import io.socket.client.Manager
 import io.socket.client.Socket
@@ -254,7 +256,7 @@ class ChatFragment : Fragment() {
         options.query =
             "mannaID=${roomId}&deviceToken=${UserHolder.userResponse?.deviceId}"
 
-        val chatManager = Manager(URI("https://manna.duckdns.org:19999"), options)
+        val chatManager = Manager(URI(MeetApi.SOCKET_URL), options)
 
         chatSocket =
             chatManager.socket("/chat").apply {

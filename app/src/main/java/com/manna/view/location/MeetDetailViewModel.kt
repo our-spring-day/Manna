@@ -1,4 +1,4 @@
-package com.manna.view
+package com.manna.view.location
 
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
@@ -8,6 +8,7 @@ import com.manna.Logger
 import com.manna.common.BaseViewModel
 import com.manna.ext.plusAssign
 import com.manna.network.api.BingApi
+import com.manna.view.User
 import com.naver.maps.geometry.LatLng
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers

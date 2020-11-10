@@ -12,6 +12,8 @@ import com.manna.Event
 import com.manna.Logger
 import com.manna.R
 import com.manna.databinding.FragmentRankingBinding
+import com.manna.view.location.MeetDetailAdapter
+import com.manna.view.location.MeetDetailViewModel
 
 class RankingFragment : Fragment() {
     private lateinit var binding: FragmentRankingBinding

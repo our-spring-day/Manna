@@ -1,4 +1,4 @@
-package com.manna.view
+package com.manna.view.location
 
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.manna.Logger
 import com.manna.R
+import com.manna.view.User
 import kotlinx.android.synthetic.main.item_round_view.view.*
 
 class MeetDetailAdapter :
