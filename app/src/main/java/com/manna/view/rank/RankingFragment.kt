@@ -1,4 +1,4 @@
-package com.manna.view
+package com.manna.view.rank
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,6 +12,7 @@ import com.manna.Event
 import com.manna.Logger
 import com.manna.R
 import com.manna.databinding.FragmentRankingBinding
+import com.manna.view.User
 import com.manna.view.location.MeetDetailAdapter
 import com.manna.view.location.MeetDetailViewModel
 

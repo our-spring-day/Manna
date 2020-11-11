@@ -19,6 +19,7 @@ import com.manna.databinding.ActivityMeetDetailBinding
 import com.manna.ext.ViewUtil
 import com.manna.view.User
 import com.manna.view.chat.ChatFragment
+import com.manna.view.rank.RankingFragment
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.LatLngBounds
 import com.naver.maps.map.*
@@ -123,7 +124,14 @@ class MeetDetailActivity :
             }
 
             btnChart.setOnClickListener {
-
+                supportFragmentManager.beginTransaction()
+                    .add(
+                        R.id.frag_container,
+                        RankingFragment.newInstance(),
+                        RankingFragment::class.java.simpleName
+                    )
+                    .addToBackStack(null)
+                    .commit()
             }
 
         }

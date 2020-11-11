@@ -17,4 +17,10 @@
     <color name="ffededff">#EDEDFF</color>
     <color name="ff999999">#999999</color>
     <color name="ff6979ff">#FF6979FF</color>
+    <color name="ffb5b5b5">#ffb5b5b5</color>
+    <color name="ff666666">#ff666666</color>
+    <color name="keyColor">#ff5a6bff</color>
+
+    <color name="keyColor_alpha01">#1a5a6bff</color>
+    <color name="ffffed94">#ffffed94</color>
 </resources>
