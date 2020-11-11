@@ -195,41 +195,41 @@ class ChatFragment : Fragment() {
         val roomId = arguments?.getString(ARG_ROOM_ID).orEmpty()
         connect(roomId)
 
-        val behavior = BottomSheetBehavior.from(requireActivity().bottom_sheet)
+//        val behavior = BottomSheetBehavior.from(requireActivity().bottom_sheet)
+//
+//        behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+//            override fun onStateChanged(bottomSheet: View, newState: Int) {
+//                when (newState) {
+//                    BottomSheetBehavior.STATE_EXPANDED -> {
+//                        if (keyboardHeight > 0) {
+//                            inputViewTransY(
+//                                ViewUtil.getScreenHeightPixels(activity) - keyboardHeight - ViewUtil.convertDpToPixel(
+//                                    requireContext(),
+//                                    12f
+//                                ).toInt()
+//                            )
+//                        } else {
+//                            (activity as MeetDetailActivity).resetBottomSheet(1f)
+//                        }
+//                    }
+//                    BottomSheetBehavior.STATE_COLLAPSED -> {
+//                        binding.inputChat.clearFocus()
+//                    }
+//                }
+//            }
+//
+//            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+//
+//            }
+//        })
 
-        behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-            override fun onStateChanged(bottomSheet: View, newState: Int) {
-                when (newState) {
-                    BottomSheetBehavior.STATE_EXPANDED -> {
-                        if (keyboardHeight > 0) {
-                            inputViewTransY(
-                                ViewUtil.getScreenHeightPixels(activity) - keyboardHeight - ViewUtil.convertDpToPixel(
-                                    requireContext(),
-                                    12f
-                                ).toInt()
-                            )
-                        } else {
-                            (activity as MeetDetailActivity).resetBottomSheet(1f)
-                        }
-                    }
-                    BottomSheetBehavior.STATE_COLLAPSED -> {
-                        binding.inputChat.clearFocus()
-                    }
-                }
-            }
-
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {
-
-            }
-        })
-
-        binding.inputChat.setOnFocusChangeListener { v, hasFocus ->
-            if (hasFocus) {
-                if (behavior.state != BottomSheetBehavior.STATE_EXPANDED) {
-                    behavior.state = BottomSheetBehavior.STATE_EXPANDED
-                }
-            }
-        }
+//        binding.inputChat.setOnFocusChangeListener { v, hasFocus ->
+//            if (hasFocus) {
+//                if (behavior.state != BottomSheetBehavior.STATE_EXPANDED) {
+//                    behavior.state = BottomSheetBehavior.STATE_EXPANDED
+//                }
+//            }
+//        }
 
         HeightProvider(requireActivity()).init()
             .setHeightListener { height ->
@@ -243,7 +243,7 @@ class ChatFragment : Fragment() {
                         ).toInt()
                     )
                 } else {
-                    (activity as MeetDetailActivity).resetBottomSheet(1f)
+                    //(activity as MeetDetailActivity).resetBottomSheet(1f)
                     binding.inputChat.clearFocus()
                 }
             }
