@@ -17,4 +17,7 @@
     <color name="ffededff">#EDEDFF</color>
     <color name="ff999999">#999999</color>
     <color name="ff6979ff">#FF6979FF</color>
+    <color name="keyColor">#5A6BFF</color>
+    <color name="f1a512">#F1A512</color>
+    <color name="fa5f2e">#FA5F2E</color>
 </resources>

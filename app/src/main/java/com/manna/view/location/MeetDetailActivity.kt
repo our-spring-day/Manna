@@ -4,15 +4,14 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.Point
-import android.graphics.PointF
 import android.location.Location
 import android.os.Bundle
-import android.util.DisplayMetrics
+import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import androidx.activity.viewModels
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.google.gson.JsonObject
 import com.manna.*
@@ -31,7 +30,6 @@ import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
-import kotlin.math.sqrt
 
 @AndroidEntryPoint
 class MeetDetailActivity :
@@ -71,6 +69,8 @@ class MeetDetailActivity :
 
         locationSource =
             FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE)
+
+        countDown()
 
         initView()
 
@@ -203,6 +203,7 @@ class MeetDetailActivity :
                 isCompassEnabled = false
                 isScaleBarEnabled = false
                 isZoomControlEnabled = false
+                setContentPadding(200, 200, 200, 200)
             }
         }
 
@@ -221,8 +222,14 @@ class MeetDetailActivity :
             }
             cameraZoom = naverMap.cameraPosition.zoom
             if (reason == REASON_GESTURE) {
-                naverMap.locationTrackingMode = LocationTrackingMode.NoFollow
+                binding.btnLocation.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        this,
+                        R.drawable.ic_map_active
+                    )
+                )
                 binding.btnLocation.visibility = View.VISIBLE
+                naverMap.locationTrackingMode = LocationTrackingMode.NoFollow
             }
         }
 
@@ -328,6 +335,37 @@ class MeetDetailActivity :
         }
     }
 
+    private fun countDown() {
+        val timer = object : CountDownTimer(1260000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                val getMin =
+                    millisUntilFinished - millisUntilFinished / (60 * 60 * 1000)
+                var min = (getMin / (60 * 1000)).toString()
+                var second = (getMin % (60 * 1000) / 1000).toString()
+
+                if (min.length == 1) {
+                    min = "0$min"
+                }
+
+                if (second.length == 1) {
+                    second = "0$second"
+                }
+                if (min == "20" && second == "00") {
+                    binding.tvTimer.setBackgroundResource(R.drawable.bg_timer_yellow)
+                } else if (min == "10" && second == "00") {
+                    binding.tvTimer.setBackgroundResource(R.drawable.bg_timer_red)
+                }
+                binding.tvTimer.text = "$min : $second"
+            }
+
+            override fun onFinish() {
+                binding.tvTimer.setBackgroundResource(R.drawable.bg_timer)
+                binding.tvTimer.text = "체크인 하기"
+            }
+        }
+        timer.start()
+    }
+
     private fun setImage(imageView: CircleImageView, deviceToken: String) {
         kotlin.runCatching {
             val imageResId = when (deviceToken) {
@@ -364,7 +402,12 @@ class MeetDetailActivity :
         naverMap.locationTrackingMode = LocationTrackingMode.Follow
         val cameraUpdate = CameraUpdate.scrollAndZoomTo(latLng, zoom)
             .finishCallback {
-                binding.btnLocation.visibility = View.GONE
+                binding.btnLocation.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        this,
+                        R.drawable.ic_map_default
+                    )
+                )
             }
 
         naverMap.moveCamera(cameraUpdate)
@@ -392,7 +435,12 @@ class MeetDetailActivity :
                 ),
                 20
             ).finishCallback {
-                binding.btnLocation.visibility = View.GONE
+                binding.btnLocation.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        this,
+                        R.drawable.ic_map_default
+                    )
+                )
             }
         naverMap.locationTrackingMode = LocationTrackingMode.NoFollow
         naverMap.moveCamera(cameraUpdate)
