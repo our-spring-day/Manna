@@ -64,6 +64,8 @@ class ChatFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+
         binding.ddaBong.setOnClickListener {
             val chat = binding.inputChat.text.toString()
             if (chat.isNotEmpty()) {
@@ -73,6 +75,7 @@ class ChatFragment : Fragment() {
         }
 
         binding.chatView.run {
+            setPadding(paddingStart, ViewUtil.getStatusBarHeight(context), paddingRight, paddingBottom)
             layoutManager = LinearLayoutManager(requireContext())
             chatAdapter = ChatAdapter()
             adapter = chatAdapter
