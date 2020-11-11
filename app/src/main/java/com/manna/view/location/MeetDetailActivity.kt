@@ -113,7 +113,11 @@ class MeetDetailActivity :
 
             btnChatting.setOnClickListener {
                 supportFragmentManager.beginTransaction()
-                    .add(R.id.frag_container, ChatFragment.newInstance(roomId), ChatFragment::class.java.simpleName)
+                    .add(
+                        R.id.frag_container,
+                        ChatFragment.newInstance(roomId),
+                        ChatFragment::class.java.simpleName
+                    )
                     .addToBackStack(null)
                     .commit()
             }

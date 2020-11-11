@@ -86,7 +86,10 @@ class ChatFragment : Fragment() {
             .setHeightListener { height ->
                 keyboardHeight = height
 
-                val keyboardTop = ViewUtil.getScreenHeightPixels(activity) - height + ViewUtil.getStatusBarHeight(context)
+                val keyboardTop =
+                    ViewUtil.getScreenHeightPixels(activity) - height + ViewUtil.getStatusBarHeight(
+                        context
+                    )
 
                 binding.chatView.layoutParams.height =
                     keyboardTop - binding.chatInputView.height

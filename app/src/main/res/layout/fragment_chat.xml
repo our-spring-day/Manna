@@ -26,7 +26,7 @@
             android:id="@+id/chat_input_view"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@color/d9f8f8f8"
+            android:background="@color/fff6f6f6"
             android:paddingStart="13dp"
             android:paddingTop="4dp"
             android:paddingBottom="4dp"

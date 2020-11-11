@@ -19,7 +19,7 @@ import io.reactivex.schedulers.Schedulers
 
 
 object UserHolder {
-    var userResponse: UserResponse? = UserResponse("aed64e8da3a07df4", "연재")
+    var userResponse: UserResponse? = UserResponse("f606564d8371e455", "우석")
 }
 
 class IntroViewModel @ViewModelInject constructor(private val repository: MeetRepository) :
