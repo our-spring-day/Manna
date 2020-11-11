@@ -8,30 +8,23 @@ import android.graphics.Point
 import android.graphics.PointF
 import android.location.Location
 import android.os.Bundle
-import android.os.Handler
 import android.util.DisplayMetrics
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import androidx.activity.viewModels
 import com.bumptech.glide.Glide
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
-import com.google.android.material.tabs.TabLayout
 import com.google.gson.JsonObject
 import com.manna.*
 import com.manna.R
 import com.manna.common.BaseActivity
 import com.manna.databinding.ActivityMeetDetailBinding
 import com.manna.ext.ViewUtil
-import com.manna.view.ChatFragment
-import com.manna.view.RankingFragment
 import com.manna.view.User
-import com.manna.view.ViewPagerAdapter
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.LatLngBounds
 import com.naver.maps.map.*
+import com.naver.maps.map.CameraUpdate.REASON_GESTURE
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.MultipartPathOverlay
 import com.naver.maps.map.overlay.OverlayImage
@@ -51,7 +44,7 @@ class MeetDetailActivity :
             addProperty("latitude", location.latitude)
             addProperty("longitude", location.longitude)
         }
-
+        myLatLng = LatLng(location.latitude, location.longitude)
         LocationSocketManager.sendMessage("location", message.toString())
     }
 
@@ -66,15 +59,9 @@ class MeetDetailActivity :
     private val roomId: String
         get() = intent?.getStringExtra(EXTRA_ROOM_ID).orEmpty()
 
-
     private val multipartPath = MultipartPathOverlay()
 
     private val viewModel by viewModels<MeetDetailViewModel>()
-
-
-    lateinit var sheetCallback: BottomSheetCallback
-
-    fun resetBottomSheet(offset: Float) = sheetCallback.onSlide(binding.bottomSheet, offset)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,36 +94,8 @@ class MeetDetailActivity :
         binding.run {
             topPanel.fitsSystemWindows = true
 
-
             btnBack.setOnClickListener {
                 onBackPressed()
-            }
-
-            tabBottom.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-                override fun onTabReselected(tab: TabLayout.Tab?) {
-                }
-
-                override fun onTabUnselected(tab: TabLayout.Tab?) {
-                }
-
-                override fun onTabSelected(tab: TabLayout.Tab?) {
-                    when (tab?.position) {
-
-                    }
-                }
-
-            })
-            tabBottom.setupWithViewPager(viewPager)
-
-            viewPager.run {
-                adapter = ViewPagerAdapter(supportFragmentManager).apply {
-                    addFragment(ChatFragment.newInstance(roomId))
-                    addFragment(RankingFragment())
-                    addFragment(FriendsFragment())
-                    isSaveEnabled = false
-                }
-                currentItem = 0
-                offscreenPageLimit = 3
             }
 
             btnLocation.setOnClickListener {
@@ -156,36 +115,36 @@ class MeetDetailActivity :
             }
         }
 
-
-        setupBottomSheet()
     }
 
     private fun initViewModel() {
         viewModel.run {
-            drawWayPoints.observe(this@MeetDetailActivity, androidx.lifecycle.Observer{
+            drawWayPoints.observe(this@MeetDetailActivity, androidx.lifecycle.Observer {
                 drawLine(naverMap, it.map { it.point })
             })
 
-            remainValue.observe(this@MeetDetailActivity, androidx.lifecycle.Observer{ (user: User, remainValue) ->
-                val remainDistance = remainValue.first
-                val remainTime = remainValue.second
-                user.remainDistance = remainDistance
-                user.remainTime = remainTime
+            remainValue.observe(
+                this@MeetDetailActivity,
+                androidx.lifecycle.Observer { (user: User, remainValue) ->
+                    val remainDistance = remainValue.first
+                    val remainTime = remainValue.second
+                    user.remainDistance = remainDistance
+                    user.remainTime = remainTime
 
-                val userList = viewModel.userList.value.orEmpty().run {
-                    val index = indexOfFirst { it.deviceToken == user.deviceToken }
-                    val list = toMutableList()
-                    if (index != -1) {
-                        list[index] = user
-                    } else {
-                        list.add(user)
+                    val userList = viewModel.userList.value.orEmpty().run {
+                        val index = indexOfFirst { it.deviceToken == user.deviceToken }
+                        val list = toMutableList()
+                        if (index != -1) {
+                            list[index] = user
+                        } else {
+                            list.add(user)
+                        }
+
+                        list
                     }
 
-                    list
-                }
-
-                viewModel.submitUserList(userList)
-            })
+                    viewModel.submitUserList(userList)
+                })
             bottomUserItemClickEvent.observe(this@MeetDetailActivity, EventObserver { clickUser ->
                 markerHolders.find { it.uuid == clickUser.deviceToken }?.let {
                     viewModel.findRoute(
@@ -197,46 +156,6 @@ class MeetDetailActivity :
                 }
             })
         }
-    }
-
-    private fun setupBottomSheet() {
-        BottomSheetBehavior.from(binding.bottomSheet)
-            .also {
-                sheetCallback = object : BottomSheetCallback() {
-                    override fun onStateChanged(view: View, newState: Int) {
-
-                    }
-
-                    override fun onSlide(view: View, slideOffset: Float) {
-                        supportFragmentManager.fragments.find { it is ChatFragment }
-                            ?.let { chatFragment ->
-                                (chatFragment as ChatFragment).inputViewTransY(getChatInputY(view).toInt())
-                            }
-                    }
-                }
-                it.addBottomSheetCallback(sheetCallback)
-                Handler().postDelayed({
-                    sheetCallback.onSlide(binding.bottomSheet, 0f)
-                }, 50)
-            }
-
-        binding.bottomSheet.maxHeight =
-            getBottomSheetFullHeight()
-    }
-
-    private fun getChatInputY(rootView: View) =
-        rootView.height - rootView.y + getBottomSheetTopMargin()
-
-    private fun getBottomSheetTopMargin() = (ViewUtil.getStatusBarHeight(this) +
-            ViewUtil.convertDpToPixel(this, 95f)).toInt()
-
-    private fun getBottomSheetFullHeight() =
-        (getWindowHeight() - getBottomSheetTopMargin())
-
-    private fun getWindowHeight(): Int {
-        val displayMetrics = DisplayMetrics()
-        windowManager?.defaultDisplay?.getMetrics(displayMetrics)
-        return displayMetrics.heightPixels
     }
 
     private fun drawLine(naverMap: NaverMap, points: List<LatLng>) {
@@ -284,10 +203,7 @@ class MeetDetailActivity :
                 isCompassEnabled = false
                 isScaleBarEnabled = false
                 isZoomControlEnabled = false
-                logoGravity = Gravity.END
-                setLogoMargin(0, 0, 0, 0)
             }
-            setContentPadding(250, 250, 250, 400)
         }
 
         val meetPlaceMarker = Marker().apply {
@@ -296,8 +212,18 @@ class MeetDetailActivity :
             icon = OverlayImage.fromResource(R.drawable.ic_arrival_place)
         }
 
-        naverMap.addOnLocationChangeListener { location ->
-            myLatLng = LatLng(location.latitude, location.longitude)
+        var cameraZoom = naverMap.cameraPosition.zoom
+        naverMap.addOnCameraChangeListener { reason, animated ->
+            if (cameraZoom > naverMap.cameraPosition.zoom) {
+
+            } else {
+
+            }
+            cameraZoom = naverMap.cameraPosition.zoom
+            if (reason == REASON_GESTURE) {
+                naverMap.locationTrackingMode = LocationTrackingMode.NoFollow
+                binding.btnLocation.visibility = View.VISIBLE
+            }
         }
 
         naverMap.setOnMapLongClickListener { point, coord ->
@@ -313,82 +239,6 @@ class MeetDetailActivity :
                     }
                 }
                 it.marker.map = naverMap
-            }
-        }
-
-        val display = windowManager.defaultDisplay
-        val size = Point()
-        display.getSize(size)
-        val projection = naverMap.projection
-
-        val newMarker = Marker().apply {
-            icon = OverlayImage.fromResource(R.drawable.ic_baseline_account_circle_24)
-        }
-
-        naverMap.addOnCameraChangeListener { reason, animated ->
-            val topBottomLatLng: LatLng
-            val startEndLatLng: LatLng
-            val markerPoint = projection.toScreenLocation(meetPlaceMarker.position)
-            val center =
-                projection.fromScreenLocation(
-                    PointF(
-                        size.x / 2.toFloat(),
-                        size.y / 2.toFloat()
-                    )
-                )
-            val topStart = projection.fromScreenLocation(PointF(0f, 0f))
-            val topEnd = projection.fromScreenLocation(PointF(size.x.toFloat(), 0f))
-            val bottomStart = projection.fromScreenLocation(PointF(0f, size.y.toFloat()))
-            val bottomEnd =
-                projection.fromScreenLocation(PointF(size.x.toFloat(), size.y.toFloat()))
-
-            if (markerPoint.x >= 0 && markerPoint.x <= size.x && markerPoint.y >= 0 && markerPoint.y <= size.y) {
-                newMarker.map = null
-            } else {
-                newMarker.map = null
-                if (topStart.latitude == topEnd.latitude || topStart.longitude == bottomStart.longitude) {
-                    startEndLatLng = if (markerPoint.x > size.x / 2) {
-                        getLinearEquation(center, meetPlaceMarker.position, topEnd.longitude, "x")
-                    } else {
-                        getLinearEquation(center, meetPlaceMarker.position, topStart.longitude, "x")
-                    }
-                    topBottomLatLng = if (markerPoint.y > size.y / 2) {
-                        getLinearEquation(
-                            center,
-                            meetPlaceMarker.position,
-                            bottomStart.latitude,
-                            "y"
-                        )
-                    } else {
-                        getLinearEquation(center, meetPlaceMarker.position, topStart.latitude, "y")
-                    }
-                } else {
-                    startEndLatLng = if (markerPoint.x > size.x / 2) {
-                        getLatLng(topEnd, bottomEnd, center, meetPlaceMarker.position)
-                    } else {
-                        getLatLng(topStart, bottomStart, center, meetPlaceMarker.position)
-                    }
-                    topBottomLatLng = if (markerPoint.y > size.y / 2) {
-                        getLatLng(bottomStart, bottomEnd, center, meetPlaceMarker.position)
-                    } else {
-                        getLatLng(topStart, topEnd, center, meetPlaceMarker.position)
-                    }
-                }
-                val startEnd = sqrt(
-                    (startEndLatLng.longitude - center.longitude) * (startEndLatLng.longitude - center.longitude) +
-                            (startEndLatLng.latitude - center.latitude) * (startEndLatLng.latitude - center.latitude)
-                )
-                val topBottom = sqrt(
-                    (topBottomLatLng.longitude - center.longitude) * (topBottomLatLng.longitude - center.longitude) +
-                            (topBottomLatLng.latitude - center.latitude) * (topBottomLatLng.latitude - center.latitude)
-                )
-                if (startEnd < topBottom) {
-                    newMarker.position = startEndLatLng
-                    newMarker.map = naverMap
-                } else if (startEnd > topBottom) {
-                    newMarker.position = topBottomLatLng
-                    newMarker.map = naverMap
-                }
             }
         }
     }
@@ -446,7 +296,10 @@ class MeetDetailActivity :
                             val imageMarkerView = LayoutInflater.from(this)
                                 .inflate(R.layout.view_round_marker, binding.rootView, false)
                                 .apply {
-                                    setImage(findViewById<CircleImageView>(R.id.iv_image), deviceToken.orEmpty())
+                                    setImage(
+                                        findViewById<CircleImageView>(R.id.iv_image),
+                                        deviceToken.orEmpty()
+                                    )
                                 }
 
                             viewModel.addUser(
@@ -510,6 +363,10 @@ class MeetDetailActivity :
     private fun moveLocation(latLng: LatLng, zoom: Double) {
         naverMap.locationTrackingMode = LocationTrackingMode.Follow
         val cameraUpdate = CameraUpdate.scrollAndZoomTo(latLng, zoom)
+            .finishCallback {
+                binding.btnLocation.visibility = View.GONE
+            }
+
         naverMap.moveCamera(cameraUpdate)
     }
 
@@ -520,7 +377,6 @@ class MeetDetailActivity :
             latitudeList.add(it.marker.position.latitude)
             longitudeList.add(it.marker.position.longitude)
         }
-
 
         val cameraUpdate =
             CameraUpdate.fitBounds(
@@ -535,40 +391,11 @@ class MeetDetailActivity :
                     )
                 ),
                 20
-            )
+            ).finishCallback {
+                binding.btnLocation.visibility = View.GONE
+            }
         naverMap.locationTrackingMode = LocationTrackingMode.NoFollow
         naverMap.moveCamera(cameraUpdate)
-    }
-
-    private fun getLinearEquation(
-        point1: LatLng,
-        point2: LatLng,
-        point: Double,
-        value: String
-    ): LatLng {
-        val a =
-            (point2.latitude - point1.latitude) / (point2.longitude - point1.longitude)
-        val b = -(a * point1.longitude) + point1.latitude
-        return if (value == "x") {
-            LatLng((a * point) + b, point)
-        } else {
-            LatLng(point, (point - b) / a)
-        }
-    }
-
-    private fun getLatLng(
-        point1: LatLng,
-        point2: LatLng,
-        centerPoint: LatLng,
-        markerPoint: LatLng
-    ): LatLng {
-        val a =
-            (point2.latitude - point1.latitude) / (point2.longitude - point1.longitude)
-        val b = -(a * point1.longitude) + point1.latitude
-        val c =
-            (markerPoint.latitude - centerPoint.latitude) / (markerPoint.longitude - centerPoint.longitude)
-        val d = -(c * centerPoint.longitude) + centerPoint.latitude
-        return LatLng((a * (d - b) / (a - c)) + b, ((d - b) / (a - c)))
     }
 
     companion object {

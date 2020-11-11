@@ -11,104 +11,75 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.coordinatorlayout.widget.CoordinatorLayout
-            android:layout_width="match_parent"
+        <fragment
+            android:id="@+id/map"
+            android:name="com.naver.maps.map.MapFragment"
+            android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/tab_bottom"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/top_panel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <fragment
-                    android:id="@+id/map"
-                    android:name="com.naver.maps.map.MapFragment"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/top_panel"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <ImageView
-                        android:id="@+id/btn_back"
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:layout_marginStart="22dp"
-                        android:layout_marginTop="29.18dp"
-                        android:src="@drawable/ic_back"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <ToggleButton
-                        android:textOn=""
-                        android:textOff=""
-                        android:id="@+id/btn_mountain"
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:layout_marginTop="29.18dp"
-                        android:layout_marginEnd="22dp"
-                        android:background="@drawable/selector_toggle_btn"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <ImageView
-                    android:id="@+id/btn_location"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_marginEnd="22dp"
-                    android:src="@drawable/ic_loaction"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/top_panel" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/bottom_sheet"
-                style="@style/CustomBottomSheet"
-                android:layout_width="match_parent"
+            <ImageView
+                android:id="@+id/btn_back"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/colorAccent"
-                app:backgroundTint="?attr/colorSurface"
-                app:behavior_hideable="false"
-                app:behavior_peekHeight="108dp"
-                app:layout_behavior="@string/bottom_sheet_behavior">
+                android:layout_marginStart="22dp"
+                android:layout_marginTop="29.18dp"
+                android:src="@drawable/ic_back"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <com.manna.view.NonSwipeViewPager
-                    android:id="@+id/view_pager"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:saveEnabled="false"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            <ToggleButton
+                android:id="@+id/btn_mountain"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:layout_marginTop="29.18dp"
+                android:layout_marginEnd="22dp"
+                android:background="@drawable/selector_toggle_btn"
+                android:textOff=""
+                android:textOn=""
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tab_bottom"
-            android:layout_width="0dp"
-            android:layout_height="70dp"
-            android:paddingBottom="25dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+        <ImageView
+            android:id="@+id/btn_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="22dp"
+            android:src="@drawable/ic_map_active"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:tabIndicatorFullWidth="false"
-            app:tabIndicatorGravity="top"
-            app:tabTextAppearance="@style/TabText" />
+            app:layout_constraintTop_toBottomOf="@+id/top_panel" />
+
+        <ImageView
+            android:id="@+id/btn_chatting"
+            android:layout_width="53dp"
+            android:layout_height="53dp"
+            android:layout_marginStart="22dp"
+            android:layout_marginBottom="38dp"
+            android:src="@drawable/ic_chatting"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/btn_chart"
+            android:layout_width="53dp"
+            android:layout_height="53dp"
+            android:layout_marginEnd="22dp"
+            android:layout_marginBottom="38dp"
+            android:src="@drawable/ic_chart"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
