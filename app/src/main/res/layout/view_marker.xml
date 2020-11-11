@@ -11,12 +11,9 @@
         android:layout_height="wrap_content"
         android:alpha="0.9"
         android:background="@drawable/marker_box"
-        android:paddingStart="12dp"
-        android:paddingTop="16dp"
-        android:paddingEnd="12dp"
-        android:paddingBottom="16dp"
+        android:gravity="center"
         android:textColor="@color/white"
-        android:textSize="15dp"
+        android:textSize="16sp"
         tools:text="우석" />
 
 </androidx.cardview.widget.CardView>
