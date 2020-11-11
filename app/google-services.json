@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "847619466932",
+    "firebase_url": "https://whereareyou-791ec.firebaseio.com",
+    "project_id": "whereareyou-791ec",
+    "storage_bucket": "whereareyou-791ec.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:847619466932:android:919a12f22246a2ab9e59e1",
+        "android_client_info": {
+          "package_name": "com.manna"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "847619466932-rgb9m23v4qegsdfppq31k73n0sp4n8d0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.manna",
+            "certificate_hash": "530b47cf2da4332a5e55198a1849a34286a6a67f"
+          }
+        },
+        {
+          "client_id": "847619466932-ljlm94078502v2fr1u06mu4gkkkrb4of.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDjRMWZJOTor6m7qNEVysiQC88XmT7w5Ao"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "847619466932-ljlm94078502v2fr1u06mu4gkkkrb4of.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

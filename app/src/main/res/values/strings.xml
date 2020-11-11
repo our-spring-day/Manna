@@ -2,4 +2,38 @@
     <string name="app_name">Manna</string>
 
     <string name="naver_client_id">djbet5rxjp</string>
+
+
+
+
+
+    <string name="memo_list_title">메모장</string>
+    <string name="add_memo">메모 추가</string>
+    <string name="memo_register_title">메모 작성</string>
+    <string name="hint_title">제목</string>
+    <string name="helper_text_title">제목을 입력해 주세요.</string>
+    <string name="helper_text_content">내용을 입력해 주세요.</string>
+    <string name="hint_content">내용</string>
+    <string name="picture">사진</string>
+    <string name="add">추가하기</string>
+
+    <string name="pic_loading">사진 가져오는 중</string>
+    <string name="pic_all">모든 사진</string>
+    <string name="tools_content">내용내용내용 내용내용내용</string>
+    <string name="tools_title">제목 입니다.</string>
+    <string name="edit">수정</string>
+    <string name="delete">삭제</string>
+    <string name="memo_edit_title">메모 수정</string>
+    <string name="url_input_help">이미지 주소를 입력해 주세요.</string>
+    <string name="url">Url input</string>
+    <string name="url_input_title">주소로 이미지 추가</string>
+    <string name="cancel">취소</string>
+    <string name="ok">확인</string>
+    <string name="toat_url_duplicate">같은 주소의 이미지는 하나만 등록할 수 있습니다.</string>
+    <string name="toast_url_invalid">유효하지 않은 주소입니다.</string>
+    <string name="img_empty">이미지가 없습니다.\n수정을 눌러 추가 해보세요.</string>
+    <string name="denied_camera">사진 촬영을 위해\n카메라 권한에 동의해주세요.</string>
+    <string name="denied_storage">갤러리 접근을 위해\n저장공간 권한에 동의해주세요.</string>
+    <string name="input_chat_hint">메시지 작성</string>
+    <string name="dda_bong">👍</string>
 </resources>
