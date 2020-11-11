@@ -20,6 +20,8 @@ import io.socket.client.IO
 import io.socket.client.Manager
 import io.socket.client.Socket
 import io.socket.emitter.Emitter
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import java.net.URI
 
 class ChatFragment : Fragment() {
@@ -42,7 +44,9 @@ class ChatFragment : Fragment() {
             val chatResponse = Gson().fromJson(response.toString(), ChatResponse::class.java)
             Logger.d("chatResponse: $chatResponse")
             if (chatResponse.type == ChatResponse.Type.CHAT) {
-                chatAdapter.submitList(chatAdapter.currentList + chatResponse)
+                chatAdapter.submitList(chatAdapter.currentList + chatResponse) {
+                    binding.chatView.smoothScrollToPosition(chatAdapter.itemCount)
+                }
             }
         }
     }
@@ -78,66 +82,48 @@ class ChatFragment : Fragment() {
         val roomId = arguments?.getString(ARG_ROOM_ID).orEmpty()
         connect(roomId)
 
-//        val behavior = BottomSheetBehavior.from(requireActivity().bottom_sheet)
-//
-//        behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-//            override fun onStateChanged(bottomSheet: View, newState: Int) {
-//                when (newState) {
-//                    BottomSheetBehavior.STATE_EXPANDED -> {
-//                        if (keyboardHeight > 0) {
-//                            inputViewTransY(
-//                                ViewUtil.getScreenHeightPixels(activity) - keyboardHeight - ViewUtil.convertDpToPixel(
-//                                    requireContext(),
-//                                    12f
-//                                ).toInt()
-//                            )
-//                        } else {
-//                            (activity as MeetDetailActivity).resetBottomSheet(1f)
-//                        }
-//                    }
-//                    BottomSheetBehavior.STATE_COLLAPSED -> {
-//                        binding.inputChat.clearFocus()
-//                    }
-//                }
-//            }
-//
-//            override fun onSlide(bottomSheet: View, slideOffset: Float) {
-//
-//            }
-//        })
-//
-//        binding.inputChat.setOnFocusChangeListener { v, hasFocus ->
-//            if (hasFocus) {
-//                if (behavior.state != BottomSheetBehavior.STATE_EXPANDED) {
-//                    behavior.state = BottomSheetBehavior.STATE_EXPANDED
-//                }
-//            }
-//        }
-
         HeightProvider(requireActivity()).init()
             .setHeightListener { height ->
                 keyboardHeight = height
 
-                if (height > 0) {
-                    inputViewTransY(
-                        ViewUtil.getScreenHeightPixels(activity) - height - ViewUtil.convertDpToPixel(
-                            requireContext(),
-                            12f
-                        ).toInt()
-                    )
-                } else {
-                    //(activity as MeetDetailActivity).resetBottomSheet(1f)
+                val keyboardTop = ViewUtil.getScreenHeightPixels(activity) - height + ViewUtil.getStatusBarHeight(context)
+
+                binding.chatView.layoutParams.height =
+                    keyboardTop - binding.chatInputView.height
+                binding.chatView.requestLayout()
+
+                inputViewTransY(keyboardTop)
+
+                if (height == 0) {
                     binding.inputChat.clearFocus()
+                } else {
+                    binding.chatView.smoothScrollToPosition(chatAdapter.itemCount)
                 }
             }
+    }
+
+    private fun inputViewTransY(y: Int) {
+        binding.chatInputView.animate()
+            .y((y - binding.chatInputView.height).toFloat())
+            .setDuration(0)
+            .start()
     }
 
     private fun connect(roomId: String) {
         if (chatSocket?.connected() == true) return
 
-        val options = IO.Options()
-        options.query =
-            "mannaID=${roomId}&deviceToken=${UserHolder.userResponse?.deviceId}"
+
+        val interceptor = HttpLoggingInterceptor().apply {
+            setLevel(HttpLoggingInterceptor.Level.BODY)
+        }
+
+        val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
+
+        val options = IO.Options().apply {
+            callFactory = client
+            webSocketFactory = client
+            query = "mannaID=${roomId}&deviceToken=${UserHolder.userResponse?.deviceId}"
+        }
 
         val chatManager = Manager(URI(MeetApi.SOCKET_URL), options)
 
@@ -168,16 +154,6 @@ class ChatFragment : Fragment() {
         chatSocket?.disconnect()
         chatSocket?.off(CHAT_CONNECT, onChatConnectReceiver)
         chatSocket?.off(CHAT_MESSAGE, onChatReceiver)
-    }
-
-
-    fun inputViewTransY(y: Int) {
-        binding.chatInputView.animate()
-            .y((y - binding.chatInputView.height).toFloat())
-            .setDuration(0)
-            .start()
-
-        binding.chatView.requestLayout()
     }
 
     companion object {

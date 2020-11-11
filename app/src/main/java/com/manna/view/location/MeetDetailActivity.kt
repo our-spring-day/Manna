@@ -4,11 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.Point
-import android.graphics.PointF
 import android.location.Location
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
@@ -21,6 +18,7 @@ import com.manna.common.BaseActivity
 import com.manna.databinding.ActivityMeetDetailBinding
 import com.manna.ext.ViewUtil
 import com.manna.view.User
+import com.manna.view.chat.ChatFragment
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.LatLngBounds
 import com.naver.maps.map.*
@@ -31,7 +29,6 @@ import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
-import kotlin.math.sqrt
 
 @AndroidEntryPoint
 class MeetDetailActivity :
@@ -113,8 +110,19 @@ class MeetDetailActivity :
                     moveLocation()
                 }
             }
-        }
 
+            btnChatting.setOnClickListener {
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.frag_container, ChatFragment.newInstance(roomId), ChatFragment::class.java.simpleName)
+                    .addToBackStack(null)
+                    .commit()
+            }
+
+            btnChart.setOnClickListener {
+
+            }
+
+        }
     }
 
     private fun initViewModel() {
