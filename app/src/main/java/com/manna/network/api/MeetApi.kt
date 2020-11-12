@@ -1,14 +1,12 @@
 package com.manna.network.api
 
 import com.google.gson.JsonObject
+import com.manna.network.model.chat.ChatListResponse
 import com.manna.network.model.meet.MeetResponse
 import com.manna.network.model.meet.MeetResponseItem
 import com.manna.network.model.meet.UserResponse
 import io.reactivex.Single
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface MeetApi {
 
@@ -24,6 +22,12 @@ interface MeetApi {
 
     @POST("manna")
     fun registerMeet(@Body body: JsonObject): Single<MeetResponseItem>
+
+    @GET("manna/{uuid}/chat")
+    fun getChatList(
+        @Path("uuid") roomId: String,
+        @Query("deviceToken") deviceId: String
+    ): Single<ChatListResponse>
 
     companion object {
         const val BASE_URL = "https://manna.duckdns.org:18888/"

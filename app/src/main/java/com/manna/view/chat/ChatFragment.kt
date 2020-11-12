@@ -1,5 +1,6 @@
 package com.manna.view.chat
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,14 +9,16 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
-import com.manna.ChatResponse
 import com.manna.Logger
 import com.manna.R
 import com.manna.UserHolder
 import com.manna.databinding.FragmentChatBinding
+import com.manna.di.ApiModule
 import com.manna.ext.HeightProvider
 import com.manna.ext.ViewUtil
 import com.manna.network.api.MeetApi
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import io.socket.client.IO
 import io.socket.client.Manager
 import io.socket.client.Socket
@@ -43,9 +46,20 @@ class ChatFragment : Fragment() {
 
             val chatResponse = Gson().fromJson(response.toString(), ChatResponse::class.java)
             Logger.d("chatResponse: $chatResponse")
+
             if (chatResponse.type == ChatResponse.Type.CHAT) {
-                chatAdapter.submitList(chatAdapter.currentList + chatResponse) {
-                    binding.chatView.smoothScrollToPosition(chatAdapter.itemCount)
+                val chatType =
+                    if (chatResponse.sender?.deviceToken == UserHolder.userResponse?.deviceId) ChatItem.Type.MY_CHAT else ChatItem.Type.CHAT
+                val chatItem = ChatItem(
+                    message = chatResponse.message?.message.orEmpty(),
+                    name = chatResponse.sender?.username.orEmpty(),
+                    timeStamp = chatResponse.message?.createTimestamp ?: -1L,
+                    type = chatType,
+                    deviceToken = chatResponse.sender?.deviceToken.orEmpty()
+                )
+
+                chatAdapter.submitList(chatAdapter.currentList + chatItem) {
+                    setChatViewScrollEnd()
                 }
             }
         }
@@ -61,8 +75,45 @@ class ChatFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("CheckResult")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
+        val roomId = arguments?.getString(ARG_ROOM_ID).orEmpty()
+        connect(roomId)
+
+        ApiModule.provideMeetApi()
+            .getChatList(roomId, UserHolder.userResponse?.deviceId.orEmpty())
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ chatListResponse ->
+
+                chatListResponse.sortBy { it.createTimestamp }
+
+                var prevDeviceToken = ""
+                val chatItems = chatListResponse.map {
+                    val chatType =
+                        if (it.sender?.deviceToken == UserHolder.userResponse?.deviceId) ChatItem.Type.MY_CHAT else ChatItem.Type.CHAT
+
+                    val deviceToken = if (prevDeviceToken != it.sender?.deviceToken) it.sender?.deviceToken.orEmpty() else ""
+
+                    prevDeviceToken = it.sender?.deviceToken.orEmpty()
+                    ChatItem(
+                        message = it.message.orEmpty(),
+                        name = it.sender?.username.orEmpty(),
+                        timeStamp = it.createTimestamp ?: -1L,
+                        type = chatType,
+                        deviceToken = deviceToken
+                    )
+                }
+
+                chatAdapter.submitList(chatItems) {
+                    setChatViewScrollEnd()
+                }
+            }, {
+                Logger.d("$it")
+            })
 
 
 
@@ -75,15 +126,19 @@ class ChatFragment : Fragment() {
         }
 
         binding.chatView.run {
-            setPadding(paddingStart, ViewUtil.getStatusBarHeight(context), paddingRight, paddingBottom)
+            setPadding(
+                paddingStart,
+                ViewUtil.getStatusBarHeight(context),
+                paddingRight,
+                paddingBottom
+            )
             layoutManager = LinearLayoutManager(requireContext())
             chatAdapter = ChatAdapter()
             adapter = chatAdapter
         }
 
 
-        val roomId = arguments?.getString(ARG_ROOM_ID).orEmpty()
-        connect(roomId)
+
 
         HeightProvider(requireActivity()).init()
             .setHeightListener { height ->
@@ -103,9 +158,13 @@ class ChatFragment : Fragment() {
                 if (height == 0) {
                     binding.inputChat.clearFocus()
                 } else {
-                    binding.chatView.smoothScrollToPosition(chatAdapter.itemCount)
+                    setChatViewScrollEnd()
                 }
             }
+    }
+
+    private fun setChatViewScrollEnd() {
+        binding.chatView.smoothScrollToPosition(chatAdapter.itemCount)
     }
 
     private fun inputViewTransY(y: Int) {
@@ -118,16 +177,16 @@ class ChatFragment : Fragment() {
     private fun connect(roomId: String) {
         if (chatSocket?.connected() == true) return
 
-
-        val interceptor = HttpLoggingInterceptor().apply {
-            setLevel(HttpLoggingInterceptor.Level.BODY)
-        }
-
-        val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
-
         val options = IO.Options().apply {
-            callFactory = client
-            webSocketFactory = client
+            if (Logger.socketLogging) {
+                val interceptor = HttpLoggingInterceptor().apply {
+                    setLevel(HttpLoggingInterceptor.Level.BODY)
+                }
+
+                val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
+                callFactory = client
+                webSocketFactory = client
+            }
             query = "mannaID=${roomId}&deviceToken=${UserHolder.userResponse?.deviceId}"
         }
 

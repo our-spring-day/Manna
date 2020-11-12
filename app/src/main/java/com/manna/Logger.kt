@@ -3,6 +3,9 @@ package com.manna
 import android.util.Log
 
 object Logger {
+    var socketLogging = false
+    var apiLogging = true
+
     var lineNumber = 0
     var className: String? = null
     var methodName: String? = null

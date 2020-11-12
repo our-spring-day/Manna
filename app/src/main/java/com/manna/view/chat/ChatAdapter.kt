@@ -4,18 +4,16 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import com.manna.ChatResponse
 import com.manna.R
-import com.manna.UserHolder
 
 class ChatAdapter :
-    ListAdapter<ChatResponse, ChatAdapterViewHolder>(
-        object : DiffUtil.ItemCallback<ChatResponse>() {
-            override fun areItemsTheSame(oldItem: ChatResponse, newItem: ChatResponse): Boolean =
-                oldItem.message?.createTimestamp == newItem.message?.createTimestamp
+    ListAdapter<ChatItem, ChatAdapterViewHolder>(
+        object : DiffUtil.ItemCallback<ChatItem>() {
+            override fun areItemsTheSame(oldItem: ChatItem, newItem: ChatItem): Boolean =
+                oldItem.timeStamp == newItem.timeStamp && oldItem.message == newItem.message
 
 
-            override fun areContentsTheSame(oldItem: ChatResponse, newItem: ChatResponse): Boolean =
+            override fun areContentsTheSame(oldItem: ChatItem, newItem: ChatItem): Boolean =
                 oldItem == newItem
 
         }) {
@@ -39,12 +37,11 @@ class ChatAdapter :
         }
     }
 
-    override fun getItemViewType(position: Int): Int {
-        return when (currentList[position].sender?.deviceToken) {
-            UserHolder.userResponse?.deviceId -> MY_CHAT
-            else -> CHAT
+    override fun getItemViewType(position: Int): Int =
+        when (currentList[position].type) {
+            ChatItem.Type.MY_CHAT -> MY_CHAT
+            ChatItem.Type.CHAT -> CHAT
         }
-    }
 
     companion object {
         private const val CHAT = 0
