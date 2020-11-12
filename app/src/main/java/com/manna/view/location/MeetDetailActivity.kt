@@ -259,11 +259,12 @@ class MeetDetailActivity :
         naverMap.minZoom = 5.0
         naverMap.maxZoom = 18.0
         naverMap.addOnCameraChangeListener { reason, animated ->
-            markerHolders.forEach {
-                it.marker.width = (28 - naverMap.cameraPosition.zoom.toInt()) * 10
-                it.marker.height = (28 - naverMap.cameraPosition.zoom.toInt()) * 10
+            if(naverMap.cameraPosition.zoom > 13.0){
+                markerHolders.forEach {
+                    it.marker.width = (28 - naverMap.cameraPosition.zoom.toInt()) * 12
+                    it.marker.height = (28 - naverMap.cameraPosition.zoom.toInt()) * 12
+                }
             }
-
             if (reason == REASON_GESTURE) {
                 overlayState = ACTIVE
                 updateBtn()
