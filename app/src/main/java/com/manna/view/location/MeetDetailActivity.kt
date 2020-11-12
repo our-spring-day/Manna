@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
@@ -247,6 +248,8 @@ class MeetDetailActivity :
             }
         }
 
+        checkState()
+
         val meetPlaceMarker = Marker().apply {
             position = LatLng(37.475370, 126.980438)
             map = naverMap
@@ -298,19 +301,25 @@ class MeetDetailActivity :
     }
 
 
-    private fun checkState(marker: Marker, deviceToken: String) {
-        for (key in lastTimeStamp.keys) {
-            lastTimeStamp[key]
-            markerHolders
-        }
-        if (lastTimeStamp.containsKey(deviceToken)) {
-            if (System.currentTimeMillis() - lastTimeStamp[deviceToken]!! > 60000) {
-                marker.alpha = 0.5f
+    private fun checkState() {
+        Handler().postDelayed({
+            for (key in lastTimeStamp.keys) {
+                if (System.currentTimeMillis() - lastTimeStamp[key]!! > 60000) {
+                    markerHolders.forEach {
+                        if (it.uuid == key) {
+                            it.marker.alpha = 0.5f
+                        }
+                    }
+                } else {
+                    markerHolders.forEach {
+                        if (it.uuid == key) {
+                            it.marker.alpha = 1f
+                        }
+                    }
+                }
             }
-        } else {
-            marker.alpha = 1f
-        }
-        lastTimeStamp[deviceToken] = System.currentTimeMillis()
+            checkState()
+        }, 1000L)
     }
 
     private fun handleLocation(locationResponse: LocationResponse) {
@@ -360,8 +369,9 @@ class MeetDetailActivity :
                             it.icon = OverlayImage.fromView(markerView)
                         }
 
+                lastTimeStamp[deviceToken] = System.currentTimeMillis()
+
                 marker.run {
-                    checkState(this, deviceToken)
                     position = LatLng(latLng.latitude, latLng.longitude)
                     map = naverMap
                 }
@@ -371,7 +381,7 @@ class MeetDetailActivity :
     }
 
     private fun countDown() {
-        val timer = object : CountDownTimer(1260000, 1000) {
+        val timer = object : CountDownTimer(3600000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 val getMin =
                     millisUntilFinished - millisUntilFinished / (60 * 60 * 1000)
