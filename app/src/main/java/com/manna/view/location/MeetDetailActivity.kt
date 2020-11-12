@@ -244,7 +244,7 @@ class MeetDetailActivity :
                 isCompassEnabled = false
                 isScaleBarEnabled = false
                 isZoomControlEnabled = false
-                setContentPadding(200, 200, 200, 200)
+                setContentPadding(250, 250, 250, 250)
             }
         }
 
@@ -256,14 +256,14 @@ class MeetDetailActivity :
             icon = OverlayImage.fromResource(R.drawable.ic_arrival_place)
         }
 
-        var cameraZoom = naverMap.cameraPosition.zoom
+        naverMap.minZoom = 5.0
+        naverMap.maxZoom = 18.0
         naverMap.addOnCameraChangeListener { reason, animated ->
-            if (cameraZoom > naverMap.cameraPosition.zoom) {
-
-            } else {
-
+            markerHolders.forEach {
+                it.marker.width = (28 - naverMap.cameraPosition.zoom.toInt()) * 10
+                it.marker.height = (28 - naverMap.cameraPosition.zoom.toInt()) * 10
             }
-            cameraZoom = naverMap.cameraPosition.zoom
+
             if (reason == REASON_GESTURE) {
                 overlayState = ACTIVE
                 updateBtn()
