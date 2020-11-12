@@ -11,7 +11,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import androidx.activity.viewModels
-import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.google.gson.JsonObject
 import com.manna.*
@@ -29,6 +28,7 @@ import com.naver.maps.map.overlay.MultipartPathOverlay
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.activity_meet_detail.*
 import java.util.*
 
 @AndroidEntryPoint
@@ -61,6 +61,8 @@ class MeetDetailActivity :
 
     private val viewModel by viewModels<MeetDetailViewModel>()
 
+    var overlayState = DEFAULT
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -71,6 +73,8 @@ class MeetDetailActivity :
             FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE)
 
         countDown()
+
+        updateBtn()
 
         initView()
 
@@ -98,12 +102,29 @@ class MeetDetailActivity :
                 onBackPressed()
             }
 
-            btnLocation.setOnClickListener {
-                if (btnMountain.isChecked) {
-                    moveLocation(myLatLng, 13.0)
-                } else {
-                    moveLocation()
+            btnLocation.setOnCheckedChangeListener { buttonView, isChecked ->
+                when (overlayState) {
+                    DEFAULT -> {
+                        if (btnMountain.isChecked) {
+                            overlayState = TRACKING
+                            naverMap.locationTrackingMode = LocationTrackingMode.Face
+
+                        }
+                    }
+                    ACTIVE -> {
+                        overlayState = DEFAULT
+                        if (btnMountain.isChecked) {
+                            moveLocation(myLatLng, 13.0)
+                        } else {
+                            moveLocation()
+                        }
+                    }
+                    TRACKING -> {
+                        overlayState = DEFAULT
+                        naverMap.locationTrackingMode = LocationTrackingMode.NoFollow
+                    }
                 }
+                updateBtn()
             }
 
             btnMountain.setOnCheckedChangeListener { _, isChecked ->
@@ -112,9 +133,21 @@ class MeetDetailActivity :
                 } else {
                     moveLocation()
                 }
+                overlayState = DEFAULT
+                updateBtn()
             }
         }
 
+    }
+
+    private fun updateBtn() {
+        var btnDrawable = R.drawable.ic_map_default
+        when (overlayState) {
+            DEFAULT -> btnDrawable = R.drawable.ic_map_default
+            ACTIVE -> btnDrawable = R.drawable.ic_map_active
+            TRACKING -> btnDrawable = R.drawable.ic_map_tracking
+        }
+        btn_location.setButtonDrawable(btnDrawable)
     }
 
     private fun initViewModel() {
@@ -190,13 +223,20 @@ class MeetDetailActivity :
 
     @SuppressLint("MissingPermission")
     override fun onMapReady(naverMap: NaverMap) {
+        val locationOverlay = naverMap.locationOverlay
+        locationOverlay.isVisible = true
+        locationOverlay.icon = OverlayImage.fromResource(R.drawable.ic_location_overlay)
 
         fusedLocationProvider.enableLocationCallback()
 
+        this.naverMap = naverMap
+        naverMap.locationSource = locationSource
+        naverMap.locationTrackingMode = LocationTrackingMode.NoFollow
+
         this.naverMap = naverMap.apply {
-            locationSource = locationSource
-            locationTrackingMode = LocationTrackingMode.NoFollow
-            isIndoorEnabled = true
+//            locationSource = locationSource
+//            locationTrackingMode = LocationTrackingMode.NoFollow
+//            isIndoorEnabled = true
             uiSettings.run {
                 isIndoorLevelPickerEnabled = true
                 isLocationButtonEnabled = false
@@ -222,12 +262,8 @@ class MeetDetailActivity :
             }
             cameraZoom = naverMap.cameraPosition.zoom
             if (reason == REASON_GESTURE) {
-                binding.btnLocation.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        this,
-                        R.drawable.ic_map_active
-                    )
-                )
+                overlayState = ACTIVE
+                updateBtn()
                 binding.btnLocation.visibility = View.VISIBLE
                 naverMap.locationTrackingMode = LocationTrackingMode.NoFollow
             }
@@ -266,7 +302,6 @@ class MeetDetailActivity :
         for (key in lastTimeStamp.keys) {
             lastTimeStamp[key]
             markerHolders
-
         }
         if (lastTimeStamp.containsKey(deviceToken)) {
             if (System.currentTimeMillis() - lastTimeStamp[deviceToken]!! > 60000) {
@@ -399,17 +434,7 @@ class MeetDetailActivity :
     }
 
     private fun moveLocation(latLng: LatLng, zoom: Double) {
-        naverMap.locationTrackingMode = LocationTrackingMode.Follow
         val cameraUpdate = CameraUpdate.scrollAndZoomTo(latLng, zoom)
-            .finishCallback {
-                binding.btnLocation.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        this,
-                        R.drawable.ic_map_default
-                    )
-                )
-            }
-
         naverMap.moveCamera(cameraUpdate)
     }
 
@@ -434,14 +459,7 @@ class MeetDetailActivity :
                     )
                 ),
                 20
-            ).finishCallback {
-                binding.btnLocation.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        this,
-                        R.drawable.ic_map_default
-                    )
-                )
-            }
+            )
         naverMap.locationTrackingMode = LocationTrackingMode.NoFollow
         naverMap.moveCamera(cameraUpdate)
     }
@@ -449,6 +467,9 @@ class MeetDetailActivity :
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
         private const val EXTRA_ROOM_ID = "room_id"
+        private const val DEFAULT = "default"
+        private const val ACTIVE = "active"
+        private const val TRACKING = "tracking"
 
         fun getIntent(context: Context, roomId: String) =
             Intent(
