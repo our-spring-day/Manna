@@ -29,7 +29,7 @@
             android:paddingStart="13dp"
             android:paddingTop="4dp"
             android:paddingBottom="4dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/bottom_view"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
@@ -37,7 +37,6 @@
                 android:id="@+id/input_chat"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="82dp"
                 android:background="@drawable/chat_input_text"
                 android:hint="@string/input_chat_hint"
                 android:minHeight="43dp"
@@ -68,6 +67,15 @@
                 app:layout_constraintStart_toEndOf="@id/input_chat" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+            android:id="@+id/bottom_view"
+            android:layout_width="0dp"
+            android:background="@color/fff6f6f6"
+            android:layout_height="82dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
