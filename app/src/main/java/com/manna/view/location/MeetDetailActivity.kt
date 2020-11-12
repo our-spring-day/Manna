@@ -8,6 +8,7 @@ import android.location.Location
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
@@ -244,7 +245,7 @@ class MeetDetailActivity :
                 isCompassEnabled = false
                 isScaleBarEnabled = false
                 isZoomControlEnabled = false
-                setContentPadding(250, 250, 250, 250)
+                //setContentPadding(250, 250, 250, 250)
             }
         }
 
@@ -264,7 +265,13 @@ class MeetDetailActivity :
                     it.marker.width = (28 - naverMap.cameraPosition.zoom.toInt()) * 12
                     it.marker.height = (28 - naverMap.cameraPosition.zoom.toInt()) * 12
                 }
+            } else {
+                markerHolders.forEach {
+                    it.marker.width = 16 * 12
+                    it.marker.height = 16 * 12
+                }
             }
+
             if (reason == REASON_GESTURE) {
                 overlayState = ACTIVE
                 updateBtn()
@@ -469,7 +476,7 @@ class MeetDetailActivity :
                         Collections.max(longitudeList)
                     )
                 ),
-                20
+                250
             )
         naverMap.locationTrackingMode = LocationTrackingMode.NoFollow
         naverMap.moveCamera(cameraUpdate)
