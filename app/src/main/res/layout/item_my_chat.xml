@@ -19,7 +19,6 @@
             android:background="@drawable/chat_bg"
             android:backgroundTint="@color/ff6979ff"
             android:maxWidth="248dp"
-            android:minWidth="100dp"
             android:paddingStart="10dp"
             android:paddingTop="7dp"
             android:paddingEnd="10dp"
