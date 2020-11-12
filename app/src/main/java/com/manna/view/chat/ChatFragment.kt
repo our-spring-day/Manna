@@ -17,7 +17,6 @@ import com.manna.di.ApiModule
 import com.manna.ext.HeightProvider
 import com.manna.ext.ViewUtil
 import com.manna.network.api.MeetApi
-import com.manna.network.model.chat.ChatListResponseItem
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import io.socket.client.IO
@@ -88,64 +87,45 @@ class ChatFragment : Fragment() {
 
         ApiModule.provideMeetApi()
             .getChatList(roomId, UserHolder.userResponse?.deviceId.orEmpty())
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ chatListResponse ->
-
+            .map { chatListResponse ->
                 chatListResponse.sortBy { it.createTimestamp }
 
+                chatListResponse.mapIndexed { index, chatListResponseItem ->
+                    val chatType =
+                        if (chatListResponseItem.sender?.deviceToken == UserHolder.userResponse?.deviceId) ChatItem.Type.MY_CHAT else ChatItem.Type.CHAT
 
 
-                val accList = mutableListOf<List<ChatListResponseItem>>()
-                var tempList = mutableListOf<ChatListResponseItem>()
-
-
-                var prevDate = ""
-                chatListResponse.forEachIndexed { index, chatListResponseItem ->
-
-                    val date = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.KOREA).format(chatListResponseItem.createTimestamp)
-
-                    if (index == 0) {
-                        tempList.add(chatListResponseItem)
-                        prevDate = date
-                        return@forEachIndexed
-                    }
-
-                    when {
-                        prevDate != date -> {
-                            accList.add(tempList)
-                            tempList = mutableListOf()
-                            tempList.add(chatListResponseItem)
-                        }
-                        chatListResponse[index-1].sender?.deviceToken == chatListResponseItem.sender?.deviceToken -> {
-                            tempList.add(chatListResponseItem)
-                        }
-                        else -> {
-                            accList.add(tempList)
-                            tempList = mutableListOf()
-                            tempList.add(chatListResponseItem)
+                    val deviceToken = if (index == 0) {
+                        chatListResponseItem.sender?.deviceToken.orEmpty()
+                    } else {
+                        val prevItem = chatListResponse[index - 1]
+                        val prevDate = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.KOREA)
+                            .format(prevItem.createTimestamp)
+                        val currentDate = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.KOREA)
+                            .format(chatListResponseItem.createTimestamp)
+                        if (
+                            prevItem.sender?.deviceToken != chatListResponseItem.sender?.deviceToken
+                            || prevDate != currentDate
+                        ) {
+                            chatListResponseItem.sender?.deviceToken.orEmpty()
+                        } else {
+                            ""
                         }
                     }
-                    prevDate = date
+
+                    ChatItem(
+                        message = chatListResponseItem.message.orEmpty(),
+                        name = chatListResponseItem.sender?.username.orEmpty(),
+                        timeStamp = chatListResponseItem.createTimestamp ?: -1L,
+                        type = chatType,
+                        deviceToken = deviceToken
+                    )
                 }
-
-
-                val chatItems = accList.flatMap {
-                    it.mapIndexed { index, chatListResponseItem ->
-                        val chatType =
-                            if (chatListResponseItem.sender?.deviceToken == UserHolder.userResponse?.deviceId) ChatItem.Type.MY_CHAT else ChatItem.Type.CHAT
-
-                        ChatItem(
-                            message = chatListResponseItem.message.orEmpty(),
-                            name = chatListResponseItem.sender?.username.orEmpty(),
-                            timeStamp = chatListResponseItem.createTimestamp ?: -1L,
-                            type = chatType,
-                            deviceToken = if (index == 0) chatListResponseItem.sender?.deviceToken.orEmpty() else ""
-                        )
-                    }
-                }
-
-                chatAdapter.submitList(chatItems) {
+            }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                chatAdapter.submitList(it) {
                     setChatViewScrollEnd()
                 }
             }, {
