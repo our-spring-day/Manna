@@ -40,6 +40,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
+                android:fontFamily="@font/noto_sans_kr_medium"
                 android:alpha="0.9"
                 android:id="@+id/tv_timer"
                 android:layout_width="wrap_content"
