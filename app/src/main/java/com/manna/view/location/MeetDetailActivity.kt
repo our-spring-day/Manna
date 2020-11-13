@@ -8,11 +8,11 @@ import android.location.Location
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import androidx.activity.viewModels
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.google.gson.JsonObject
 import com.manna.*
@@ -260,7 +260,7 @@ class MeetDetailActivity :
         naverMap.minZoom = 5.0
         naverMap.maxZoom = 18.0
         naverMap.addOnCameraChangeListener { reason, animated ->
-            if(naverMap.cameraPosition.zoom > 13.0){
+            if (naverMap.cameraPosition.zoom > 13.0) {
                 markerHolders.forEach {
                     it.marker.width = (28 - naverMap.cameraPosition.zoom.toInt()) * 12
                     it.marker.height = (28 - naverMap.cameraPosition.zoom.toInt()) * 12
@@ -331,6 +331,7 @@ class MeetDetailActivity :
     }
 
     private fun handleLocation(locationResponse: LocationResponse) {
+        checkUserType(locationResponse)
         locationResponse.sender?.username?.let { fromUserName ->
             val latLng = locationResponse.latLng
             Logger.d("locate: ${latLng?.latitude} ${latLng?.longitude}")
@@ -417,6 +418,24 @@ class MeetDetailActivity :
             }
         }
         timer.start()
+    }
+
+    fun checkUserType(locationResponse: LocationResponse) {
+        if (locationResponse.type == LocationResponse.Type.LEAVE) {
+            markerHolders.forEach {
+                if (it.uuid == locationResponse.sender?.deviceToken) {
+                    it.markerView.background =
+                        ContextCompat.getDrawable(this, R.drawable.marker_box_red)
+                }
+            }
+        } else if (locationResponse.type == LocationResponse.Type.JOIN) {
+            markerHolders.forEach {
+                if (it.uuid == locationResponse.sender?.deviceToken) {
+                    it.markerView.background =
+                        ContextCompat.getDrawable(this, R.drawable.marker_box)
+                }
+            }
+        }
     }
 
     private fun setImage(imageView: CircleImageView, deviceToken: String) {
