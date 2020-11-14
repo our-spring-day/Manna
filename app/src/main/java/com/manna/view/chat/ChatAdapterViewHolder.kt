@@ -74,7 +74,7 @@ sealed class ChatAdapterViewHolder(view: View) : RecyclerView.ViewHolder(view) {
                 "69751764-A224-4923-9844-C61646743D10" -> R.drawable.image_1
                 "2872483D-9E7B-46D1-A2B8-44832FE3F1AD" -> R.drawable.image_5
                 "8D44FAA1-2F87-4702-9DAC-B8B15D949880" -> R.drawable.image_7
-                else -> return
+                else -> R.drawable.test_1
             }
 
             Glide.with(imageView.context).load(imageResId).into(imageView)

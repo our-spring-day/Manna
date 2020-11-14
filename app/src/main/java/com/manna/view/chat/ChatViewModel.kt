@@ -47,7 +47,7 @@ class ChatViewModel @ViewModelInject constructor(private val meetApi: MeetApi) :
                         }
                         else -> {
                             val prevItem = chatList[index - 1]
-                            chatItem.hasImage = isContinuousChat(prevItem, chatItem)
+                            chatItem.hasImage = isNotContinuousChat(prevItem, chatItem)
                         }
                     }
                 }
@@ -65,7 +65,7 @@ class ChatViewModel @ViewModelInject constructor(private val meetApi: MeetApi) :
 
     fun addChat(chat: ChatItem) {
         val lastChat = chatList.value?.lastOrNull()
-        if (lastChat != null && !isContinuousChat(lastChat, chat)) {
+        if (lastChat != null && isNotContinuousChat(lastChat, chat)) {
             chat.hasImage = true
         }
         addChatItem(chat)
@@ -76,7 +76,7 @@ class ChatViewModel @ViewModelInject constructor(private val meetApi: MeetApi) :
     }
 
 
-    private fun isContinuousChat(prevItem: ChatItem, currentItem: ChatItem): Boolean {
+    private fun isNotContinuousChat(prevItem: ChatItem, currentItem: ChatItem): Boolean {
         val prevDate = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.KOREA)
             .format(prevItem.timeStamp)
         val currentDate = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.KOREA)

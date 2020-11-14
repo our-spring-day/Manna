@@ -12,7 +12,7 @@ interface MeetApi {
 
 
     @GET("user")
-    fun getUser(@Query("device_id") deviceId: String): Single<UserResponse>
+    fun getUser(@Query("deviceToken") deviceId: String): Single<UserResponse>
 
     @POST("user")
     fun registerUser(@Body body: JsonObject): Single<UserResponse>
