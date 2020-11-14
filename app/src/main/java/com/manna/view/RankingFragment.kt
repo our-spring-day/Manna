@@ -44,7 +44,7 @@ class RankingFragment : Fragment() {
             }
         })
 
-        viewModel.userList.observe(viewLifecycleOwner, {
+        viewModel.userList.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
             Logger.d("$it")
             meetDetailAdapter.submitList(it)
         })
