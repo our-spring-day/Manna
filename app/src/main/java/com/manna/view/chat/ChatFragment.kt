@@ -120,6 +120,8 @@ class ChatFragment : Fragment() {
 
                 if (height == 0) {
                     binding.inputChat.clearFocus()
+                } else {
+                    setChatViewScrollEnd()
                 }
             }
     }
