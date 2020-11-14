@@ -7,18 +7,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.manna.Logger
 import com.manna.R
 import com.manna.UserHolder
 import com.manna.databinding.FragmentChatBinding
-import com.manna.di.ApiModule
 import com.manna.ext.HeightProvider
 import com.manna.ext.ViewUtil
 import com.manna.network.api.MeetApi
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import io.socket.client.IO
 import io.socket.client.Manager
 import io.socket.client.Socket
@@ -26,8 +24,6 @@ import io.socket.emitter.Emitter
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import java.net.URI
-import java.text.SimpleDateFormat
-import java.util.*
 
 class ChatFragment : Fragment() {
 
@@ -35,6 +31,8 @@ class ChatFragment : Fragment() {
     private var keyboardHeight = 0
     private var chatSocket: Socket? = null
     private lateinit var chatAdapter: ChatAdapter
+
+    private val viewModel by viewModels<ChatViewModel>()
 
     private val onChatConnectReceiver = Emitter.Listener { args ->
         activity?.runOnUiThread {
@@ -81,59 +79,15 @@ class ChatFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         val roomId = arguments?.getString(ARG_ROOM_ID).orEmpty()
         connect(roomId)
 
-        ApiModule.provideMeetApi()
-            .getChatList(roomId, UserHolder.userResponse?.deviceId.orEmpty())
-            .map { chatListResponse ->
-                chatListResponse.sortBy { it.createTimestamp }
+        initView()
+        initViewModel()
+        viewModel.getLatestMessage(roomId)
+    }
 
-                chatListResponse.mapIndexed { index, chatListResponseItem ->
-                    val chatType =
-                        if (chatListResponseItem.sender?.deviceToken == UserHolder.userResponse?.deviceId) ChatItem.Type.MY_CHAT else ChatItem.Type.CHAT
-
-
-                    val deviceToken = if (index == 0) {
-                        chatListResponseItem.sender?.deviceToken.orEmpty()
-                    } else {
-                        val prevItem = chatListResponse[index - 1]
-                        val prevDate = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.KOREA)
-                            .format(prevItem.createTimestamp)
-                        val currentDate = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.KOREA)
-                            .format(chatListResponseItem.createTimestamp)
-                        if (
-                            prevItem.sender?.deviceToken != chatListResponseItem.sender?.deviceToken
-                            || prevDate != currentDate
-                        ) {
-                            chatListResponseItem.sender?.deviceToken.orEmpty()
-                        } else {
-                            ""
-                        }
-                    }
-
-                    ChatItem(
-                        message = chatListResponseItem.message.orEmpty(),
-                        name = chatListResponseItem.sender?.username.orEmpty(),
-                        timeStamp = chatListResponseItem.createTimestamp ?: -1L,
-                        type = chatType,
-                        deviceToken = deviceToken
-                    )
-                }
-            }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                chatAdapter.submitList(it) {
-                    setChatViewScrollEnd()
-                }
-            }, {
-                Logger.d("$it")
-            })
-
-
-
+    private fun initView() {
         binding.ddaBong.setOnClickListener {
             val chat = binding.inputChat.text.toString()
             if (chat.isNotEmpty()) {
@@ -143,19 +97,9 @@ class ChatFragment : Fragment() {
         }
 
         binding.chatView.run {
-            setPadding(
-                paddingStart,
-                ViewUtil.getStatusBarHeight(context),
-                paddingRight,
-                paddingBottom
-            )
-            layoutManager = LinearLayoutManager(requireContext())
             chatAdapter = ChatAdapter()
             adapter = chatAdapter
         }
-
-
-
 
         HeightProvider(requireActivity()).init()
             .setHeightListener { height ->
@@ -175,14 +119,23 @@ class ChatFragment : Fragment() {
 
                 if (height == 0) {
                     binding.inputChat.clearFocus()
-                } else {
-                    setChatViewScrollEnd()
                 }
             }
     }
 
+    private fun initViewModel() {
+        viewModel.run {
+            chatList.observe(viewLifecycleOwner, {
+                chatAdapter.submitList(it) {
+                    setChatViewScrollEnd()
+                }
+            })
+        }
+    }
+
     private fun setChatViewScrollEnd() {
-        binding.chatView.smoothScrollToPosition(chatAdapter.itemCount)
+        (binding.chatView.layoutManager as LinearLayoutManager)
+            .scrollToPositionWithOffset(chatAdapter.currentList.lastIndex, 0)
     }
 
     private fun inputViewTransY(y: Int) {
