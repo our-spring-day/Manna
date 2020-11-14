@@ -76,7 +76,9 @@ class MeetDetailActivity :
 
         LocationSocketManager.setLocationResponseCallback {
             runOnUiThread {
-                handleLocation(it)
+                if (UserHolder.userResponse?.deviceId == it.sender?.deviceToken) {
+                    handleLocation(it)
+                }
             }
         }
         LocationSocketManager.connect(roomId)
@@ -229,7 +231,8 @@ class MeetDetailActivity :
         fusedLocationProvider.enableLocationCallback()
 
         this.naverMap = naverMap.apply {
-            locationSource = locationSource
+
+            this.locationSource = this@MeetDetailActivity.locationSource
             locationTrackingMode = LocationTrackingMode.NoFollow
             isIndoorEnabled = true
             uiSettings.run {
@@ -238,6 +241,16 @@ class MeetDetailActivity :
                 isCompassEnabled = false
                 isScaleBarEnabled = false
                 isZoomControlEnabled = false
+            }
+
+            addOnLocationChangeListener { location ->
+                handleLocation(
+                    LocationResponse(
+                        MyLatLng(location.latitude, location.longitude),
+                        Sender(UserHolder.userResponse?.deviceId, UserHolder.userResponse?.username),
+                        LocationResponse.Type.LOCATION
+                    )
+                )
             }
         }
 
