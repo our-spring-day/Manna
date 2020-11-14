@@ -34,7 +34,6 @@ import com.naver.maps.map.overlay.MultipartPathOverlay
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.activity_meet_detail.*
 import java.util.*
 
 @AndroidEntryPoint
@@ -458,7 +457,22 @@ class MeetDetailActivity :
     }
 
     private fun countDown() {
-        val timer = object : CountDownTimer(3600000, 1000) {
+        val startTime = Calendar.getInstance().run {
+            set(2020, 10, 15, 2, 0)
+            timeInMillis
+        }
+        val endTime = Calendar.getInstance().run {
+            set(2020, 10, 15, 3, 0)
+            timeInMillis
+        }
+        val nowTime = System.currentTimeMillis()
+
+        if (startTime > nowTime) {
+            binding.timerLayout.isGone = true
+            return
+        }
+
+        val timer = object : CountDownTimer(endTime - nowTime, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 val getMin =
                     millisUntilFinished - millisUntilFinished / (60 * 60 * 1000)
