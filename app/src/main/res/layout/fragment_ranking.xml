@@ -10,6 +10,39 @@
         android:layout_height="match_parent"
         android:background="@color/white">
 
+        <ImageView
+            android:id="@+id/down_button"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginBottom="3dp"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_down_24"
+            app:layout_constraintBottom_toTopOf="@id/top_panel_line"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:letterSpacing="-0.02"
+            android:text="도착 정보"
+            android:textColor="@color/ff414141"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@id/down_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/down_button" />
+
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/top_panel_line"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="94dp" />
+
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_user"
             android:layout_width="0dp"
@@ -19,7 +52,7 @@
             android:paddingEnd="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/top_panel_line" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
