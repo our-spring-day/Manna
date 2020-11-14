@@ -458,11 +458,11 @@ class MeetDetailActivity :
 
     private fun countDown() {
         val startTime = Calendar.getInstance().run {
-            set(2020, 10, 15, 2, 0)
+            set(2020, 10, 15, 7, 0)
             timeInMillis
         }
         val endTime = Calendar.getInstance().run {
-            set(2020, 10, 15, 3, 0)
+            set(2020, 10, 15, 8, 0)
             timeInMillis
         }
         val nowTime = System.currentTimeMillis()
