@@ -21,7 +21,10 @@ interface MeetApi {
     fun getMeetList(@Query("deviceToken") deviceId: String): Single<MeetResponse>
 
     @POST("manna")
-    fun registerMeet(@Body body: JsonObject): Single<MeetResponseItem>
+    fun registerMeet(
+        @Body body: JsonObject,
+        @Query("deviceToken") deviceId: String
+    ): Single<MeetResponseItem>
 
     @GET("manna/{uuid}/chat")
     fun getChatList(
