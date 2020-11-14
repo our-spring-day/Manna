@@ -4,12 +4,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.manna.common.BaseActivity
 import com.manna.data.source.repo.MeetRepository
+import com.manna.databinding.ActivityIntroBinding
 import com.manna.ext.plusAssign
 import com.manna.network.model.meet.UserResponse
 import dagger.hilt.android.AndroidEntryPoint
@@ -19,7 +21,7 @@ import io.reactivex.schedulers.Schedulers
 
 
 object UserHolder {
-    var userResponse: UserResponse? = UserResponse("f606564d8371e455", "우석")
+    var userResponse: UserResponse? = null
 }
 
 class IntroViewModel @ViewModelInject constructor(private val repository: MeetRepository) :
@@ -39,16 +41,16 @@ class IntroViewModel @ViewModelInject constructor(private val repository: MeetRe
                     UserHolder.userResponse = it
                     _isValidDevice.value = Event(true)
                 } else {
-                    registerDevice(deviceId)
+                    _isValidDevice.value = Event(false)
                 }
             }, {
                 Logger.d("$it")
-                registerDevice(deviceId)
+                _isValidDevice.value = Event(false)
             })
     }
 
-    private fun registerDevice(deviceId: String) {
-        compositeDisposable += repository.registerUser("원우석", deviceId)
+    fun registerDevice(userName: String, deviceId: String) {
+        compositeDisposable += repository.registerUser(userName, deviceId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
@@ -67,13 +69,12 @@ class IntroViewModel @ViewModelInject constructor(private val repository: MeetRe
 
 
 @AndroidEntryPoint
-class IntroActivity : AppCompatActivity() {
+class IntroActivity : BaseActivity<ActivityIntroBinding>(R.layout.activity_intro) {
 
     private val viewModel: IntroViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_intro)
 
         viewModel.checkDevice(DeviceUtil.getAndroidID(this))
 
@@ -82,9 +83,23 @@ class IntroActivity : AppCompatActivity() {
                 startActivity(Intent(this, HomeActivity::class.java))
                 finish()
             } else {
-                Toast.makeText(this, "기기 인증이 안되네요 허허", Toast.LENGTH_SHORT).show()
+                val message = if (binding.registerNameGroup.isVisible) {
+                    "기기인증이 실패했어요. 다시 시도해보세요."
+                } else {
+                    "처음 오셨군요? 사용할 닉네임을 입력해주세요"
+                }
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+
+                binding.registerNameGroup.isVisible = true
             }
         })
+
+        binding.submitName.setOnClickListener {
+            val name = binding.inputName.text.toString()
+            if (name.isNotEmpty()){
+                viewModel.registerDevice(name, DeviceUtil.getAndroidID(this))
+            }
+        }
 
     }
 }
