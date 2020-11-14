@@ -113,29 +113,44 @@ class MeetDetailActivity :
             }
 
             btnChatting.setOnClickListener {
-                supportFragmentManager.beginTransaction()
-                    .add(
-                        R.id.frag_container,
-                        ChatFragment.newInstance(roomId),
-                        ChatFragment::class.java.simpleName
-                    )
-                    .addToBackStack(null)
-                    .commit()
+                val transaction = supportFragmentManager.beginTransaction()
+                val fragment =
+                    supportFragmentManager.findFragmentByTag(ChatFragment::class.java.simpleName)
+
+                if (fragment != null) {
+                    transaction.show(fragment).commit()
+                } else {
+                    transaction
+                        .replace(
+                            R.id.frag_container,
+                            ChatFragment.newInstance(roomId),
+                            ChatFragment::class.java.simpleName
+                        )
+                        .commit()
+                }
             }
 
             btnChart.setOnClickListener {
-                supportFragmentManager.beginTransaction()
-                    .add(
-                        R.id.frag_container,
-                        RankingFragment.newInstance(),
-                        RankingFragment::class.java.simpleName
-                    )
-                    .addToBackStack(null)
-                    .commit()
+                val transaction = supportFragmentManager.beginTransaction()
+                val fragment =
+                    supportFragmentManager.findFragmentByTag(RankingFragment::class.java.simpleName)
+
+                if (fragment != null) {
+                    transaction.show(fragment).commit()
+                } else {
+                    transaction
+                        .replace(
+                            R.id.frag_container,
+                            RankingFragment.newInstance(),
+                            RankingFragment::class.java.simpleName
+                        )
+                        .commit()
+                }
             }
 
         }
     }
+
 
     private fun initViewModel() {
         viewModel.run {
@@ -272,6 +287,19 @@ class MeetDetailActivity :
     override fun onStop() {
         fusedLocationProvider.disableLocationCallback()
         super.onStop()
+    }
+
+    override fun onBackPressed() {
+        val fragment = supportFragmentManager.findFragmentById(R.id.frag_container)
+
+        if (fragment != null) {
+            supportFragmentManager.beginTransaction()
+                .remove(fragment)
+                .commit()
+            return
+        }
+
+        super.onBackPressed()
     }
 
 
