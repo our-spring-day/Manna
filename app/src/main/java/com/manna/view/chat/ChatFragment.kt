@@ -17,6 +17,7 @@ import com.manna.databinding.FragmentChatBinding
 import com.manna.ext.HeightProvider
 import com.manna.ext.ViewUtil
 import com.manna.network.api.MeetApi
+import dagger.hilt.android.AndroidEntryPoint
 import io.socket.client.IO
 import io.socket.client.Manager
 import io.socket.client.Socket
@@ -25,6 +26,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import java.net.URI
 
+@AndroidEntryPoint
 class ChatFragment : Fragment() {
 
     private lateinit var binding: FragmentChatBinding
@@ -58,9 +60,7 @@ class ChatFragment : Fragment() {
                     deviceToken = chatResponse.sender?.deviceToken.orEmpty()
                 )
 
-                chatAdapter.submitList(chatAdapter.currentList + chatItem) {
-                    setChatViewScrollEnd()
-                }
+                viewModel.addChat(chatItem)
             }
         }
     }
@@ -112,7 +112,8 @@ class ChatFragment : Fragment() {
                         if (height == 0) binding.bottomView.height else 0
 
                 binding.chatView.layoutParams.height =
-                    keyboardTop - binding.chatInputView.height
+                    keyboardTop - binding.chatInputView.height -
+                        ViewUtil.convertDpToPixel(requireContext(), 94f).toInt()
                 binding.chatView.requestLayout()
 
                 inputViewTransY(keyboardTop)

@@ -1,7 +1,7 @@
 package com.manna.view.chat
 
 import android.view.View
-import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -18,7 +18,8 @@ data class ChatItem(
     val name: String,
     val timeStamp: Long,
     val type: Type,
-    val deviceToken: String
+    val deviceToken: String,
+    var hasImage: Boolean = false
 ) {
     enum class Type {
         MY_CHAT,
@@ -33,7 +34,7 @@ sealed class ChatAdapterViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         fun bind(item: ChatItem) {
             binding.run {
-                val topPadding = if (item.deviceToken.isEmpty()) 0f else 16f
+                val topPadding = if (item.hasImage) 16f else 0f
                 root.setPadding(
                     root.paddingStart,
                     ViewUtil.convertDpToPixel(itemView.context, topPadding).toInt(),
@@ -43,8 +44,8 @@ sealed class ChatAdapterViewHolder(view: View) : RecyclerView.ViewHolder(view) {
                 message.text = item.message
                 name.text = item.name
                 date.text = SimpleDateFormat("H:mm", Locale.KOREA).format(item.timeStamp)
-                profileImage.isGone = item.deviceToken.isEmpty()
-                name.isGone = item.deviceToken.isEmpty()
+                profileImage.isVisible = item.hasImage
+                name.isVisible = item.hasImage
                 setImage(profileImage, item.deviceToken)
             }
         }
