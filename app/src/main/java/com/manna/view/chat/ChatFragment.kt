@@ -51,7 +51,7 @@ class ChatFragment : Fragment() {
 
             if (chatResponse.type == ChatResponse.Type.CHAT) {
                 val chatType =
-                    if (chatResponse.sender?.deviceToken == UserHolder.userResponse?.deviceId) ChatItem.Type.MY_CHAT else ChatItem.Type.CHAT
+                    if (chatResponse.sender?.deviceToken == UserHolder.deviceId) ChatItem.Type.MY_CHAT else ChatItem.Type.CHAT
                 val chatItem = ChatItem(
                     message = chatResponse.message?.message.orEmpty(),
                     name = chatResponse.sender?.username.orEmpty(),

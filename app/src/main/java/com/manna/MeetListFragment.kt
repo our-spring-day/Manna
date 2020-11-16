@@ -11,7 +11,6 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gun0912.tedpermission.TedPermissionResult
 import com.manna.databinding.FragmentMeetListBinding
@@ -85,8 +84,8 @@ class MeetListFragment : Fragment() {
         }
 
         viewModel.run {
-            getMeetList(UserHolder.userResponse?.deviceId.orEmpty())
-            meetList.observe(viewLifecycleOwner, Observer{ meetList ->
+            getMeetList(UserHolder.deviceId)
+            meetList.observe(viewLifecycleOwner, { meetList ->
                 meetAdapter.submitList(meetList)
             })
         }
