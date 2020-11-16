@@ -9,10 +9,14 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.gson.JsonObject
 import com.manna.common.BaseActivity
 import com.manna.data.source.repo.MeetRepository
 import com.manna.databinding.ActivityIntroBinding
 import com.manna.ext.plusAssign
+import com.manna.network.api.MeetApi
 import com.manna.network.model.meet.UserResponse
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -22,9 +26,14 @@ import io.reactivex.schedulers.Schedulers
 
 object UserHolder {
     var userResponse: UserResponse? = null
+    val deviceId: String
+        get() = userResponse?.deviceId.orEmpty()
 }
 
-class IntroViewModel @ViewModelInject constructor(private val repository: MeetRepository) :
+class IntroViewModel @ViewModelInject constructor(
+    private val repository: MeetRepository,
+    private val meetApi: MeetApi
+) :
     ViewModel() {
 
     private val compositeDisposable = CompositeDisposable()
@@ -56,7 +65,7 @@ class IntroViewModel @ViewModelInject constructor(private val repository: MeetRe
             .subscribe({
                 if (it.deviceId != null && it.username != null) {
                     UserHolder.userResponse = it
-                    _isValidDevice.value = Event(true)
+                    registerPushToken(deviceId)
                 } else {
                     _isValidDevice.value = Event(false)
                 }
@@ -64,6 +73,35 @@ class IntroViewModel @ViewModelInject constructor(private val repository: MeetRe
                 Logger.d("$it")
                 _isValidDevice.value = Event(false)
             })
+    }
+
+    private fun registerPushToken(deviceId: String) {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Logger.d("${task.exception}")
+                _isValidDevice.value = Event(false)
+                return@OnCompleteListener
+            }
+
+            // Get new FCM registration token
+            val token = task.result
+
+            val body = JsonObject().apply {
+                addProperty("pushToken", token)
+                addProperty("type", "fcms")
+            }
+
+            compositeDisposable += meetApi.registerPushToken(deviceId, body)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    _isValidDevice.value = Event(true)
+                }, {
+                    Logger.d("$it")
+                    _isValidDevice.value = Event(false)
+                })
+
+        })
     }
 }
 
@@ -96,7 +134,7 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>(R.layout.activity_intro
 
         binding.submitName.setOnClickListener {
             val name = binding.inputName.text.toString()
-            if (name.isNotEmpty()){
+            if (name.isNotEmpty()) {
                 viewModel.registerDevice(name, DeviceUtil.getAndroidID(this))
             }
         }
