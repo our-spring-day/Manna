@@ -136,6 +136,7 @@ class MeetDetailActivity :
 
             btnMountain.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) {
+                    naverMap.locationTrackingMode = LocationTrackingMode.Follow
                     moveLocation(myLatLng, 13.0)
                 } else {
                     moveLocation()
@@ -458,11 +459,11 @@ class MeetDetailActivity :
 
     private fun countDown() {
         val startTime = Calendar.getInstance().run {
-            set(2020, 10, 15, 7, 0)
+            set(2020, 10, 17, 23, 0, 0)
             timeInMillis
         }
         val endTime = Calendar.getInstance().run {
-            set(2020, 10, 15, 8, 0)
+            set(2020, 10, 17, 24, 0, 0)
             timeInMillis
         }
         val nowTime = System.currentTimeMillis()
@@ -504,7 +505,7 @@ class MeetDetailActivity :
         timer.start()
     }
 
-    fun checkUserType(locationResponse: LocationResponse) {
+    private fun checkUserType(locationResponse: LocationResponse) {
         if (locationResponse.type == LocationResponse.Type.LEAVE) {
             markerHolders.forEach {
                 if (it.uuid == locationResponse.sender?.deviceToken) {
