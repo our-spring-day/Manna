@@ -122,6 +122,7 @@ class MeetDetailActivity :
                     ACTIVE -> {
                         overlayState = DEFAULT
                         if (btnMountain.isChecked) {
+                            naverMap.locationTrackingMode = LocationTrackingMode.Follow
                             moveLocation(myLatLng, 13.0)
                         } else {
                             moveLocation()
@@ -129,7 +130,7 @@ class MeetDetailActivity :
                     }
                     TRACKING -> {
                         overlayState = DEFAULT
-                        naverMap.locationTrackingMode = LocationTrackingMode.NoFollow
+                        naverMap.locationTrackingMode = LocationTrackingMode.Follow
                     }
                 }
                 updateBtn()
@@ -275,10 +276,6 @@ class MeetDetailActivity :
         locationOverlay.icon = OverlayImage.fromResource(R.drawable.ic_location_overlay)
 
         fusedLocationProvider.enableLocationCallback()
-
-        this.naverMap = naverMap
-        naverMap.locationSource = locationSource
-        naverMap.locationTrackingMode = LocationTrackingMode.NoFollow
 
         this.naverMap = naverMap.apply {
             this.locationSource = this@MeetDetailActivity.locationSource
