@@ -45,23 +45,23 @@
                 android:layout_width="65dp"
                 android:layout_height="65dp"
                 android:layout_marginTop="29.18dp"
-                android:layout_marginEnd="22dp"
                 android:background="@drawable/selector_toggle_btn"
+                android:textOff=""
+                android:textOn=""
+                app:layout_constraintEnd_toStartOf="@+id/btn_location"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ToggleButton
+                android:id="@+id/btn_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="29.18dp"
+                android:background="@android:color/transparent"
                 android:textOff=""
                 android:textOn=""
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <ToggleButton
-            android:id="@+id/btn_location"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:textOff=""
-            android:textOn=""
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/top_panel" />
 
         <FrameLayout
             android:id="@+id/frag_container"
@@ -114,7 +114,7 @@
                 android:id="@+id/timer_group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:constraint_referenced_ids="remain_minute,remain_seconds,colon"/>
+                app:constraint_referenced_ids="remain_minute,remain_seconds,colon" />
 
             <TextView
                 android:id="@+id/remain_minute"
