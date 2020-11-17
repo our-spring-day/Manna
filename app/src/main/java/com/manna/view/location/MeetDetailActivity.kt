@@ -186,7 +186,6 @@ class MeetDetailActivity :
         }
     }
 
-
     private fun updateBtn() {
         var btnDrawable = R.drawable.ic_map_default
         when (overlayState) {
@@ -196,7 +195,6 @@ class MeetDetailActivity :
         }
         binding.btnLocation.setButtonDrawable(btnDrawable)
     }
-
 
     private fun initViewModel() {
         viewModel.run {
@@ -539,20 +537,6 @@ class MeetDetailActivity :
             }
 
             Glide.with(this).load(imageResId).into(imageView)
-        }
-    }
-
-    private fun setName(deviceToken: String): String {
-        return when (deviceToken) {
-            "aed64e8da3a07df4" -> "연재"
-            "f606564d8371e455" -> "우석"
-            "8F630481-548D-4B8A-B501-FFD90ADFDBA4" -> "상원"
-            "0954A791-B5BE-4B56-8F25-07554A4D6684" -> "재인"
-            "C65CDF73-8C04-4F76-A26A-AE3400FEC14B" -> "종찬"
-            "69751764-A224-4923-9844-C61646743D10" -> "용권"
-            "2872483D-9E7B-46D1-A2B8-44832FE3F1AD" -> "규리"
-            "8D44FAA1-2F87-4702-9DAC-B8B15D949880" -> "효근"
-            else -> ""
         }
     }
 
