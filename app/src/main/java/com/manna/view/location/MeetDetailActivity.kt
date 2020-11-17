@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.Point
 import android.location.Location
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -314,16 +315,19 @@ class MeetDetailActivity :
 
         naverMap.minZoom = 5.0
         naverMap.maxZoom = 18.0
+        val display = windowManager.defaultDisplay
+        val size = Point()
+        display.getSize(size)
         naverMap.addOnCameraChangeListener { reason, animated ->
             if (naverMap.cameraPosition.zoom > 13.0) {
                 markerHolders.forEach {
-                    it.marker.width = (28 - naverMap.cameraPosition.zoom.toInt()) * 12
-                    it.marker.height = (28 - naverMap.cameraPosition.zoom.toInt()) * 12
+                    it.marker.width = size.y/naverMap.cameraPosition.zoom.toInt()
+                    it.marker.height = size.y/naverMap.cameraPosition.zoom.toInt()
                 }
             } else {
                 markerHolders.forEach {
-                    it.marker.width = 16 * 12
-                    it.marker.height = 16 * 12
+                    it.marker.width = size.y/13
+                    it.marker.height = size.y/13
                 }
             }
 
