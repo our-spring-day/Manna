@@ -72,28 +72,47 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/btn_chatting"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cv_chatting"
             android:layout_width="53dp"
             android:layout_height="53dp"
             android:layout_marginStart="20dp"
-            android:layout_marginBottom="34dp"
+            android:layout_marginBottom="40dp"
             android:background="?android:selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_chatting"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="36dp"
 
-        <ImageView
-            android:id="@+id/btn_chart"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <ImageView
+                android:id="@+id/btn_chatting"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_chatting" />
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cv_ranking"
             android:layout_width="53dp"
             android:layout_height="53dp"
-            android:layout_marginStart="11dp"
-            android:layout_marginBottom="34dp"
+            android:layout_marginStart="10dp"
             android:background="?android:selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_chart"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/btn_chatting" />
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="36dp"
+            app:layout_constraintStart_toEndOf="@id/cv_chatting"
+            app:layout_constraintTop_toTopOf="@+id/cv_chatting">
 
+            <ImageView
+                android:id="@+id/btn_ranking"
+                android:layout_width="24dp"
+                android:layout_height="36dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_ranking" />
+
+        </androidx.cardview.widget.CardView>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/timer_layout"

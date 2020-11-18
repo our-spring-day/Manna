@@ -147,7 +147,7 @@ class MeetDetailActivity :
                 updateBtn()
             }
 
-            btnChatting.setOnClickListener {
+            cvChatting.setOnClickListener {
                 val transaction = supportFragmentManager.beginTransaction()
                 val fragment =
                     supportFragmentManager.findFragmentByTag(ChatFragment::class.java.simpleName)
@@ -165,7 +165,7 @@ class MeetDetailActivity :
                 }
             }
 
-            btnChart.setOnClickListener {
+            cvRanking.setOnClickListener {
                 val transaction = supportFragmentManager.beginTransaction()
                 val fragment =
                     supportFragmentManager.findFragmentByTag(RankingFragment::class.java.simpleName)
