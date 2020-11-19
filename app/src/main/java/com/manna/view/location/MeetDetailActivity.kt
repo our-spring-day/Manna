@@ -9,6 +9,7 @@ import android.location.Location
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
@@ -106,7 +107,7 @@ class MeetDetailActivity :
         binding.run {
             topPanel.fitsSystemWindows = true
 
-            btnBack.setOnClickListener {
+            cvBack.setOnClickListener {
                 onBackPressed()
             }
 
@@ -116,7 +117,11 @@ class MeetDetailActivity :
                         if (btnMountain.isChecked) {
                             overlayState = TRACKING
                             naverMap.locationTrackingMode = LocationTrackingMode.Face
-
+                            markerHolders.forEach {
+                                if(it.uuid == UserHolder.userResponse?.deviceId){
+                                    it.marker.isVisible = false
+                                }
+                            }
                         }
                     }
                     ACTIVE -> {
@@ -131,12 +136,22 @@ class MeetDetailActivity :
                     TRACKING -> {
                         overlayState = DEFAULT
                         naverMap.locationTrackingMode = LocationTrackingMode.Follow
+                        markerHolders.forEach {
+                            if(it.uuid == UserHolder.userResponse?.deviceId){
+                                it.marker.isVisible = true
+                            }
+                        }
                     }
                 }
                 updateBtn()
             }
 
             btnMountain.setOnCheckedChangeListener { _, isChecked ->
+                markerHolders.forEach {
+                    if(it.uuid == UserHolder.userResponse?.deviceId){
+                        it.marker.isVisible = true
+                    }
+                }
                 if (isChecked) {
                     naverMap.locationTrackingMode = LocationTrackingMode.Follow
                     moveLocation(myLatLng, 13.0)
@@ -286,7 +301,7 @@ class MeetDetailActivity :
                 isCompassEnabled = false
                 isScaleBarEnabled = false
                 isZoomControlEnabled = false
-                //setContentPadding(250, 250, 250, 250)
+                setLogoMargin(36, 0, 0, 36)
             }
 
             addOnLocationChangeListener { location ->
@@ -327,6 +342,11 @@ class MeetDetailActivity :
             }
 
             if (reason == REASON_GESTURE) {
+                markerHolders.forEach {
+                    if(it.uuid == UserHolder.userResponse?.deviceId){
+                        it.marker.isVisible = true
+                    }
+                }
                 overlayState = ACTIVE
                 updateBtn()
                 binding.btnLocation.visibility = View.VISIBLE
