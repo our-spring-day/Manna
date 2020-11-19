@@ -9,7 +9,6 @@ import android.location.Location
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
@@ -70,6 +69,8 @@ class MeetDetailActivity :
 
     var overlayState = DEFAULT
 
+    var meetPlaceMarker = Marker()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -118,7 +119,7 @@ class MeetDetailActivity :
                             overlayState = TRACKING
                             naverMap.locationTrackingMode = LocationTrackingMode.Face
                             markerHolders.forEach {
-                                if(it.uuid == UserHolder.userResponse?.deviceId){
+                                if (it.uuid == UserHolder.userResponse?.deviceId) {
                                     it.marker.isVisible = false
                                 }
                             }
@@ -137,7 +138,7 @@ class MeetDetailActivity :
                         overlayState = DEFAULT
                         naverMap.locationTrackingMode = LocationTrackingMode.Follow
                         markerHolders.forEach {
-                            if(it.uuid == UserHolder.userResponse?.deviceId){
+                            if (it.uuid == UserHolder.userResponse?.deviceId) {
                                 it.marker.isVisible = true
                             }
                         }
@@ -148,7 +149,7 @@ class MeetDetailActivity :
 
             btnMountain.setOnCheckedChangeListener { _, isChecked ->
                 markerHolders.forEach {
-                    if(it.uuid == UserHolder.userResponse?.deviceId){
+                    if (it.uuid == UserHolder.userResponse?.deviceId) {
                         it.marker.isVisible = true
                     }
                 }
@@ -308,7 +309,10 @@ class MeetDetailActivity :
                 handleLocation(
                     LocationResponse(
                         MyLatLng(location.latitude, location.longitude),
-                        Sender(UserHolder.userResponse?.deviceId, UserHolder.userResponse?.username),
+                        Sender(
+                            UserHolder.userResponse?.deviceId,
+                            UserHolder.userResponse?.username
+                        ),
                         LocationResponse.Type.LOCATION
                     )
                 )
@@ -317,7 +321,7 @@ class MeetDetailActivity :
 
         checkState()
 
-        val meetPlaceMarker = Marker().apply {
+        meetPlaceMarker.apply {
             position = LatLng(37.475370, 126.980438)
             map = naverMap
             icon = OverlayImage.fromResource(R.drawable.ic_arrival_place)
@@ -331,19 +335,19 @@ class MeetDetailActivity :
         naverMap.addOnCameraChangeListener { reason, animated ->
             if (naverMap.cameraPosition.zoom > 13.0) {
                 markerHolders.forEach {
-                    it.marker.width = size.y/naverMap.cameraPosition.zoom.toInt()
-                    it.marker.height = size.y/naverMap.cameraPosition.zoom.toInt()
+                    it.marker.width = size.y / naverMap.cameraPosition.zoom.toInt()
+                    it.marker.height = size.y / naverMap.cameraPosition.zoom.toInt()
                 }
             } else {
                 markerHolders.forEach {
-                    it.marker.width = size.y/13
-                    it.marker.height = size.y/13
+                    it.marker.width = size.y / 13
+                    it.marker.height = size.y / 13
                 }
             }
 
             if (reason == REASON_GESTURE) {
                 markerHolders.forEach {
-                    if(it.uuid == UserHolder.userResponse?.deviceId){
+                    if (it.uuid == UserHolder.userResponse?.deviceId) {
                         it.marker.isVisible = true
                     }
                 }
@@ -572,6 +576,8 @@ class MeetDetailActivity :
             latitudeList.add(it.marker.position.latitude)
             longitudeList.add(it.marker.position.longitude)
         }
+        latitudeList.add(meetPlaceMarker.position.latitude)
+        longitudeList.add(meetPlaceMarker.position.longitude)
 
         val cameraUpdate =
             CameraUpdate.fitBounds(
