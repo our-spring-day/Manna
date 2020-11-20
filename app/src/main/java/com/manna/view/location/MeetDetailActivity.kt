@@ -128,7 +128,6 @@ class MeetDetailActivity :
                     ACTIVE -> {
                         overlayState = DEFAULT
                         if (btnMountain.isChecked) {
-                            naverMap.locationTrackingMode = LocationTrackingMode.Follow
                             moveLocation(myLatLng, 13.0)
                         } else {
                             moveLocation()
@@ -154,7 +153,6 @@ class MeetDetailActivity :
                     }
                 }
                 if (isChecked) {
-                    naverMap.locationTrackingMode = LocationTrackingMode.Follow
                     moveLocation(myLatLng, 13.0)
                 } else {
                     moveLocation()
@@ -566,6 +564,7 @@ class MeetDetailActivity :
 
     private fun moveLocation(latLng: LatLng, zoom: Double) {
         val cameraUpdate = CameraUpdate.scrollAndZoomTo(latLng, zoom)
+        naverMap.locationTrackingMode = LocationTrackingMode.Follow
         naverMap.moveCamera(cameraUpdate)
     }
 
