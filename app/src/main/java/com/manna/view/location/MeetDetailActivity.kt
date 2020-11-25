@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.Point
 import android.location.Location
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -68,6 +69,8 @@ class MeetDetailActivity :
 
     var overlayState = DEFAULT
 
+    var meetPlaceMarker = Marker()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -105,7 +108,7 @@ class MeetDetailActivity :
         binding.run {
             topPanel.fitsSystemWindows = true
 
-            btnBack.setOnClickListener {
+            cvBack.setOnClickListener {
                 onBackPressed()
             }
 
@@ -115,7 +118,11 @@ class MeetDetailActivity :
                         if (btnMountain.isChecked) {
                             overlayState = TRACKING
                             naverMap.locationTrackingMode = LocationTrackingMode.Face
-
+                            markerHolders.forEach {
+                                if (it.uuid == UserHolder.userResponse?.deviceId) {
+                                    it.marker.isVisible = false
+                                }
+                            }
                         }
                     }
                     ACTIVE -> {
@@ -128,13 +135,23 @@ class MeetDetailActivity :
                     }
                     TRACKING -> {
                         overlayState = DEFAULT
-                        naverMap.locationTrackingMode = LocationTrackingMode.NoFollow
+                        naverMap.locationTrackingMode = LocationTrackingMode.Follow
+                        markerHolders.forEach {
+                            if (it.uuid == UserHolder.userResponse?.deviceId) {
+                                it.marker.isVisible = true
+                            }
+                        }
                     }
                 }
                 updateBtn()
             }
 
             btnMountain.setOnCheckedChangeListener { _, isChecked ->
+                markerHolders.forEach {
+                    if (it.uuid == UserHolder.userResponse?.deviceId) {
+                        it.marker.isVisible = true
+                    }
+                }
                 if (isChecked) {
                     moveLocation(myLatLng, 13.0)
                 } else {
@@ -144,7 +161,7 @@ class MeetDetailActivity :
                 updateBtn()
             }
 
-            btnChatting.setOnClickListener {
+            cvChatting.setOnClickListener {
                 val transaction = supportFragmentManager.beginTransaction()
                 val fragment =
                     supportFragmentManager.findFragmentByTag(ChatFragment::class.java.simpleName)
@@ -162,7 +179,7 @@ class MeetDetailActivity :
                 }
             }
 
-            btnChart.setOnClickListener {
+            cvRanking.setOnClickListener {
                 val transaction = supportFragmentManager.beginTransaction()
                 val fragment =
                     supportFragmentManager.findFragmentByTag(RankingFragment::class.java.simpleName)
@@ -183,7 +200,6 @@ class MeetDetailActivity :
         }
     }
 
-
     private fun updateBtn() {
         var btnDrawable = R.drawable.ic_map_default
         when (overlayState) {
@@ -193,7 +209,6 @@ class MeetDetailActivity :
         }
         binding.btnLocation.setButtonDrawable(btnDrawable)
     }
-
 
     private fun initViewModel() {
         viewModel.run {
@@ -274,10 +289,6 @@ class MeetDetailActivity :
 
         fusedLocationProvider.enableLocationCallback()
 
-        this.naverMap = naverMap
-        naverMap.locationSource = locationSource
-        naverMap.locationTrackingMode = LocationTrackingMode.NoFollow
-
         this.naverMap = naverMap.apply {
             this.locationSource = this@MeetDetailActivity.locationSource
             locationTrackingMode = LocationTrackingMode.NoFollow
@@ -289,7 +300,7 @@ class MeetDetailActivity :
                 isCompassEnabled = false
                 isScaleBarEnabled = false
                 isZoomControlEnabled = false
-                //setContentPadding(250, 250, 250, 250)
+                setLogoMargin(36, 0, 0, 36)
             }
 
             addOnLocationChangeListener { location ->
@@ -305,7 +316,7 @@ class MeetDetailActivity :
 
         checkState()
 
-        val meetPlaceMarker = Marker().apply {
+        meetPlaceMarker.apply {
             position = LatLng(37.475370, 126.980438)
             map = naverMap
             icon = OverlayImage.fromResource(R.drawable.ic_arrival_place)
@@ -313,20 +324,28 @@ class MeetDetailActivity :
 
         naverMap.minZoom = 5.0
         naverMap.maxZoom = 18.0
+        val display = windowManager.defaultDisplay
+        val size = Point()
+        display.getSize(size)
         naverMap.addOnCameraChangeListener { reason, animated ->
             if (naverMap.cameraPosition.zoom > 13.0) {
                 markerHolders.forEach {
-                    it.marker.width = (28 - naverMap.cameraPosition.zoom.toInt()) * 12
-                    it.marker.height = (28 - naverMap.cameraPosition.zoom.toInt()) * 12
+                    it.marker.width = size.y / naverMap.cameraPosition.zoom.toInt()
+                    it.marker.height = size.y / naverMap.cameraPosition.zoom.toInt()
                 }
             } else {
                 markerHolders.forEach {
-                    it.marker.width = 16 * 12
-                    it.marker.height = 16 * 12
+                    it.marker.width = size.y / 13
+                    it.marker.height = size.y / 13
                 }
             }
 
             if (reason == REASON_GESTURE) {
+                markerHolders.forEach {
+                    if (it.uuid == UserHolder.userResponse?.deviceId) {
+                        it.marker.isVisible = true
+                    }
+                }
                 overlayState = ACTIVE
                 updateBtn()
                 binding.btnLocation.visibility = View.VISIBLE
@@ -458,11 +477,11 @@ class MeetDetailActivity :
 
     private fun countDown() {
         val startTime = Calendar.getInstance().run {
-            set(2020, 10, 15, 7, 0)
+            set(2020, 10, 17, 23, 0, 0)
             timeInMillis
         }
         val endTime = Calendar.getInstance().run {
-            set(2020, 10, 15, 8, 0)
+            set(2020, 10, 17, 24, 0, 0)
             timeInMillis
         }
         val nowTime = System.currentTimeMillis()
@@ -504,7 +523,7 @@ class MeetDetailActivity :
         timer.start()
     }
 
-    fun checkUserType(locationResponse: LocationResponse) {
+    private fun checkUserType(locationResponse: LocationResponse) {
         if (locationResponse.type == LocationResponse.Type.LEAVE) {
             markerHolders.forEach {
                 if (it.uuid == locationResponse.sender?.deviceToken) {
@@ -540,23 +559,10 @@ class MeetDetailActivity :
         }
     }
 
-    private fun setName(deviceToken: String): String {
-        return when (deviceToken) {
-            "aed64e8da3a07df4" -> "연재"
-            "f606564d8371e455" -> "우석"
-            "8F630481-548D-4B8A-B501-FFD90ADFDBA4" -> "상원"
-            "0954A791-B5BE-4B56-8F25-07554A4D6684" -> "재인"
-            "C65CDF73-8C04-4F76-A26A-AE3400FEC14B" -> "종찬"
-            "69751764-A224-4923-9844-C61646743D10" -> "용권"
-            "2872483D-9E7B-46D1-A2B8-44832FE3F1AD" -> "규리"
-            "8D44FAA1-2F87-4702-9DAC-B8B15D949880" -> "효근"
-            else -> ""
-        }
-    }
-
     private fun moveLocation(latLng: LatLng, zoom: Double) {
         val cameraUpdate = CameraUpdate.scrollAndZoomTo(latLng, zoom)
         naverMap.moveCamera(cameraUpdate)
+        naverMap.locationTrackingMode = LocationTrackingMode.Follow
     }
 
     private fun moveLocation() {
@@ -566,6 +572,8 @@ class MeetDetailActivity :
             latitudeList.add(it.marker.position.latitude)
             longitudeList.add(it.marker.position.longitude)
         }
+        latitudeList.add(meetPlaceMarker.position.latitude)
+        longitudeList.add(meetPlaceMarker.position.longitude)
 
         val cameraUpdate =
             CameraUpdate.fitBounds(
