@@ -90,7 +90,7 @@ class MeetDetailActivity :
 
         LocationSocketManager.setLocationResponseCallback {
             runOnUiThread {
-                if (UserHolder.userResponse?.deviceId != it.sender?.deviceToken) {
+                if (UserHolder.deviceId != it.sender?.deviceToken) {
                     handleLocation(it)
                 }
             }
@@ -190,7 +190,7 @@ class MeetDetailActivity :
                     transaction
                         .replace(
                             R.id.frag_container,
-                            RankingFragment.newInstance(),
+                            RankingFragment.newInstance(roomId),
                             RankingFragment::class.java.simpleName
                         )
                         .commit()
@@ -307,10 +307,7 @@ class MeetDetailActivity :
                 handleLocation(
                     LocationResponse(
                         MyLatLng(location.latitude, location.longitude),
-                        Sender(
-                            UserHolder.userResponse?.deviceId,
-                            UserHolder.userResponse?.username
-                        ),
+                        Sender(UserHolder.deviceId, UserHolder.userResponse?.username),
                         LocationResponse.Type.LOCATION
                     )
                 )

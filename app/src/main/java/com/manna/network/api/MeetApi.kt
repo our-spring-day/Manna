@@ -12,25 +12,39 @@ interface MeetApi {
 
 
     @GET("user")
-    fun getUser(@Query("deviceToken") deviceId: String): Single<UserResponse>
+    fun getUser(@Query("deviceToken") deviceToken: String): Single<UserResponse>
 
     @POST("user")
     fun registerUser(@Body body: JsonObject): Single<UserResponse>
 
+    @POST("user/pushToken")
+    fun registerPushToken(
+        @Query("deviceToken") deviceToken: String,
+        @Body body: JsonObject
+    ): Single<JsonObject>
+
+
     @GET("manna")
-    fun getMeetList(@Query("deviceToken") deviceId: String): Single<MeetResponse>
+    fun getMeetList(@Query("deviceToken") deviceToken: String): Single<MeetResponse>
 
     @POST("manna")
     fun registerMeet(
         @Body body: JsonObject,
-        @Query("deviceToken") deviceId: String
+        @Query("deviceToken") deviceToken: String
     ): Single<MeetResponseItem>
 
     @GET("manna/{uuid}/chat")
     fun getChatList(
         @Path("uuid") roomId: String,
-        @Query("deviceToken") deviceId: String
+        @Query("deviceToken") deviceToken: String
     ): Single<ChatListResponse>
+
+    @POST("manna/{uuid}/push/{userToken}")
+    fun sendPushMessage(
+        @Path("uuid") roomId: String,
+        @Path("userToken") receiverToken: String,
+        @Query("deviceToken") deviceToken: String
+    ): Single<JsonObject>
 
     companion object {
         const val BASE_URL = "https://manna.duckdns.org:18888/"

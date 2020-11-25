@@ -23,7 +23,7 @@ class ChatViewModel @ViewModelInject constructor(private val meetApi: MeetApi) :
     fun getLatestMessage(roomId: String) {
 
         compositeDisposable += meetApi
-            .getChatList(roomId, UserHolder.userResponse?.deviceId.orEmpty())
+            .getChatList(roomId, UserHolder.deviceId)
             .map { chatListResponse ->
                 chatListResponse.sortBy { it.createTimestamp }
 
@@ -86,6 +86,6 @@ class ChatViewModel @ViewModelInject constructor(private val meetApi: MeetApi) :
     }
 
     private fun getChatType(chatListResponseItem: ChatListResponseItem): ChatItem.Type =
-        if (chatListResponseItem.sender?.deviceToken == UserHolder.userResponse?.deviceId) ChatItem.Type.MY_CHAT else ChatItem.Type.CHAT
+        if (chatListResponseItem.sender?.deviceToken == UserHolder.deviceId) ChatItem.Type.MY_CHAT else ChatItem.Type.CHAT
 
 }

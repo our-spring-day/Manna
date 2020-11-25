@@ -21,6 +21,9 @@ class RankingFragment : Fragment() {
 
     private val viewModel by activityViewModels<MeetDetailViewModel>()
 
+    private val roomId: String
+        get() = arguments?.getString(ARG_ROOM_ID).orEmpty()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -40,11 +43,14 @@ class RankingFragment : Fragment() {
 
         rankingAdapter.setOnClickListener(object : RankingAdapter.OnClickListener {
             override fun onClick(user: User) {
+
+                viewModel.urgingUser(roomId, user.deviceToken)
+
                 viewModel.bottomUserItemClickEvent.value = Event(user)
             }
         })
 
-        viewModel.userList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        viewModel.userList.observe(viewLifecycleOwner, {
             Logger.d("$it")
             rankingAdapter.submitList(it)
         })
@@ -53,6 +59,11 @@ class RankingFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance() = RankingFragment()
+        private const val ARG_ROOM_ID = "room_id"
+        fun newInstance(roomId: String) = RankingFragment().apply {
+            arguments = Bundle().apply {
+                putString(ARG_ROOM_ID, roomId)
+            }
+        }
     }
 }

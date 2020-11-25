@@ -43,7 +43,7 @@ object LocationSocketManager {
                 callFactory = client
                 webSocketFactory = client
             }
-            query = "mannaID=${roomId}&deviceToken=${UserHolder.userResponse?.deviceId}"
+            query = "mannaID=${roomId}&deviceToken=${UserHolder.deviceId}"
         }
 
         val manager = Manager(URI(MeetApi.SOCKET_URL), options)
