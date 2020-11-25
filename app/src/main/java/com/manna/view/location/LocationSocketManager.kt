@@ -33,16 +33,17 @@ object LocationSocketManager {
             return
         }
 
-        val interceptor = HttpLoggingInterceptor().apply {
-            setLevel(HttpLoggingInterceptor.Level.BODY)
-        }
-
-        val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
-
         val options = IO.Options().apply {
-            callFactory = client
-            webSocketFactory = client
-            query = "mannaID=${roomId}&deviceToken=${UserHolder.userResponse?.deviceId}"
+            if (Logger.socketLogging) {
+                val interceptor = HttpLoggingInterceptor().apply {
+                    setLevel(HttpLoggingInterceptor.Level.BODY)
+                }
+
+                val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
+                callFactory = client
+                webSocketFactory = client
+            }
+            query = "mannaID=${roomId}&deviceToken=${UserHolder.deviceId}"
         }
 
         val manager = Manager(URI(MeetApi.SOCKET_URL), options)

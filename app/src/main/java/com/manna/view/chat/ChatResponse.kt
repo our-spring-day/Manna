@@ -1,7 +1,9 @@
-package com.manna
+package com.manna.view.chat
 
 
 import com.google.gson.annotations.SerializedName
+import com.manna.Message
+import com.manna.Sender
 
 data class ChatResponse(
     @SerializedName("sender")

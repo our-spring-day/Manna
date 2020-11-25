@@ -9,28 +9,60 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingTop="60dp">
+        android:background="@color/white">
+
+        <ImageView
+            android:id="@+id/down_button"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginBottom="3dp"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_down_24"
+            app:layout_constraintBottom_toTopOf="@id/top_panel_line"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:letterSpacing="-0.02"
+            android:text="채팅"
+            android:textColor="@color/ff414141"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@id/down_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/down_button" />
+
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/top_panel_line"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="94dp" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/chat_view"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
             android:overScrollMode="never"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toTopOf="@id/chat_input_view"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/top_panel_line"
+            app:layout_constraintVertical_bias="0" />
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/chat_input_view"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@color/d9f8f8f8"
+            android:background="@color/fff8f8f8"
             android:paddingStart="13dp"
             android:paddingTop="4dp"
             android:paddingBottom="4dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/bottom_view"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
@@ -58,6 +90,7 @@
                 android:id="@+id/dda_bong"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="3dp"
                 android:background="?android:selectableItemBackgroundBorderless"
                 android:padding="3dp"
                 android:text="@string/dda_bong"
@@ -67,6 +100,15 @@
                 app:layout_constraintStart_toEndOf="@id/input_chat" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+            android:id="@+id/bottom_view"
+            android:layout_width="0dp"
+            android:layout_height="95dp"
+            android:background="@color/fff8f8f8"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

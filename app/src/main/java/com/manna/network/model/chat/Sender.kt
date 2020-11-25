@@ -1,11 +1,11 @@
-package com.manna.network.model.meet
+package com.manna.network.model.chat
 
 
 import com.google.gson.annotations.SerializedName
 
-data class UserResponse(
+data class Sender(
     @SerializedName("deviceToken")
-    val deviceId: String?,
+    val deviceToken: String?,
     @SerializedName("username")
     val username: String?
 )

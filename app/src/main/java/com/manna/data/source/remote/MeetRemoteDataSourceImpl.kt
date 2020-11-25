@@ -15,12 +15,7 @@ class MeetRemoteDataSourceImpl @Inject constructor(private val meetApi: MeetApi)
     }
 
     override fun registerUser(userName: String, deviceId: String): Single<UserResponse> {
-        val body = JsonObject().apply {
-            addProperty("username", userName)
-            addProperty("device_id", deviceId)
-        }
-
-        return meetApi.registerUser(body)
+        return meetApi.registerUser(userName, deviceId)
     }
 
     override fun getMeetList(deviceId: String): Single<MeetResponse> {
@@ -29,10 +24,9 @@ class MeetRemoteDataSourceImpl @Inject constructor(private val meetApi: MeetApi)
 
     override fun registerMeet(meetName: String, deviceId: String): Single<MeetResponseItem> {
         val body = JsonObject().apply {
-            addProperty("manna_name", meetName)
-            addProperty("device_id", deviceId)
+            addProperty("mannaName", meetName)
         }
 
-        return meetApi.registerMeet(body)
+        return meetApi.registerMeet(body, deviceId)
     }
 }

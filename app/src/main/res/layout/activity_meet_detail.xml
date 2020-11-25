@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -39,21 +40,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:fontFamily="@font/noto_sans_kr_medium"
-                android:alpha="0.9"
-                android:id="@+id/tv_timer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_timer"
-                android:gravity="center"
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="@+id/btn_back"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/btn_back" />
-
             <ToggleButton
                 android:id="@+id/btn_mountain"
                 android:layout_width="65dp"
@@ -68,21 +54,31 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ToggleButton
-            android:background="@android:color/transparent"
-            android:textOff=""
-            android:textOn=""
             android:id="@+id/btn_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:textOff=""
+            android:textOn=""
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/top_panel" />
+
+        <FrameLayout
+            android:id="@+id/frag_container"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/btn_chatting"
             android:layout_width="53dp"
             android:layout_height="53dp"
-            android:layout_marginStart="22dp"
-            android:layout_marginBottom="38dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="34dp"
+            android:background="?android:selectableItemBackgroundBorderless"
             android:src="@drawable/ic_chatting"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -91,11 +87,86 @@
             android:id="@+id/btn_chart"
             android:layout_width="53dp"
             android:layout_height="53dp"
-            android:layout_marginEnd="22dp"
-            android:layout_marginBottom="38dp"
+            android:layout_marginStart="11dp"
+            android:layout_marginBottom="34dp"
+            android:background="?android:selectableItemBackgroundBorderless"
             android:src="@drawable/ic_chart"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintStart_toEndOf="@id/btn_chatting" />
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/timer_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="22dp"
+            android:layout_marginBottom="34dp"
+            android:background="@drawable/rounded_circle_corner"
+            android:backgroundTint="@color/keyColor"
+            android:paddingStart="21dp"
+            android:paddingTop="11dp"
+            android:paddingEnd="21dp"
+            android:paddingBottom="11dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/timer_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="remain_minute,remain_seconds,colon"/>
+
+            <TextView
+                android:id="@+id/remain_minute"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="3dp"
+                android:textColor="@color/white"
+                android:textSize="22sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/colon"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="30" />
+
+            <TextView
+                android:id="@+id/colon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=":"
+                android:textColor="@color/white"
+                android:textSize="22sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/remain_seconds"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="3dp"
+                android:textColor="@color/white"
+                android:textSize="22sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/colon"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="00" />
+
+            <TextView
+                android:id="@+id/check_in"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="체크인 하기"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

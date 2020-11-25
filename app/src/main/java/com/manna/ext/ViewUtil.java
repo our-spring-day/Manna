@@ -42,6 +42,9 @@ public class ViewUtil {
     public static int getScreenHeightPixels(Context context){
         return getWindowSize(context).y;
     }
+    public static int getRealSizeHeightPixels(Context context){
+        return getWindowSize(context, true).y;
+    }
 
     private static Point getWindowSize(Context context) {
         if (context == null) {
@@ -52,6 +55,21 @@ public class ViewUtil {
         Point outSize = new Point();
 
         display.getSize(outSize);
+        return outSize;
+    }
+
+    private static Point getWindowSize(Context context, boolean isRealSize) {
+        if (context == null) {
+            return new Point();
+        }
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display d = wm.getDefaultDisplay();
+        Point outSize = new Point();
+        if (isRealSize) {
+            d.getRealSize(outSize);
+        } else {
+            d.getSize(outSize);
+        }
         return outSize;
     }
 
@@ -76,5 +94,18 @@ public class ViewUtil {
             result = context.getResources().getDimensionPixelSize(resourceId);
         }
         return result;
+    }
+
+    public static int getSoftButtonsBarHeight(Activity activity) {
+        // getRealMetrics is only available with API 17 and +
+        DisplayMetrics metrics = new DisplayMetrics();
+        activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        int usableHeight = metrics.heightPixels;
+        activity.getWindowManager().getDefaultDisplay().getRealMetrics(metrics);
+        int realHeight = metrics.heightPixels;
+        if (realHeight > usableHeight)
+            return realHeight - usableHeight;
+        else
+            return 0;
     }
 }

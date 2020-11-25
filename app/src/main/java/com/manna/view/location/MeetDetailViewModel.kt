@@ -5,15 +5,20 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.manna.Event
 import com.manna.Logger
+import com.manna.UserHolder
 import com.manna.common.BaseViewModel
 import com.manna.ext.plusAssign
 import com.manna.network.api.BingApi
+import com.manna.network.api.MeetApi
 import com.manna.view.User
 import com.naver.maps.geometry.LatLng
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
-class MeetDetailViewModel @ViewModelInject constructor(private val repository: BingApi) :
+class MeetDetailViewModel @ViewModelInject constructor(
+    private val repository: BingApi,
+    private val meetApi: MeetApi
+) :
     BaseViewModel() {
 
     private val _drawWayPoints = MutableLiveData<List<WayPoint>>()
@@ -49,9 +54,11 @@ class MeetDetailViewModel @ViewModelInject constructor(private val repository: B
 
                 val points = mutableListOf<WayPoint>()
 
-                val remainDistance = root.resourceSets?.first()?.resources?.first()?.routeLegs?.first()?.travelDistance
+                val remainDistance =
+                    root.resourceSets?.first()?.resources?.first()?.routeLegs?.first()?.travelDistance
 
-                val remainTime = root.resourceSets?.first()?.resources?.first()?.routeLegs?.first()?.travelDuration
+                val remainTime =
+                    root.resourceSets?.first()?.resources?.first()?.routeLegs?.first()?.travelDuration
 
                 val remainValue = user to (remainDistance to remainTime)
                 this.remainValue.postValue(remainValue)
@@ -88,6 +95,21 @@ class MeetDetailViewModel @ViewModelInject constructor(private val repository: B
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ (list, titles) ->
                 _drawWayPoints.value = list
+            }, {
+                Logger.d("$it")
+            })
+    }
+
+    fun urgingUser(roomId: String, receiverToken: String) {
+        compositeDisposable += meetApi.sendPushMessage(
+            roomId,
+            receiverToken,
+            UserHolder.deviceId
+        )
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                Logger.d("$it")
             }, {
                 Logger.d("$it")
             })

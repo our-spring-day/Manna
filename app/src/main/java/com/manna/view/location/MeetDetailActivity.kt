@@ -13,6 +13,8 @@ import android.view.View
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.google.gson.JsonObject
 import com.manna.*
@@ -21,6 +23,8 @@ import com.manna.common.BaseActivity
 import com.manna.databinding.ActivityMeetDetailBinding
 import com.manna.ext.ViewUtil
 import com.manna.view.User
+import com.manna.view.chat.ChatFragment
+import com.manna.view.rank.RankingFragment
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.LatLngBounds
 import com.naver.maps.map.*
@@ -30,7 +34,6 @@ import com.naver.maps.map.overlay.MultipartPathOverlay
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.activity_meet_detail.*
 import java.util.*
 
 @AndroidEntryPoint
@@ -84,7 +87,9 @@ class MeetDetailActivity :
 
         LocationSocketManager.setLocationResponseCallback {
             runOnUiThread {
-                handleLocation(it)
+                if (UserHolder.deviceId != it.sender?.deviceToken) {
+                    handleLocation(it)
+                }
             }
         }
         LocationSocketManager.connect(roomId)
@@ -138,9 +143,46 @@ class MeetDetailActivity :
                 overlayState = DEFAULT
                 updateBtn()
             }
-        }
 
+            btnChatting.setOnClickListener {
+                val transaction = supportFragmentManager.beginTransaction()
+                val fragment =
+                    supportFragmentManager.findFragmentByTag(ChatFragment::class.java.simpleName)
+
+                if (fragment != null) {
+                    transaction.show(fragment).commit()
+                } else {
+                    transaction
+                        .replace(
+                            R.id.frag_container,
+                            ChatFragment.newInstance(roomId),
+                            ChatFragment::class.java.simpleName
+                        )
+                        .commit()
+                }
+            }
+
+            btnChart.setOnClickListener {
+                val transaction = supportFragmentManager.beginTransaction()
+                val fragment =
+                    supportFragmentManager.findFragmentByTag(RankingFragment::class.java.simpleName)
+
+                if (fragment != null) {
+                    transaction.show(fragment).commit()
+                } else {
+                    transaction
+                        .replace(
+                            R.id.frag_container,
+                            RankingFragment.newInstance(roomId),
+                            RankingFragment::class.java.simpleName
+                        )
+                        .commit()
+                }
+            }
+
+        }
     }
+
 
     private fun updateBtn() {
         var btnDrawable = R.drawable.ic_map_default
@@ -149,8 +191,9 @@ class MeetDetailActivity :
             ACTIVE -> btnDrawable = R.drawable.ic_map_active
             TRACKING -> btnDrawable = R.drawable.ic_map_tracking
         }
-        btn_location.setButtonDrawable(btnDrawable)
+        binding.btnLocation.setButtonDrawable(btnDrawable)
     }
+
 
     private fun initViewModel() {
         viewModel.run {
@@ -236,9 +279,10 @@ class MeetDetailActivity :
         naverMap.locationTrackingMode = LocationTrackingMode.NoFollow
 
         this.naverMap = naverMap.apply {
-//            locationSource = locationSource
-//            locationTrackingMode = LocationTrackingMode.NoFollow
-//            isIndoorEnabled = true
+            this.locationSource = this@MeetDetailActivity.locationSource
+            locationTrackingMode = LocationTrackingMode.NoFollow
+            isIndoorEnabled = true
+
             uiSettings.run {
                 isIndoorLevelPickerEnabled = true
                 isLocationButtonEnabled = false
@@ -246,6 +290,16 @@ class MeetDetailActivity :
                 isScaleBarEnabled = false
                 isZoomControlEnabled = false
                 //setContentPadding(250, 250, 250, 250)
+            }
+
+            addOnLocationChangeListener { location ->
+                handleLocation(
+                    LocationResponse(
+                        MyLatLng(location.latitude, location.longitude),
+                        Sender(UserHolder.deviceId, UserHolder.userResponse?.username),
+                        LocationResponse.Type.LOCATION
+                    )
+                )
             }
         }
 
@@ -306,6 +360,19 @@ class MeetDetailActivity :
     override fun onStop() {
         fusedLocationProvider.disableLocationCallback()
         super.onStop()
+    }
+
+    override fun onBackPressed() {
+        val fragment = supportFragmentManager.findFragmentById(R.id.frag_container)
+
+        if (fragment != null) {
+            supportFragmentManager.beginTransaction()
+                .remove(fragment)
+                .commit()
+            return
+        }
+
+        super.onBackPressed()
     }
 
 
@@ -390,7 +457,22 @@ class MeetDetailActivity :
     }
 
     private fun countDown() {
-        val timer = object : CountDownTimer(3600000, 1000) {
+        val startTime = Calendar.getInstance().run {
+            set(2020, 10, 15, 7, 0)
+            timeInMillis
+        }
+        val endTime = Calendar.getInstance().run {
+            set(2020, 10, 15, 8, 0)
+            timeInMillis
+        }
+        val nowTime = System.currentTimeMillis()
+
+        if (startTime > nowTime) {
+            binding.timerLayout.isGone = true
+            return
+        }
+
+        val timer = object : CountDownTimer(endTime - nowTime, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 val getMin =
                     millisUntilFinished - millisUntilFinished / (60 * 60 * 1000)
@@ -405,16 +487,18 @@ class MeetDetailActivity :
                     second = "0$second"
                 }
                 if (min == "20" && second == "00") {
-                    binding.tvTimer.setBackgroundResource(R.drawable.bg_timer_yellow)
+                    binding.timerLayout.setBackgroundResource(R.drawable.bg_timer_yellow)
                 } else if (min == "10" && second == "00") {
-                    binding.tvTimer.setBackgroundResource(R.drawable.bg_timer_red)
+                    binding.timerLayout.setBackgroundResource(R.drawable.bg_timer_red)
                 }
-                binding.tvTimer.text = "$min : $second"
+                binding.remainMinute.text = min
+                binding.remainSeconds.text = second
             }
 
             override fun onFinish() {
-                binding.tvTimer.setBackgroundResource(R.drawable.bg_timer)
-                binding.tvTimer.text = "체크인 하기"
+                binding.timerLayout.setBackgroundResource(R.drawable.bg_timer)
+                binding.checkIn.isVisible = true
+                binding.timerGroup.isGone = true
             }
         }
         timer.start()
