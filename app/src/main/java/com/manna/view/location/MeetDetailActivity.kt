@@ -90,7 +90,7 @@ class MeetDetailActivity :
 
         LocationSocketManager.setLocationResponseCallback {
             runOnUiThread {
-                if (UserHolder.userResponse?.deviceId == it.sender?.deviceToken) {
+                if (UserHolder.userResponse?.deviceId != it.sender?.deviceToken) {
                     handleLocation(it)
                 }
             }
