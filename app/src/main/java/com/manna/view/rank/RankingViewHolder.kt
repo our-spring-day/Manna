@@ -20,7 +20,7 @@ sealed class RankingViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         fun bind(item: User, listener: RankingAdapter.OnClickListener?) {
             itemView.run {
-                setOnClickListener {
+                binding.btnHurry.setOnClickListener {
                     listener?.onClick(item)
                 }
 

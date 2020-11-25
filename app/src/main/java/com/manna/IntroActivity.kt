@@ -84,17 +84,13 @@ class IntroViewModel @ViewModelInject constructor(
             }
 
             // Get new FCM registration token
-            val token = task.result
+            val token = task.result ?: return@OnCompleteListener
 
-            val body = JsonObject().apply {
-                addProperty("pushToken", token)
-                addProperty("type", "fcms")
-            }
-
-            compositeDisposable += meetApi.registerPushToken(deviceId, body)
+            compositeDisposable += meetApi.registerPushToken(deviceId, token, "fcms")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
+                    Logger.d("$it")
                     _isValidDevice.value = Event(true)
                 }, {
                     Logger.d("$it")

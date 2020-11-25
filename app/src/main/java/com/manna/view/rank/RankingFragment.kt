@@ -46,10 +46,11 @@ class RankingFragment : Fragment() {
 
                 viewModel.urgingUser(roomId, user.deviceToken)
 
-                viewModel.bottomUserItemClickEvent.value = Event(user)
+//                viewModel.bottomUserItemClickEvent.value = Event(user)
             }
         })
 
+        activity
         viewModel.userList.observe(viewLifecycleOwner, {
             Logger.d("$it")
             rankingAdapter.submitList(it)
