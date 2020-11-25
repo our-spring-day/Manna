@@ -561,8 +561,8 @@ class MeetDetailActivity :
 
     private fun moveLocation(latLng: LatLng, zoom: Double) {
         val cameraUpdate = CameraUpdate.scrollAndZoomTo(latLng, zoom)
-        naverMap.locationTrackingMode = LocationTrackingMode.Follow
         naverMap.moveCamera(cameraUpdate)
+        naverMap.locationTrackingMode = LocationTrackingMode.Follow
     }
 
     private fun moveLocation() {
