@@ -11,17 +11,22 @@ import android.os.CountDownTimer
 import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 import com.google.gson.JsonObject
 import com.manna.*
 import com.manna.R
 import com.manna.common.BaseActivity
 import com.manna.databinding.ActivityMeetDetailBinding
+import com.manna.databinding.ViewRoundMarkerBinding
 import com.manna.ext.ViewUtil
 import com.manna.view.User
 import com.manna.view.chat.ChatFragment
@@ -36,6 +41,7 @@ import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
+import kotlin.collections.set
 
 @AndroidEntryPoint
 class MeetDetailActivity :
@@ -328,17 +334,17 @@ class MeetDetailActivity :
         val size = Point()
         display.getSize(size)
         naverMap.addOnCameraChangeListener { reason, animated ->
-            if (naverMap.cameraPosition.zoom > 13.0) {
-                markerHolders.forEach {
-                    it.marker.width = size.y / naverMap.cameraPosition.zoom.toInt()
-                    it.marker.height = size.y / naverMap.cameraPosition.zoom.toInt()
-                }
-            } else {
-                markerHolders.forEach {
-                    it.marker.width = size.y / 13
-                    it.marker.height = size.y / 13
-                }
-            }
+//            if (naverMap.cameraPosition.zoom > 13.0) {
+//                markerHolders.forEach {
+//                    it.marker.width = size.y / naverMap.cameraPosition.zoom.toInt()
+//                    it.marker.height = size.y / naverMap.cameraPosition.zoom.toInt()
+//                }
+//            } else {
+//                markerHolders.forEach {
+//                    it.marker.width = size.y / 13
+//                    it.marker.height = size.y / 13
+//                }
+//            }
 
             if (reason == REASON_GESTURE) {
                 markerHolders.forEach {
@@ -365,6 +371,7 @@ class MeetDetailActivity :
                         OverlayImage.fromView(it.markerView)
                     }
                 }
+
                 it.marker.map = naverMap
             }
         }
@@ -436,17 +443,38 @@ class MeetDetailActivity :
                             val markerView = LayoutInflater.from(this)
                                 .inflate(R.layout.view_marker, binding.rootView, false)
                                 .apply {
+                                    if (deviceToken.orEmpty() == UserHolder.deviceId) {
+                                        this.updatePadding(
+                                            bottom = ViewUtil.convertDpToPixel(
+                                                this@MeetDetailActivity,
+                                                10f
+                                            ).toInt()
+                                        )
+                                    }
                                     findViewById<TextView>(R.id.name).text = fromUserName
                                 }
 
-                            val imageMarkerView = LayoutInflater.from(this)
-                                .inflate(R.layout.view_round_marker, binding.rootView, false)
-                                .apply {
-                                    setImage(
-                                        findViewById<CircleImageView>(R.id.iv_image),
-                                        deviceToken.orEmpty()
-                                    )
-                                }
+
+                            val marker =
+                                ViewRoundMarkerBinding.inflate(
+                                    LayoutInflater.from(this),
+                                    binding.rootView,
+                                    false
+                                )
+                                    .apply {
+                                        if (deviceToken.orEmpty() == UserHolder.deviceId) {
+                                            this.root.updatePadding(
+                                                bottom = ViewUtil.convertDpToPixel(
+                                                    this@MeetDetailActivity,
+                                                    10f
+                                                ).toInt()
+                                            )
+                                        }
+                                        setImage(
+                                            this.ivImage,
+                                            deviceToken.orEmpty()
+                                        )
+                                    }
 
                             viewModel.addUser(
                                 User(fromUserName, deviceToken, latLng.latitude, latLng.longitude)
@@ -457,11 +485,13 @@ class MeetDetailActivity :
                                     deviceToken,
                                     it,
                                     markerView,
-                                    imageMarkerView
+                                    marker.root
                                 )
                             )
 
                             it.icon = OverlayImage.fromView(markerView)
+                            it.width = Marker.SIZE_AUTO
+                            it.height = Marker.SIZE_AUTO
                         }
 
                 lastTimeStamp[deviceToken] = System.currentTimeMillis()
@@ -541,7 +571,7 @@ class MeetDetailActivity :
         }
     }
 
-    private fun setImage(imageView: CircleImageView, deviceToken: String) {
+    private fun setImage(imageView: ImageView, deviceToken: String) {
         kotlin.runCatching {
             val imageResId = when (deviceToken) {
                 "aed64e8da3a07df4" -> R.drawable.test_2
@@ -555,7 +585,20 @@ class MeetDetailActivity :
                 else -> R.drawable.test_1
             }
 
-            Glide.with(this).load(imageResId).into(imageView)
+
+            Glide.with(this)
+                .applyDefaultRequestOptions(
+                    RequestOptions.bitmapTransform(
+                        RoundedCorners(
+                            ViewUtil.convertDpToPixel(
+                                this,
+                                24f
+                            ).toInt()
+                        )
+                    )
+                )
+                .load(imageResId)
+                .into(imageView)
         }
     }
 

@@ -1,11 +1,11 @@
 package com.manna.view.chat
 
 import android.view.View
+import android.widget.ImageView
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.manna.CircleImageView
 import com.manna.R
 import com.manna.databinding.ItemChatBinding
 import com.manna.databinding.ItemMyChatBinding
@@ -63,7 +63,7 @@ sealed class ChatAdapterViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     }
 
 
-    protected fun setImage(imageView: CircleImageView, deviceToken: String) {
+    protected fun setImage(imageView: ImageView, deviceToken: String) {
         kotlin.runCatching {
             val imageResId = when (deviceToken) {
                 "aed64e8da3a07df4" -> R.drawable.test_2
