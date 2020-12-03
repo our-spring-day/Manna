@@ -15,7 +15,7 @@
             android:id="@+id/profile_image"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            app:corner_radius="@dimen/profile_corner"
+            app:corner_radius="@dimen/chat_profile_corner"
             app:border_res="@drawable/chat_profile_image_shape"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

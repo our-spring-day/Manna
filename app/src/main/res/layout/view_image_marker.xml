@@ -9,35 +9,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <ImageView
+        <com.manna.view.ProfileImageView
             android:id="@+id/iv_image"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
-            app:layout_constraintBottom_toBottomOf="@id/rounded_bg"
-            app:layout_constraintEnd_toEndOf="@id/rounded_bg"
-            app:layout_constraintStart_toStartOf="@id/rounded_bg"
-            app:layout_constraintTop_toTopOf="@id/rounded_bg" />
-
-        <View
-            android:id="@+id/rounded_bg"
             android:layout_width="56dp"
             android:layout_height="56dp"
-            android:background="@drawable/marker_round_shape"
-            app:layout_constraintStart_toStartOf="parent"
+            app:border_res="@drawable/marker_round_shape"
+            app:corner_radius="@dimen/marker_corner"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/anchor"
-            android:translationY="2dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="2dp"
             android:background="@drawable/ic_anchor"
+            android:translationY="2dp"
+            app:layout_constraintBottom_toBottomOf="@id/iv_image"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/rounded_bg"
-            app:layout_constraintTop_toBottomOf="@id/rounded_bg" />
+            app:layout_constraintTop_toBottomOf="@id/iv_image" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

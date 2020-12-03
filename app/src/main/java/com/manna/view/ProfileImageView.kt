@@ -33,7 +33,7 @@ class ProfileImageView @JvmOverloads constructor(
         view = inflate(context, R.layout.view_profile_image, this) as ViewGroup
 
         borderDrawable?.let {
-            view.findViewById<View>(R.id.rounded_bg).background = it
+            view.findViewById<View>(R.id.border).background = it
         }
     }
 
@@ -42,7 +42,7 @@ class ProfileImageView @JvmOverloads constructor(
     }
 
     private fun setImageUrl(imageUrl: String) {
-        val imageView = view.findViewById<ImageView>(R.id.iv_image)
+        val imageView = view.findViewById<ImageView>(R.id.image)
 
         Glide.with(context)
             .applyDefaultRequestOptions(

@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.manna.R
 import com.manna.databinding.ItemOngoingBinding
 import com.manna.presentation.User
@@ -26,19 +25,20 @@ sealed class RankingViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
                 setRemainValue(item)
                 binding.name.text = item.name
-                binding.profileImage.let {
-                    when (item.name) {
-                        "이연재" -> Glide.with(this).load(R.drawable.test_2).into(it)
-                        "원우석" -> Glide.with(this).load(R.drawable.image_3).into(it)
-                        "윤상원" -> Glide.with(this).load(R.drawable.image_2).into(it)
-                        "정재인" -> Glide.with(this).load(R.drawable.image_4).into(it)
-                        "양종찬" -> Glide.with(this).load(R.drawable.image_6).into(it)
-                        "최용권" -> Glide.with(this).load(R.drawable.image_1).into(it)
-                        "김규리" -> Glide.with(this).load(R.drawable.image_5).into(it)
-                        "이효근" -> Glide.with(this).load(R.drawable.image_7).into(it)
-                        else -> Glide.with(this).load(R.drawable.test_1).into(it)
-                    }
-                }
+                binding.profileImage.setImage("http://mimg.segye.com/content/image/2020/03/12/20200312506832.jpg")
+//                binding.profileImage.let {
+//                    when (item.name) {
+//                        "이연재" -> Glide.with(this).load(R.drawable.test_2).into(it)
+//                        "원우석" -> Glide.with(this).load(R.drawable.image_3).into(it)
+//                        "윤상원" -> Glide.with(this).load(R.drawable.image_2).into(it)
+//                        "정재인" -> Glide.with(this).load(R.drawable.image_4).into(it)
+//                        "양종찬" -> Glide.with(this).load(R.drawable.image_6).into(it)
+//                        "최용권" -> Glide.with(this).load(R.drawable.image_1).into(it)
+//                        "김규리" -> Glide.with(this).load(R.drawable.image_5).into(it)
+//                        "이효근" -> Glide.with(this).load(R.drawable.image_7).into(it)
+//                        else -> Glide.with(this).load(R.drawable.test_1).into(it)
+//                    }
+//                }
             }
         }
 

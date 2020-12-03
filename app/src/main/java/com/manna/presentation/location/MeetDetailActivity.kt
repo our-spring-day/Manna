@@ -475,10 +475,11 @@ class MeetDetailActivity :
                                                 ).toInt()
                                             )
                                         }
-                                        setImage(
-                                            this.ivImage,
-                                            deviceToken.orEmpty()
-                                        )
+//                                        setImage(
+//                                            this.ivImage,
+//                                            deviceToken.orEmpty()
+//                                        )
+                                        ivImage.setImage("https://imgs.mongabay.com/wp-content/uploads/sites/20/2020/02/13100557/Screen-Shot-2020-02-13-at-9.04.42-AM.png")
                                     }
 
                             viewModel.addUser(
