@@ -1,4 +1,4 @@
-package com.manna.view
+package com.manna.presentation
 
 data class User(
     val name: String,

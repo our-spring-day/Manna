@@ -12,7 +12,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.manna.databinding.FragmentSettingBinding
 import com.manna.picker.ImagePickerFragment
-import com.manna.view.SocketIOTestActivity
+import com.manna.presentation.SocketIOTestActivity
 
 
 class SettingFragment : Fragment() {

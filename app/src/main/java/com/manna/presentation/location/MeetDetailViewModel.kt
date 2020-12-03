@@ -1,16 +1,16 @@
-package com.manna.view.location
+package com.manna.presentation.location
 
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.manna.Event
 import com.manna.Logger
 import com.manna.UserHolder
 import com.manna.common.BaseViewModel
+import com.manna.ext.Event
 import com.manna.ext.plusAssign
 import com.manna.network.api.BingApi
 import com.manna.network.api.MeetApi
-import com.manna.view.User
+import com.manna.presentation.User
 import com.naver.maps.geometry.LatLng
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers

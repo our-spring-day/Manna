@@ -1,4 +1,4 @@
-package com.manna.view.rank
+package com.manna.presentation.rank
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.manna.R
 import com.manna.databinding.ItemOngoingBinding
-import com.manna.view.User
+import com.manna.presentation.User
 
 sealed class RankingViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 

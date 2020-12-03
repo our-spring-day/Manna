@@ -1,4 +1,4 @@
-package com.manna.view.location
+package com.manna.presentation.location
 
 import android.view.View
 import com.naver.maps.map.overlay.Marker

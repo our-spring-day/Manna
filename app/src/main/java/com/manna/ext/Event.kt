@@ -1,4 +1,4 @@
-package com.manna
+package com.manna.ext
 
 import androidx.lifecycle.Observer
 

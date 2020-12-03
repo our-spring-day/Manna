@@ -1,4 +1,4 @@
-package com.manna.view
+package com.manna.presentation
 
 import android.os.Parcelable
 import androidx.fragment.app.Fragment

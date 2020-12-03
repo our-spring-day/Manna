@@ -1,4 +1,4 @@
-package com.manna.view.search
+package com.manna.presentation.search
 
 import com.manna.network.model.search_address.SearchAddress
 

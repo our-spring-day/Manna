@@ -1,4 +1,4 @@
-package com.manna.view.location
+package com.manna.presentation.location
 
 import androidx.annotation.MainThread
 import com.google.gson.Gson

@@ -1,4 +1,4 @@
-package com.manna.view.search
+package com.manna.presentation.search
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -23,7 +23,7 @@ import com.manna.databinding.ActivityRouteBinding
 import com.manna.databinding.ItemRouteBinding
 import com.manna.di.ApiModule
 import com.manna.ext.ViewUtil
-import com.manna.view.location.WayPoint
+import com.manna.presentation.location.WayPoint
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.MapFragment

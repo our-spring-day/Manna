@@ -1,4 +1,4 @@
-package com.manna.view.chat
+package com.manna.presentation.chat
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

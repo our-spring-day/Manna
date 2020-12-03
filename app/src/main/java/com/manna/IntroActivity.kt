@@ -11,10 +11,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
-import com.google.gson.JsonObject
 import com.manna.common.BaseActivity
 import com.manna.data.source.repo.MeetRepository
 import com.manna.databinding.ActivityIntroBinding
+import com.manna.ext.Event
+import com.manna.ext.EventObserver
 import com.manna.ext.plusAssign
 import com.manna.network.api.MeetApi
 import com.manna.network.model.meet.UserResponse

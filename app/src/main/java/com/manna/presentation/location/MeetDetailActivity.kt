@@ -1,4 +1,4 @@
-package com.manna.view.location
+package com.manna.presentation.location
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -27,10 +27,11 @@ import com.manna.R
 import com.manna.common.BaseActivity
 import com.manna.databinding.ActivityMeetDetailBinding
 import com.manna.databinding.ViewRoundMarkerBinding
+import com.manna.ext.EventObserver
 import com.manna.ext.ViewUtil
-import com.manna.view.User
-import com.manna.view.chat.ChatFragment
-import com.manna.view.rank.RankingFragment
+import com.manna.presentation.User
+import com.manna.presentation.chat.ChatFragment
+import com.manna.presentation.rank.RankingFragment
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.LatLngBounds
 import com.naver.maps.map.*

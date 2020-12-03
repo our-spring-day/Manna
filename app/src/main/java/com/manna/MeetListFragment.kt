@@ -14,8 +14,8 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gun0912.tedpermission.TedPermissionResult
 import com.manna.databinding.FragmentMeetListBinding
-import com.manna.view.location.MeetDetailActivity
-import com.manna.view.search.SearchActivity
+import com.manna.presentation.location.MeetDetailActivity
+import com.manna.presentation.search.SearchActivity
 import com.tedpark.tedpermission.rx2.TedRx2Permission
 import dagger.hilt.android.AndroidEntryPoint
 

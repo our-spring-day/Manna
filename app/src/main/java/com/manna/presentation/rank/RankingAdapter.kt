@@ -1,10 +1,10 @@
-package com.manna.view.rank
+package com.manna.presentation.rank
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 
-import com.manna.view.User
+import com.manna.presentation.User
 
 class RankingAdapter :
     ListAdapter<User, RankingViewHolder>(

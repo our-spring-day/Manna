@@ -1,4 +1,4 @@
-package com.manna.view.search
+package com.manna.presentation.search
 
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData

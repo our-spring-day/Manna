@@ -1,4 +1,4 @@
-package com.manna.view.rank
+package com.manna.presentation.rank
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,12 +7,11 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.manna.Event
 import com.manna.Logger
 import com.manna.R
 import com.manna.databinding.FragmentRankingBinding
-import com.manna.view.User
-import com.manna.view.location.MeetDetailViewModel
+import com.manna.presentation.User
+import com.manna.presentation.location.MeetDetailViewModel
 
 
 class RankingFragment : Fragment() {

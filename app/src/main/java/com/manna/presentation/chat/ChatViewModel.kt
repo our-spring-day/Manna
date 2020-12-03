@@ -1,4 +1,4 @@
-package com.manna.view.chat
+package com.manna.presentation.chat
 
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData

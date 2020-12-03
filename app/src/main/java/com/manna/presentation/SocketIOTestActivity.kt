@@ -1,4 +1,4 @@
-package com.manna.view
+package com.manna.presentation
 
 import android.annotation.SuppressLint
 import android.content.Context

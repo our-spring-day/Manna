@@ -9,7 +9,7 @@
 
         <variable
             name="item"
-            type="com.manna.view.search.SearchAddressItem" />
+            type="com.manna.presentation.search.SearchAddressItem" />
     </data>
 
 

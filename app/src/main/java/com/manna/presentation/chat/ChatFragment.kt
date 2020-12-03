@@ -1,4 +1,4 @@
-package com.manna.view.chat
+package com.manna.presentation.chat
 
 import android.annotation.SuppressLint
 import android.os.Bundle

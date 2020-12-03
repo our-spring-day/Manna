@@ -1,4 +1,4 @@
-package com.manna.view.search
+package com.manna.presentation.search
 
 import android.os.Bundle
 import android.view.inputmethod.EditorInfo
