@@ -46,7 +46,8 @@ sealed class ChatAdapterViewHolder(view: View) : RecyclerView.ViewHolder(view) {
                 date.text = SimpleDateFormat("H:mm", Locale.KOREA).format(item.timeStamp)
                 profileImage.isVisible = item.hasImage
                 name.isVisible = item.hasImage
-                setImage(profileImage, item.deviceToken)
+                profileImage.setImage("https://imgs.mongabay.com/wp-content/uploads/sites/20/2020/02/13100557/Screen-Shot-2020-02-13-at-9.04.42-AM.png")
+//                setImage(profileImage, item.deviceToken)
             }
         }
     }
