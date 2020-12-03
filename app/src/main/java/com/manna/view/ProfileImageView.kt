@@ -5,7 +5,6 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -22,10 +21,11 @@ class ProfileImageView @JvmOverloads constructor(
 ) : ConstraintLayout(context, attrs, defStyle) {
 
     private var cornerRadius = 0f
-    private val view: ViewGroup
     private var borderDrawable: Drawable? = null
 
     init {
+        inflate(context, R.layout.view_profile_image, this)
+
         if (attrs != null) {
             val a = context.obtainStyledAttributes(attrs, R.styleable.ProfileImageView)
             cornerRadius = a.getDimension(R.styleable.ProfileImageView_corner_radius, 0f)
@@ -39,10 +39,9 @@ class ProfileImageView @JvmOverloads constructor(
             }
             a.recycle()
         }
-        view = inflate(context, R.layout.view_profile_image, this) as ViewGroup
 
         borderDrawable?.let {
-            view.findViewById<View>(R.id.border).background = it
+            findViewById<View>(R.id.border).background = it
         }
     }
 
@@ -51,7 +50,7 @@ class ProfileImageView @JvmOverloads constructor(
     }
 
     private fun setImageUrl(imageUrl: String) {
-        val imageView = view.findViewById<ImageView>(R.id.image)
+        val imageView = findViewById<ImageView>(R.id.image)
 
         Glide.with(context)
             .applyDefaultRequestOptions(
