@@ -4,8 +4,8 @@ import androidx.annotation.MainThread
 import com.google.gson.Gson
 import com.manna.LocationResponse
 import com.manna.network.api.MeetApi
-import com.manna.presentation.intro.UserHolder
 import com.manna.util.Logger
+import com.manna.util.UserHolder
 import io.socket.client.IO
 import io.socket.client.Manager
 import io.socket.client.Socket

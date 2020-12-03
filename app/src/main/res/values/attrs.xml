@@ -16,4 +16,9 @@
     <declare-styleable name="Theme">
         <attr name="circularImageViewStyle" format="reference"/>
     </declare-styleable>
+    
+    <declare-styleable name="ProfileImageView">
+        <attr name="corner_radius" format="integer"/>
+    </declare-styleable>
+    
 </resources>

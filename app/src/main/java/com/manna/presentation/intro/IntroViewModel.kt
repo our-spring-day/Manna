@@ -11,6 +11,7 @@ import com.manna.ext.Event
 import com.manna.ext.plusAssign
 import com.manna.network.api.MeetApi
 import com.manna.util.Logger
+import com.manna.util.UserHolder
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 

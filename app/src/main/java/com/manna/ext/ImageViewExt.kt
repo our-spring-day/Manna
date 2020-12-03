@@ -14,7 +14,8 @@ import com.manna.R
 
 /** 이미지 피커에서 Load 에 실패한 아이템 선택불가 처리 */
 @BindingAdapter(value = ["bind:uriImg", "bind:loadFailed"])
-fun ImageView.setUriImg(uri: Uri, loadFailed: (uri: Uri) -> Unit) {
+fun ImageView.setUriImg(uri: Uri?, loadFailed: (uri: Uri) -> Unit) {
+    uri ?: return
     Glide.with(context)
         .load(uri)
         .error(R.drawable.ic_error_outline_black_48dp)
@@ -47,6 +48,7 @@ fun ImageView.setUriImg(uri: Uri, loadFailed: (uri: Uri) -> Unit) {
 
 @BindingAdapter("bind:uriDetailImg")
 fun ImageView.setUriDetailImg(uri: Uri?) {
+    uri ?: return
     Glide.with(context)
         .load(uri)
         .error(R.drawable.ic_error_outline_grey_96dp)

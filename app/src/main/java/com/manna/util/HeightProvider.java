@@ -10,8 +10,8 @@ import android.view.WindowManager;
 import android.widget.PopupWindow;
 
 public class HeightProvider extends PopupWindow implements ViewTreeObserver.OnGlobalLayoutListener {
-    private Activity mActivity;
-    private View rootView;
+    private final Activity mActivity;
+    private final View rootView;
     private HeightListener listener;
     private int heightMax; // Record the maximum height of the pop content area
 

@@ -9,8 +9,8 @@ import com.manna.ext.plusAssign
 import com.manna.network.api.BingApi
 import com.manna.network.api.MeetApi
 import com.manna.presentation.User
-import com.manna.presentation.intro.UserHolder
 import com.manna.util.Logger
+import com.manna.util.UserHolder
 import com.naver.maps.geometry.LatLng
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers

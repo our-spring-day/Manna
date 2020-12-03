@@ -6,7 +6,7 @@ import android.net.Uri
 import android.provider.MediaStore
 import com.manna.MannaApp
 
-class ImageLoadManager() {
+class ImageLoadManager {
 
     private val context: Context = MannaApp.context()
 

@@ -7,8 +7,8 @@ import com.manna.common.BaseViewModel
 import com.manna.ext.plusAssign
 import com.manna.network.api.MeetApi
 import com.manna.network.model.chat.ChatListResponseItem
-import com.manna.presentation.intro.UserHolder
 import com.manna.util.Logger
+import com.manna.util.UserHolder
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.text.SimpleDateFormat

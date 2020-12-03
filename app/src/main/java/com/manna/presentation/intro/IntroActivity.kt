@@ -1,4 +1,4 @@
-
+package com.manna.presentation.intro
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
@@ -10,13 +10,12 @@ import com.manna.R
 import com.manna.common.BaseActivity
 import com.manna.databinding.ActivityIntroBinding
 import com.manna.ext.EventObserver
-import com.manna.presentation.intro.IntroViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class IntroActivity : BaseActivity<ActivityIntroBinding>(R.layout.activity_intro) {
 
-    private val viewModel: IntroViewModel by viewModels()
+    private val viewModel by viewModels<IntroViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

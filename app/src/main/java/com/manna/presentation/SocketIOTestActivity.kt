@@ -252,15 +252,6 @@ class SocketIOTestActivity : BaseActivity<ActivityWebsocketBinding>(R.layout.act
     }
 
 
-    override fun onStop() {
-        super.onStop()
-//        if (fusedLocationClient != null) {
-//
-//            fusedLocationClient?.removeLocationUpdates(locationCallback)
-//        }
-    }
-
-
     private fun createBottomSheetCallback(text: TextView): BottomSheetBehavior.BottomSheetCallback =
         object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {

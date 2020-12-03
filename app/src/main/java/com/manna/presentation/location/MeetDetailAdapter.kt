@@ -72,7 +72,7 @@ class MeetDetailAdapter :
                     tv_name.visibility = View.VISIBLE
                     iv_image.visibility = View.GONE
                     if (item.name.orEmpty().length > 2) {
-                        tv_name.text = item.name?.subSequence(1, item.name.length)
+                        tv_name.text = item.name.subSequence(1, item.name.length)
                     } else {
                         tv_name.text = item.name
                     }
