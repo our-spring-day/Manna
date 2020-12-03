@@ -1,4 +1,4 @@
-package com.manna
+package com.manna.view
 
 import android.content.Context
 import android.graphics.*
@@ -14,6 +14,7 @@ import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatImageView
+import com.manna.R
 
 class CircleImageView : AppCompatImageView {
     private val mDrawableRect = RectF()

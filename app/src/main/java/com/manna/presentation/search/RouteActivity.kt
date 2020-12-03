@@ -14,7 +14,6 @@ import androidx.annotation.UiThread
 import androidx.databinding.library.baseAdapters.BR
 import com.google.android.gms.location.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.manna.Logger
 import com.manna.R
 import com.manna.common.BaseActivity
 import com.manna.common.BaseRecyclerViewAdapter
@@ -22,8 +21,9 @@ import com.manna.common.BaseRecyclerViewHolder
 import com.manna.databinding.ActivityRouteBinding
 import com.manna.databinding.ItemRouteBinding
 import com.manna.di.ApiModule
-import com.manna.ext.ViewUtil
 import com.manna.presentation.location.WayPoint
+import com.manna.util.Logger
+import com.manna.util.ViewUtil
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.MapFragment

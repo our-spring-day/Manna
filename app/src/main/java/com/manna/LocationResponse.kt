@@ -1,6 +1,7 @@
 package com.manna
 
 import com.google.gson.annotations.SerializedName
+import com.manna.network.model.chat.Sender
 
 data class LocationResponse(
     @SerializedName("location")

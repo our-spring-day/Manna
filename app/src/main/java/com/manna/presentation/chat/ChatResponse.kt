@@ -3,7 +3,7 @@ package com.manna.presentation.chat
 
 import com.google.gson.annotations.SerializedName
 import com.manna.Message
-import com.manna.Sender
+import com.manna.network.model.chat.Sender
 
 data class ChatResponse(
     @SerializedName("sender")

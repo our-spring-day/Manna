@@ -8,7 +8,7 @@ import com.bumptech.glide.Glide
 import com.manna.R
 import com.manna.databinding.ItemChatBinding
 import com.manna.databinding.ItemMyChatBinding
-import com.manna.ext.ViewUtil
+import com.manna.util.ViewUtil
 import java.text.SimpleDateFormat
 import java.util.*
 

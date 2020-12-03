@@ -4,47 +4,29 @@ import android.Manifest
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
-import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gun0912.tedpermission.TedPermissionResult
+import com.manna.common.BaseFragment
 import com.manna.databinding.FragmentMeetListBinding
 import com.manna.presentation.location.MeetDetailActivity
 import com.manna.presentation.search.SearchActivity
+import com.manna.util.UserHolder
 import com.tedpark.tedpermission.rx2.TedRx2Permission
 import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
-class MeetListFragment : Fragment() {
-
-    private lateinit var binding: FragmentMeetListBinding
+class MeetListFragment : BaseFragment<FragmentMeetListBinding>(R.layout.fragment_meet_list) {
 
     private val viewModel by viewModels<MeetListViewModel>()
 
     private lateinit var meetAdapter: MeetAdapter
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_meet_list, container, false)
-        binding.lifecycleOwner = this
-        return binding.root
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-//        binding.meetDetail.setOnClickListener {
-//            startActivity(Intent(requireContext(), MeetDetailActivity::class.java))
-//        }
 
         binding.run {
             meetList.run {

@@ -1,6 +1,7 @@
-package com.manna
+package com.manna.util
 
 import android.util.Log
+import com.manna.BuildConfig
 
 object Logger {
     var socketLogging = false

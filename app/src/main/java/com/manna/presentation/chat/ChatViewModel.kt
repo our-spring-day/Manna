@@ -3,12 +3,12 @@ package com.manna.presentation.chat
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.manna.Logger
-import com.manna.UserHolder
 import com.manna.common.BaseViewModel
 import com.manna.ext.plusAssign
 import com.manna.network.api.MeetApi
 import com.manna.network.model.chat.ChatListResponseItem
+import com.manna.presentation.intro.UserHolder
+import com.manna.util.Logger
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.text.SimpleDateFormat

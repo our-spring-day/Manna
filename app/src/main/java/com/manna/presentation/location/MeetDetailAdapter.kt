@@ -9,9 +9,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.manna.Logger
 import com.manna.R
 import com.manna.presentation.User
+import com.manna.util.Logger
 import kotlinx.android.synthetic.main.item_round_view.view.*
 
 class MeetDetailAdapter :

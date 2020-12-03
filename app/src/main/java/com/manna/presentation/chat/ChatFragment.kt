@@ -2,21 +2,18 @@ package com.manna.presentation.chat
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
-import com.manna.Logger
 import com.manna.R
-import com.manna.UserHolder
+import com.manna.common.BaseFragment
 import com.manna.databinding.FragmentChatBinding
-import com.manna.ext.HeightProvider
-import com.manna.ext.ViewUtil
 import com.manna.network.api.MeetApi
+import com.manna.util.HeightProvider
+import com.manna.util.Logger
+import com.manna.util.UserHolder
+import com.manna.util.ViewUtil
 import dagger.hilt.android.AndroidEntryPoint
 import io.socket.client.IO
 import io.socket.client.Manager
@@ -27,9 +24,8 @@ import okhttp3.logging.HttpLoggingInterceptor
 import java.net.URI
 
 @AndroidEntryPoint
-class ChatFragment : Fragment() {
+class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
 
-    private lateinit var binding: FragmentChatBinding
     private var keyboardHeight = 0
     private var chatSocket: Socket? = null
     private lateinit var chatAdapter: ChatAdapter
@@ -63,16 +59,6 @@ class ChatFragment : Fragment() {
                 viewModel.addChat(chatItem)
             }
         }
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_chat, container, false)
-        binding.lifecycleOwner = this
-        return binding.root
     }
 
     @SuppressLint("CheckResult")

@@ -1,4 +1,4 @@
-package com.manna.ext;
+package com.manna.util;
 
 import android.app.Activity;
 import android.content.Context;

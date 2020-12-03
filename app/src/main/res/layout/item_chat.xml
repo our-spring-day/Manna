@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:paddingStart="10dp">
 
-        <com.manna.CircleImageView
+        <com.manna.view.CircleImageView
             android:id="@+id/profile_image"
             android:layout_width="32dp"
             android:layout_height="32dp"

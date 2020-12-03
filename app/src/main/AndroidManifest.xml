@@ -23,7 +23,7 @@
         <activity android:name=".presentation.search.SearchActivity" />
         <activity android:name=".presentation.search.RouteActivity" />
         <activity android:name=".HomeActivity" />
-        <activity android:name=".IntroActivity">
+        <activity android:name=".presentation.intro.IntroActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
