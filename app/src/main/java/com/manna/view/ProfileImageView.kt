@@ -26,6 +26,10 @@ class ProfileImageView @JvmOverloads constructor(
         }
     }
 
+    fun setImage(imageUrl: String) {
+        setImageUrl(imageUrl)
+    }
+
     @BindingAdapter("bind:imageUrl")
     fun ProfileImageView.setImageUrl(imageUrl: String) {
         val builder = Glide.with(this)
@@ -41,6 +45,7 @@ class ProfileImageView @JvmOverloads constructor(
                 )
             )
             .load(imageUrl)
+            .override(this.width, this.height)
             .into(this)
     }
 }
