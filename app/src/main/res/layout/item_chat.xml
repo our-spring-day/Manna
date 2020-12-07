@@ -11,10 +11,12 @@
         android:layout_height="wrap_content"
         android:paddingStart="10dp">
 
-        <com.manna.CircleImageView
+        <com.manna.view.ProfileImageView
             android:id="@+id/profile_image"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            app:corner_radius="@dimen/chat_profile_corner"
+            app:border_res="@drawable/chat_profile_image_shape"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

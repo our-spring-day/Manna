@@ -21,7 +21,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="우석" />
 
-    <com.manna.CircleImageView
+    <com.manna.view.CircleImageView
         android:id="@+id/iv_image"
         android:layout_width="56.81dp"
         android:layout_height="56.81dp"
