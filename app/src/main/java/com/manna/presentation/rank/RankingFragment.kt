@@ -27,7 +27,11 @@ class RankingFragment : BaseFragment<FragmentRankingBinding>(R.layout.fragment_r
 
         rankingAdapter.setOnClickListener(object : RankingAdapter.OnClickListener {
             override fun onClick(user: User) {
-                viewModel.urgingUser(roomId, user.deviceToken)
+
+                val fragment = UrgingBottomFragment.newInstance()
+                fragment.show(parentFragmentManager, fragment::class.java.simpleName)
+
+//                viewModel.urgingUser(roomId, user.deviceToken)
 
 //                viewModel.bottomUserItemClickEvent.value = Event(user)
             }
