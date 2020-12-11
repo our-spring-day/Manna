@@ -11,7 +11,6 @@ import androidx.databinding.DataBindingUtil
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.manna.R
 import com.manna.databinding.FragmentUrgingBinding
-import com.manna.util.Logger
 import com.manna.util.ViewUtil
 
 class UrgingBottomFragment : BottomSheetDialogFragment() {
@@ -32,7 +31,7 @@ class UrgingBottomFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
+        optimizeMessageLayout()
         resources.getStringArray(R.array.urging_messages).forEach { message ->
             val messageView = LayoutInflater.from(requireContext())
                 .inflate(R.layout.view_urging_message, binding.root as ViewGroup, false) as TextView
@@ -42,17 +41,24 @@ class UrgingBottomFragment : BottomSheetDialogFragment() {
         }
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-
-
-        Logger.d("${ViewUtil.getScreenWidthPixels(requireContext())}")
-
-        if (ViewUtil.getScreenWidthPixels(requireContext()) > 640f) {
+    private fun optimizeMessageLayout(){
+        if (ViewUtil.getScreenWidthPixels(requireContext()) > ViewUtil.convertDpToPixel(requireContext(), 640f).toInt()) {
             binding.urgingMessageLayout.updateLayoutParams<ViewGroup.LayoutParams> {
                 width = ViewUtil.getScreenWidthPixels(requireContext())
             }
+            binding.urgingMessageLayout.requestLayout()
+        } else {
+            binding.urgingMessageLayout.updateLayoutParams<ViewGroup.LayoutParams> {
+                width = ViewUtil.convertDpToPixel(requireContext(), 640f).toInt()
+            }
+            binding.urgingMessageLayout.requestLayout()
         }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+
+        optimizeMessageLayout()
     }
 
 
