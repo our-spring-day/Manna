@@ -34,9 +34,13 @@
 
 
             <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/close"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="22dp"
+                android:background="?android:selectableItemBackgroundBorderless"
+                android:padding="3dp"
+                android:src="@drawable/ic_close_24"
                 app:layout_constraintBottom_toBottomOf="@id/title"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/title" />

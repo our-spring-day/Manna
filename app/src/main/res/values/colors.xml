@@ -31,4 +31,6 @@
     <color name="ffdadada">#dadada</color>
     <color name="ff626262">#ff626262</color>
     <color name="ff4d4d4d">#ff4d4d4d</color>
+    <color name="white_alpha10">#1affffff</color>
+    <color name="white_alpha15">#26ffffff</color>
 </resources>

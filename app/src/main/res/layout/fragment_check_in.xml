@@ -1,0 +1,153 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/keyColor">
+
+
+        <LinearLayout
+            android:id="@+id/sticker_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="33dp"
+            android:layout_marginTop="80dp"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_check_in_sticker"
+                android:fontFamily="@font/noto_sans_medium"
+                android:gravity="center"
+                android:letterSpacing="-0.02"
+                android:minHeight="61dp"
+                android:padding="5dp"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:text="40분 이동"
+                android:textColor="@color/white"
+                android:textSize="29.5sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/bg_check_in_sticker"
+                android:fontFamily="@font/noto_sans_medium"
+                android:gravity="center"
+                android:letterSpacing="-0.02"
+                android:minHeight="61dp"
+                android:padding="5dp"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:text="5분 일찍 도착"
+                android:textColor="@color/white"
+                android:textSize="29.5sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/bg_check_in_sticker"
+                android:fontFamily="@font/noto_sans_medium"
+                android:gravity="center"
+                android:letterSpacing="-0.02"
+                android:minHeight="61dp"
+                android:padding="5dp"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:text="2등으로 도착!"
+                android:textColor="@color/white"
+                android:textSize="29.5sp" />
+        </LinearLayout>
+
+
+        <HorizontalScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="33dp"
+            android:layout_marginTop="36dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/sticker_layout">
+
+            <LinearLayout
+                android:id="@+id/profile_image_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+            </LinearLayout>
+
+        </HorizontalScrollView>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="37dp"
+            android:layout_marginEnd="37dp"
+            android:layout_marginBottom="27dp"
+            android:fontFamily="@font/noto_sans_regular"
+            android:maxWidth="340dp"
+            android:text="약속보다 일찍 도착하시다니, 정말 부지런하시군요! 존경스럽습니다."
+            android:textColor="@color/white"
+            android:textSize="17sp"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toTopOf="@id/share_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="parent" />
+
+
+        <TextView
+            android:id="@+id/share_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="9dp"
+            android:layout_marginBottom="48dp"
+            android:background="@drawable/rounded_circle_corner"
+            android:backgroundTint="@color/white_alpha10"
+            android:fontFamily="@font/noto_sans_medium"
+            android:gravity="center"
+            android:letterSpacing="-0.01"
+            android:minWidth="140dp"
+            android:minHeight="63dp"
+            android:padding="10dp"
+            android:text="이미지 저장"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/ok_button"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/ok_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_circle_corner"
+            android:backgroundTint="@color/white_alpha10"
+            android:fontFamily="@font/noto_sans_medium"
+            android:gravity="center"
+            android:letterSpacing="-0.01"
+            android:minWidth="140dp"
+            android:minHeight="63dp"
+            android:padding="10dp"
+            android:text="확인"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@id/share_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/share_button" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

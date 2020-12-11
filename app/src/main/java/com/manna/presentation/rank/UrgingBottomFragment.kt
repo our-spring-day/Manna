@@ -39,6 +39,10 @@ class UrgingBottomFragment : BottomSheetDialogFragment() {
 
             binding.urgingMessageLayout.addView(messageView)
         }
+
+        binding.close.setOnClickListener {
+            dismiss()
+        }
     }
 
     private fun optimizeMessageLayout(){

@@ -17,11 +17,10 @@ import com.manna.util.ViewUtil
 class ProfileImageView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyle: Int = 0
-) : ConstraintLayout(context, attrs, defStyle) {
-
-    private var cornerRadius = 0f
+    defStyle: Int = 0,
+    private var cornerRadius: Float = 0f,
     private var borderDrawable: Drawable? = null
+) : ConstraintLayout(context, attrs, defStyle) {
 
     init {
         inflate(context, R.layout.view_profile_image, this)
