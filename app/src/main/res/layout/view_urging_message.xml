@@ -1,6 +1,7 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/border"
+    android:fontFamily="@font/noto_sans_regular"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginTop="5dp"
@@ -11,6 +12,7 @@
     android:backgroundTint="@color/fff6f6f6"
     android:paddingStart="13dp"
     android:paddingTop="11dp"
+    android:textColor="@color/ff4d4d4d"
     android:paddingEnd="13dp"
     android:paddingBottom="11dp"
     tools:text="👀 난 니가 어딘지 안다" />
