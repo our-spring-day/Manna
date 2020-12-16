@@ -7,7 +7,6 @@
     <string name="default_notification_channel_id">WhereAreYou</string>
 
 
-
     <string name="memo_list_title">메모장</string>
     <string name="add_memo">메모 추가</string>
     <string name="memo_register_title">메모 작성</string>

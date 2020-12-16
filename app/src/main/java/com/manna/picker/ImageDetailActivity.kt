@@ -8,7 +8,9 @@ import androidx.lifecycle.Observer
 import com.manna.R
 import com.manna.common.BaseActivity
 import com.manna.databinding.ActivityImageDetailBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ImageDetailActivity :
     BaseActivity<ActivityImageDetailBinding>(R.layout.activity_image_detail) {
 

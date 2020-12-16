@@ -2,6 +2,7 @@ package com.manna.picker
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -17,6 +18,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.manna.R
 import com.manna.databinding.FragmentImagePickerBinding
 import com.manna.picker.adapter.SelectorRvAdapter
+import com.theartofdev.edmodo.cropper.CropImage
 
 class ImagePickerFragment : BottomSheetDialogFragment() {
 
@@ -104,18 +106,23 @@ class ImagePickerFragment : BottomSheetDialogFragment() {
             btnDone.setOnClickListener {
                 val selectedImageUriList = viewModel.getItemUriList()
 
-                selectedImageUriList?.let { uriList ->
-                    val uriListData = Intent().apply {
-                        putExtra(ARG_IMAGE_URI_LIST, uriList.toTypedArray())
-                    }
-                    targetFragment?.onActivityResult(
-                        targetRequestCode,
-                        Activity.RESULT_OK,
-                        uriListData
-                    )
+                selectedImageUriList?.firstOrNull()?.let {
+                    startActivityForResult(ImageCropActivity.getIntent(requireContext(), it), CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE)
                 }
 
-                dismiss()
+//                selectedImageUriList?.let { uriList ->
+//                    val uriListData = Intent().apply {
+//                        putExtra(ARG_IMAGE_URI_LIST, uriList.toTypedArray())
+//                    }
+//                    targetFragment?.onActivityResult(
+//                        targetRequestCode,
+//                        Activity.RESULT_OK,
+//                        uriListData
+//                    )
+//                }
+//
+//                dismiss()
+
             }
             tvFolderName.setOnClickListener {
                 if (::popupMenu.isInitialized) {
@@ -129,6 +136,29 @@ class ImagePickerFragment : BottomSheetDialogFragment() {
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+
+            if (resultCode == Activity.RESULT_OK) {
+                val resultUri = data?.getParcelableExtra(CropImage.CROP_IMAGE_EXTRA_RESULT) as? Uri
+
+                val uriListData = Intent().apply {
+                    putExtra(ARG_IMAGE_URI_LIST, arrayOf(resultUri))
+                }
+                targetFragment?.onActivityResult(
+                    targetRequestCode,
+                    Activity.RESULT_OK,
+                    uriListData
+                )
+
+                dismiss()
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+
+            }
+        }
+    }
 
     private fun initViewModel() {
         viewModel.run {
