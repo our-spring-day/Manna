@@ -14,6 +14,7 @@ package com.theartofdev.edmodo.cropper;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
@@ -22,10 +23,13 @@ import android.graphics.RectF;
 import android.graphics.Region;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+
+import androidx.annotation.NonNull;
 
 import java.util.Arrays;
 
@@ -605,10 +609,22 @@ public class CropOverlayView extends View {
 
     if (mCropShape == CropImageView.CropShape.RECTANGLE) {
       if (!isNonStraightAngleRotated() || Build.VERSION.SDK_INT <= 17) {
-        canvas.drawRect(left, top, right, rect.top, mBackgroundPaint);
-        canvas.drawRect(left, rect.bottom, right, bottom, mBackgroundPaint);
-        canvas.drawRect(left, rect.top, rect.left, rect.bottom, mBackgroundPaint);
-        canvas.drawRect(rect.right, rect.top, right, rect.bottom, mBackgroundPaint);
+//        canvas.drawRect(left, top, right, rect.top, mBackgroundPaint);
+//        canvas.drawRect(left, rect.bottom, right, bottom, mBackgroundPaint);
+//        canvas.drawRect(left, rect.top, rect.left, rect.bottom, mBackgroundPaint);
+//        canvas.drawRect(rect.right, rect.top, right, rect.bottom, mBackgroundPaint);
+
+        mPath.reset();
+        mDrawRect.set(rect.left, rect.top, rect.right, rect.bottom);
+        mPath.addRoundRect(rect, getRadius(), getRadius(), Path.Direction.CW);
+        canvas.save();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+          canvas.clipOutPath(mPath);
+        } else {
+          canvas.clipPath(mPath, Region.Op.XOR);
+        }
+        canvas.drawRect(left, top, right, bottom, mBackgroundPaint);
+        canvas.restore();
       } else {
         mPath.reset();
         mPath.moveTo(mBoundsPoints[0], mBoundsPoints[1]);
@@ -629,7 +645,7 @@ public class CropOverlayView extends View {
       }
     } else {
       mPath.reset();
-        if (Build.VERSION.SDK_INT <= 17 && mCropShape == CropImageView.CropShape.OVAL) {
+      if (Build.VERSION.SDK_INT <= 17 && mCropShape == CropImageView.CropShape.OVAL) {
         mDrawRect.set(rect.left + 2, rect.top + 2, rect.right - 2, rect.bottom - 2);
       } else {
         mDrawRect.set(rect.left, rect.top, rect.right, rect.bottom);
@@ -703,13 +719,25 @@ public class CropOverlayView extends View {
 
       if (mCropShape == CropImageView.CropShape.RECTANGLE) {
         // Draw rectangle crop window border.
-        canvas.drawRect(rect, mBorderPaint);
+        canvas.drawRoundRect(rect, getRadius(), getRadius(), mBorderPaint);
       } else {
         // Draw circular crop window border
         canvas.drawOval(rect, mBorderPaint);
       }
     }
   }
+
+  private int getRadius() {
+    return (int) convertDpToPixel(getContext(), 120f);
+  }
+
+  public static float convertDpToPixel(@NonNull Context context, float dp) {
+    Resources resources = context.getResources();
+    DisplayMetrics metrics = resources.getDisplayMetrics();
+    float px = dp * (metrics.densityDpi / 160f);
+    return px;
+  }
+
 
   /** Draw the corner of crop overlay. */
   private void drawCorners(Canvas canvas) {
