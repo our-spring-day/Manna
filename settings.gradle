@@ -1,2 +1,3 @@
+include ':cropper'
 rootProject.name='Manna'
 include ':app'

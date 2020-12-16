@@ -9,7 +9,6 @@ import android.os.Bundle
 import com.manna.R
 import com.manna.common.BaseActivity
 import com.manna.databinding.ActivityImageCropBinding
-import com.manna.util.Logger
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
 import java.io.ByteArrayOutputStream
@@ -25,20 +24,24 @@ class ImageCropActivity : BaseActivity<ActivityImageCropBinding>(R.layout.activi
 
         val imageUri = intent?.getParcelableExtra(ARG_IMAGE_URI) as? Uri
 
-        Logger.d("${imageUri?.path}")
-        binding.cropImageView.setImageUriAsync(imageUri)
+        binding.cropImageView.apply {
+            setImageUriAsync(imageUri)
+            setOnCropImageCompleteListener { _, result: CropImageView.CropResult ->
+                val uri = getImageUri(this@ImageCropActivity, result.bitmap)
 
-        binding.cropImageView.setOnCropImageCompleteListener { _, result: CropImageView.CropResult ->
-            val uri = getImageUri(this@ImageCropActivity, result.bitmap)
-
-            setResult(Activity.RESULT_OK, Intent().apply {
-                putExtra(CropImage.CROP_IMAGE_EXTRA_RESULT, uri)
-            })
-            finish()
+                setResult(Activity.RESULT_OK, Intent().apply {
+                    putExtra(CropImage.CROP_IMAGE_EXTRA_RESULT, uri)
+                })
+                finish()
+            }
         }
 
         binding.cropButton.setOnClickListener {
             binding.cropImageView.getCroppedImageAsync()
+        }
+
+        binding.back.setOnClickListener {
+            finish()
         }
 
     }

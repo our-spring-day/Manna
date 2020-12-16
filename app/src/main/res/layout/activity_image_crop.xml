@@ -11,29 +11,48 @@
         android:layout_height="match_parent"
         android:background="@color/black">
 
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:padding="10dp"
+            android:src="@drawable/ic_back_white_24"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
         <com.theartofdev.edmodo.cropper.CropImageView
             android:id="@+id/crop_image_view"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            app:cropBorderCornerColor="@color/keyColor"
+            app:cropBorderCornerOffset="-2dp"
+            app:cropBorderCornerThickness="4dp"
+            app:cropBorderLineColor="@color/white"
+            app:cropBorderLineThickness="1dp"
+            app:cropFixAspectRatio="true"
+            app:cropShape="oval"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:cropFixAspectRatio="true" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/crop_button"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             android:background="@color/keyColor"
-            android:gravity="center"
             android:fontFamily="@font/noto_sans_medium"
+            android:gravity="center"
+            android:text="사진 자르기"
             android:textColor="@color/white"
             android:textSize="16dp"
-            android:text="사진 자르기"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:.16"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
