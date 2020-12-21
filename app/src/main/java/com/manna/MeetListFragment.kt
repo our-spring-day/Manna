@@ -13,6 +13,7 @@ import com.manna.common.BaseFragment
 import com.manna.databinding.FragmentMeetListBinding
 import com.manna.presentation.location.MeetDetailActivity
 import com.manna.presentation.search.SearchActivity
+import com.manna.presentation.sign_up.SignUpActivity
 import com.manna.util.UserHolder
 import com.tedpark.tedpermission.rx2.TedRx2Permission
 import dagger.hilt.android.AndroidEntryPoint
@@ -74,6 +75,10 @@ class MeetListFragment : BaseFragment<FragmentMeetListBinding>(R.layout.fragment
 
         binding.route.setOnClickListener {
             startActivity(Intent(requireContext(), SearchActivity::class.java))
+        }
+
+        binding.btnSignUp.setOnClickListener {
+            startActivity(Intent(requireContext(), SignUpActivity::class.java))
         }
 
     }

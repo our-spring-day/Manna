@@ -1,0 +1,98 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="15.75dp"
+            android:padding="10dp"
+            android:src="@drawable/ic_iconbackblack"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_name_guide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14.13dp"
+            android:text="6자 이내로\n이름을 알려주세요."
+            android:textColor="@color/black"
+            android:textSize="26dp"
+            app:layout_constraintStart_toStartOf="@+id/edt_name"
+            app:layout_constraintTop_toBottomOf="@+id/iv_back" />
+
+        <EditText
+            android:id="@+id/edt_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="41dp"
+            android:hint="김연재"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textSize="18dp"
+            android:theme="@style/EditTextTheme"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_name_guide"
+            app:layout_constraintWidth_percent="0.83" />
+
+        <ImageView
+            android:id="@+id/iv_clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:src="@drawable/ic_clear_gray"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/edt_name"
+            app:layout_constraintEnd_toEndOf="@+id/edt_name"
+            app:layout_constraintTop_toTopOf="@+id/edt_name" />
+
+        <ImageView
+            android:id="@+id/iv_error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_available"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_error"
+            app:layout_constraintStart_toStartOf="@+id/edt_name"
+            app:layout_constraintTop_toBottomOf="@+id/edt_name" />
+
+        <TextView
+            android:id="@+id/tv_error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="사용 가능 합니다."
+            android:textColor="@color/keyColor"
+            android:textSize="12dp"
+            app:layout_constraintStart_toEndOf="@+id/iv_error"
+            app:layout_constraintTop_toBottomOf="@+id/edt_name" />
+
+        <Button
+            android:id="@+id/btn_next"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="30dp"
+            android:background="@drawable/bg_btn_next"
+            android:enabled="false"
+            android:text="다음 단계로"
+            android:textColor="@color/white"
+            android:textSize="14dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:0.2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintWidth_percent="0.8" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
