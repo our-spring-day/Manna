@@ -22,7 +22,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/tv_name_guide"
+            android:id="@+id/tv_profile_guide"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="14.13dp"
@@ -35,7 +35,7 @@
             app:layout_constraintWidth_percent="0.83" />
 
         <TextView
-            android:id="@+id/tv_profile_guide"
+            android:id="@+id/tv_profile_tip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
@@ -43,16 +43,17 @@
             android:text="셀피를 등록하면 친구들이 알아보기 좋아요 :D"
             android:textColor="@color/black"
             android:textSize="14dp"
-            app:layout_constraintBottom_toTopOf="@+id/btn_album"
+            app:layout_constraintBottom_toTopOf="@+id/tv_album"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <Button
-            android:id="@+id/btn_album"
+        <TextView
+            android:id="@+id/tv_album"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginBottom="30dp"
-            android:background="@drawable/bg_btn_next"
+            android:background="@drawable/bg_btn_blue"
+            android:gravity="center"
             android:text="앨범에서 가져오기"
             android:textColor="@color/white"
             android:textSize="14dp"
