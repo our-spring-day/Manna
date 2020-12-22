@@ -26,9 +26,12 @@ class CreateNameFragment : BaseFragment<FragmentCreateNameBinding>(R.layout.frag
             }
 
             override fun afterTextChanged(s: Editable?) {
-                binding.ivClear.visibility = View.VISIBLE
-                binding.ivError.visibility = View.VISIBLE
-                checkNickname()
+                if (binding.edtName.text.isNotEmpty()) {
+                    binding.ivClear.visibility = View.VISIBLE
+                    binding.tvError.visibility = View.VISIBLE
+                    binding.ivError.visibility = View.VISIBLE
+                    checkNickname()
+                }
             }
         })
     }
@@ -43,9 +46,12 @@ class CreateNameFragment : BaseFragment<FragmentCreateNameBinding>(R.layout.frag
             binding.tvError.text = ""
             binding.ivError.visibility = View.GONE
             binding.edtName.text.clear()
+            binding.tvNext.isEnabled = false
+            binding.tvNext.background =
+                ContextCompat.getDrawable(requireContext(), R.drawable.bg_btn_gray)
         }
 
-        binding.btnNext.setOnClickListener {
+        binding.tvNext.setOnClickListener {
             (activity as SignUpActivity).replace(ProfileGuideFragment())
         }
     }
@@ -74,6 +80,9 @@ class CreateNameFragment : BaseFragment<FragmentCreateNameBinding>(R.layout.frag
                     R.drawable.ic_error
                 )
             )
+            binding.tvNext.isEnabled = false
+            binding.tvNext.background =
+                ContextCompat.getDrawable(requireContext(), R.drawable.bg_btn_gray)
         } else {
             binding.tvError.text = "사용 가능합니다."
             binding.tvError.setTextColor(ContextCompat.getColor(requireContext(), R.color.keyColor))
@@ -83,6 +92,9 @@ class CreateNameFragment : BaseFragment<FragmentCreateNameBinding>(R.layout.frag
                     R.drawable.ic_available
                 )
             )
+            binding.tvNext.isEnabled = true
+            binding.tvNext.background =
+                ContextCompat.getDrawable(requireContext(), R.drawable.bg_btn_blue)
         }
     }
 
