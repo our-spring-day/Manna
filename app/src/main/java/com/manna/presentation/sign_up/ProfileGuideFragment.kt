@@ -14,18 +14,6 @@ import dagger.hilt.android.AndroidEntryPoint
 class ProfileGuideFragment :
     BaseFragment<FragmentProfileGuideBinding>(R.layout.fragment_profile_guide) {
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        binding.ivBack.setOnClickListener {
-
-        }
-
-        binding.tvAlbum.setOnClickListener {
-            (activity as SignUpActivity).replace(ProfileConfirmFragment())
-        }
-    }
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
         val callback: OnBackPressedCallback = object : OnBackPressedCallback(
@@ -37,6 +25,18 @@ class ProfileGuideFragment :
             }
         }
         requireActivity().onBackPressedDispatcher.addCallback(this, callback)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.ivBack.setOnClickListener {
+
+        }
+
+        binding.tvAlbum.setOnClickListener {
+            (activity as SignUpActivity).replace(ProfileConfirmFragment())
+        }
     }
 
     companion object {

@@ -1,9 +1,11 @@
 package com.manna.presentation.sign_up
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import com.manna.R
 import com.manna.common.BaseFragment
@@ -13,6 +15,18 @@ import java.util.regex.Pattern
 
 @AndroidEntryPoint
 class CreateNameFragment : BaseFragment<FragmentCreateNameBinding>(R.layout.fragment_create_name) {
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        val callback: OnBackPressedCallback = object : OnBackPressedCallback(
+            true
+        ) {
+            override fun handleOnBackPressed() {
+                requireActivity().finish()
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
