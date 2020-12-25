@@ -5,12 +5,12 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import com.manna.databinding.FragmentSettingBinding
+import com.manna.databinding.FragmentProfileBinding
 import com.wswon.picker.ImagePickerFragment
 import com.wswon.picker.common.BaseFragment
 
 
-class SettingFragment : BaseFragment<FragmentSettingBinding>(R.layout.fragment_setting) {
+class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_profile) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -41,7 +41,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(R.layout.fragment_s
 
     companion object {
         fun newInstance() =
-            SettingFragment()
+            ProfileFragment()
 
         private const val REQ_IMAGE_PICKER = 100
         private const val DIALOG_TAG = "IMAGE_PICKER"

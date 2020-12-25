@@ -59,7 +59,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
     private fun getTabFragment(position: Int): Fragment {
         return when (position) {
             0 -> MeetListFragment.newInstance()
-            1 -> SettingFragment.newInstance()
+            1 -> ProfileFragment.newInstance()
             else -> error("Invalid position")
         }
     }
