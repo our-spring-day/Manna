@@ -12,22 +12,73 @@
         android:layout_height="match_parent"
         tools:context=".HomeActivity">
 
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/home_pager"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/bottom_tab"
+        <FrameLayout
+            android:id="@+id/frag_container"
             android:layout_width="0dp"
-            android:layout_height="0dp" />
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@id/bottom_tab"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.tabs.TabLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/bottom_tab"
             android:layout_width="0dp"
-            android:layout_height="60dp"
+            android:layout_height="96dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:background="@color/fff3f3f3"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <ImageView
+                android:id="@+id/meet_list_tab"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@drawable/ic_list_24"
+                app:layout_constraintBottom_toBottomOf="@id/add_button"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias=".18"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/add_button"
+                app:layout_constraintWidth_percent=".0933333" />
+
+            <ImageView
+                android:id="@+id/add_button"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:src="@drawable/circle_unchecked"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias=".25"
+                app:layout_constraintWidth_percent=".1173333" />
+
+
+            <ImageView
+                android:id="@+id/profile_tab"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:src="@drawable/circle_unchecked"
+                app:layout_constraintBottom_toBottomOf="@id/add_button"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias=".82"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/add_button"
+                app:layout_constraintWidth_percent=".0933333" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
