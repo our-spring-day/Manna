@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import com.manna.databinding.FragmentSettingBinding
+import com.wswon.picker.ImagePickerFragment
 import com.wswon.picker.common.BaseFragment
 
 
@@ -38,7 +39,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(R.layout.fragment_s
             REQ_IMAGE_PICKER -> {
                 if (resultCode == Activity.RESULT_OK) {
                     val imageUri =
-                        data?.getParcelableExtra<Uri>(com.wswon.picker.ImagePickerFragment.ARG_IMAGE_URI)
+                        data?.getParcelableExtra<Uri>(ImagePickerFragment.ARG_IMAGE_URI)
                     binding.profileImage.setImageURI(imageUri)
                 }
             }
@@ -47,7 +48,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(R.layout.fragment_s
 
 
     private fun showImagePicker() {
-        val imagePickerFragment = com.wswon.picker.ImagePickerFragment()
+        val imagePickerFragment = ImagePickerFragment()
         imagePickerFragment.setTargetFragment(this, REQ_IMAGE_PICKER)
         imagePickerFragment.show(parentFragmentManager, DIALOG_TAG)
     }
