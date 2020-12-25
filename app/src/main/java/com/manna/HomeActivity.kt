@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.commitNow
 import com.manna.databinding.ActivityHomeBinding
+import com.manna.util.ViewUtil
 import com.wswon.picker.common.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -15,6 +16,8 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        ViewUtil.setStatusBarTransparent(this)
 
         changeTab(0)
         binding.run {

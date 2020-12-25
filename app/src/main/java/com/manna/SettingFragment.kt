@@ -5,8 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
 import com.manna.databinding.FragmentSettingBinding
 import com.wswon.picker.ImagePickerFragment
 import com.wswon.picker.common.BaseFragment
@@ -16,21 +14,9 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(R.layout.fragment_s
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val testButton = Button(context).apply {
-            text = "앱 설정"
-            setOnClickListener {
-                startActivity(SettingActivity.getIntent(context))
-//                startActivity(Intent(requireContext(), SocketIOTestActivity::class.java))
-            }
-        }
-
-        (binding.root as ViewGroup).addView(testButton)
-
         binding.profileButton.setOnClickListener {
             showImagePicker()
         }
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
