@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.core.view.updatePadding
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gun0912.tedpermission.TedPermissionResult
@@ -13,6 +14,7 @@ import com.manna.databinding.FragmentMeetListBinding
 import com.manna.presentation.location.MeetDetailActivity
 import com.manna.presentation.search.SearchActivity
 import com.manna.util.UserHolder
+import com.manna.util.ViewUtil
 import com.tedpark.tedpermission.rx2.TedRx2Permission
 import com.wswon.picker.common.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,6 +30,7 @@ class MeetListFragment : BaseFragment<FragmentMeetListBinding>(R.layout.fragment
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        view.updatePadding(top = ViewUtil.getStatusBarHeight(requireContext()))
         binding.run {
             meetList.run {
                 layoutManager = LinearLayoutManager(context)

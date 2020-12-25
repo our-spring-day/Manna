@@ -5,7 +5,9 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.updatePadding
 import com.manna.databinding.FragmentProfileBinding
+import com.manna.util.ViewUtil
 import com.wswon.picker.ImagePickerFragment
 import com.wswon.picker.common.BaseFragment
 
@@ -14,6 +16,8 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.profileHeader.updatePadding(top = ViewUtil.getStatusBarHeight(requireContext()))
         binding.profileButton.setOnClickListener {
             showImagePicker()
         }
@@ -31,7 +35,6 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
             }
         }
     }
-
 
     private fun showImagePicker() {
         val imagePickerFragment = ImagePickerFragment()
