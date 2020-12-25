@@ -25,10 +25,8 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
 
                 override fun getItem(position: Int): Fragment =
                     when (position) {
-                        0 -> FriendsFragment.newInstance()
-                        1 -> MeetListFragment.newInstance()
-                        2 -> NotificationFragment.newInstance()
-                        3 -> SettingFragment.newInstance()
+                        0 -> MeetListFragment.newInstance()
+                        1 -> SettingFragment.newInstance()
                         else -> error("Invalid position")
                     }
 

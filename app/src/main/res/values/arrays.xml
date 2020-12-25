@@ -1,10 +1,8 @@
 <resources>
 
     <string-array name="main_tab">
-        <item>친구목록</item>
-        <item>약속목록</item>
-        <item>알림</item>
-        <item>설정</item>
+        <item></item>
+        <item></item>
     </string-array>
 
 
