@@ -1,7 +1,7 @@
 package com.manna
 
 import android.Manifest
-import android.content.Intent
+import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -9,10 +9,11 @@ import android.widget.Toast
 import androidx.core.view.updatePadding
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.gun0912.tedpermission.TedPermissionResult
 import com.manna.databinding.FragmentMeetListBinding
 import com.manna.presentation.location.MeetDetailActivity
-import com.manna.presentation.search.SearchActivity
+import com.manna.util.Logger
 import com.manna.util.UserHolder
 import com.manna.util.ViewUtil
 import com.tedpark.tedpermission.rx2.TedRx2Permission
@@ -64,6 +65,9 @@ class MeetListFragment : BaseFragment<FragmentMeetListBinding>(R.layout.fragment
                         })
 
                 }
+
+                addItemDecoration(getDecoration())
+
                 adapter = meetAdapter
             }
         }
@@ -71,15 +75,25 @@ class MeetListFragment : BaseFragment<FragmentMeetListBinding>(R.layout.fragment
         viewModel.run {
             getMeetList(UserHolder.deviceId)
             meetList.observe(viewLifecycleOwner, { meetList ->
+                Logger.d("$meetList")
                 meetAdapter.submitList(meetList)
             })
         }
-
-        binding.route.setOnClickListener {
-            startActivity(Intent(requireContext(), SearchActivity::class.java))
-        }
-
     }
+
+    private fun getDecoration() : RecyclerView.ItemDecoration =
+        object : RecyclerView.ItemDecoration() {
+            override fun getItemOffsets(
+                outRect: Rect,
+                view: View,
+                parent: RecyclerView,
+                state: RecyclerView.State
+            ) {
+                super.getItemOffsets(outRect, view, parent, state)
+
+                outRect.bottom = ViewUtil.convertDpToPixel(requireContext(), 14f).toInt()
+            }
+        }
 
     companion object {
         fun newInstance() =
