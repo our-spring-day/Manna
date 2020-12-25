@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.gun0912.tedpermission.TedPermissionResult
 import com.manna.databinding.FragmentMeetListBinding
 import com.manna.presentation.location.MeetDetailActivity
-import com.manna.util.Logger
 import com.manna.util.UserHolder
 import com.manna.util.ViewUtil
 import com.tedpark.tedpermission.rx2.TedRx2Permission
@@ -75,7 +74,6 @@ class MeetListFragment : BaseFragment<FragmentMeetListBinding>(R.layout.fragment
         viewModel.run {
             getMeetList(UserHolder.deviceId)
             meetList.observe(viewLifecycleOwner, { meetList ->
-                Logger.d("$meetList")
                 meetAdapter.submitList(meetList)
             })
         }

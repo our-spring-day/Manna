@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.manna.databinding.FragmentProfileBinding
 import com.manna.databinding.ItemFriendsBinding
+import com.manna.ext.setImage
 import com.manna.util.ViewUtil
 import com.wswon.picker.ImagePickerFragment
 import com.wswon.picker.common.BaseFragment
@@ -30,6 +31,10 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.profileImage.post {
+            binding.profileImage.setImage("http://mimg.segye.com/content/image/2020/03/12/20200312506832.jpg")
+        }
 
         with(binding) {
             profileHeader.updatePadding(top = ViewUtil.getStatusBarHeight(requireContext()))
@@ -74,7 +79,9 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
                 if (resultCode == Activity.RESULT_OK) {
                     val imageUri =
                         data?.getParcelableExtra<Uri>(ImagePickerFragment.ARG_IMAGE_URI)
-                    binding.profileImage.setImageURI(imageUri)
+                    if (imageUri != null) {
+                        binding.profileImage.setImage(imageUri)
+                    }
                 }
             }
         }
