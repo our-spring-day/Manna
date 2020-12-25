@@ -45,15 +45,11 @@ class SelectorRvAdapter(
     /* 아이템 선택 순서를 나타내는 숫자 변경 */
     fun replaceSelectedPositionList(positionList: List<Int>) {
 
-        val isItemAdded = positionList.size > selectedPositionList.size
+        val isItemAdded = positionList.size >= selectedPositionList.size
 
         val removedIndex = selectedPositionList.indexOfFirst { !positionList.contains(it) }
 
-        val removedPosition = if (removedIndex != -1) {
-            selectedPositionList[removedIndex]
-        } else {
-            -1
-        }
+        val removedPosition = selectedPositionList.getOrElse(removedIndex) { -1 }
 
         selectedPositionList.run {
             clear()
@@ -62,6 +58,12 @@ class SelectorRvAdapter(
 
         if (isItemAdded) { // add
             if (positionList.isNotEmpty()) {
+                if (removedPosition != -1) {
+                    items[removedPosition].isSelected = false
+
+//                    cbSelect.isChecked = false
+                    notifyItemChanged(removedPosition, STATE_REFRESH)
+                }
                 notifyItemChanged(positionList.last(), STATE_REFRESH)
             }
         } else {  // remove
@@ -100,14 +102,22 @@ class SelectorRvAdapter(
         fun stateVisible(item: ImagePickerSelectorItem?) {
             binding?.run {
                 item?.let { item ->
-                    vSelectedRect.run {
-                        if (item.isSelected) {
-                            background =
-                                ContextCompat.getDrawable(context, R.drawable.rect_selected)
-                        } else {
-                            background = null
+                    if (item.isSelected) {
+                        vSelectedRect.background =
+                            ContextCompat.getDrawable(itemView.context, R.drawable.rect_selected)
+                    } else {
+                        vSelectedRect.background = null
+                    }
+
+                    cbSelect.run {
+                        setOnCheckedChangeListener(null)
+                        isChecked = item.isSelected
+                        setOnCheckedChangeListener { _, isChecked ->
+                            item.isSelected = isChecked
+                            onItemSelected(adapterPosition, isChecked)
                         }
                     }
+
                     changeSelectNum()
                 }
             }

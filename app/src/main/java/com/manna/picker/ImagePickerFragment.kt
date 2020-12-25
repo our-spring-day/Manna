@@ -31,13 +31,16 @@ class ImagePickerFragment : BottomSheetDialogFragment() {
             onItemClick = { position ->
                 showImageDetail(position)
             },
-            onItemSelected = { position, isSelected ->
-                if (isSelected) {
-                    viewModel.addSelectedItemPosition(position)
-                } else {
-                    viewModel.removeSelectedItemPosition(position)
-                }
-            })
+            onItemSelected = itemSelected
+        )
+    }
+
+    private val itemSelected: (position: Int, isSelected: Boolean) -> Unit  = { position, isSelected ->
+        if (isSelected) {
+            viewModel.addSelectedItemPosition(position)
+        } else {
+            viewModel.removeSelectedItemPosition(position)
+        }
     }
 
     private lateinit var popupMenu: PopupMenu
@@ -109,20 +112,6 @@ class ImagePickerFragment : BottomSheetDialogFragment() {
                 selectedImageUriList?.firstOrNull()?.let {
                     startActivityForResult(ImageCropActivity.getIntent(requireContext(), it), CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE)
                 }
-
-//                selectedImageUriList?.let { uriList ->
-//                    val uriListData = Intent().apply {
-//                        putExtra(ARG_IMAGE_URI_LIST, uriList.toTypedArray())
-//                    }
-//                    targetFragment?.onActivityResult(
-//                        targetRequestCode,
-//                        Activity.RESULT_OK,
-//                        uriListData
-//                    )
-//                }
-//
-//                dismiss()
-
             }
             tvFolderName.setOnClickListener {
                 if (::popupMenu.isInitialized) {
@@ -145,7 +134,7 @@ class ImagePickerFragment : BottomSheetDialogFragment() {
                 val resultUri = data?.getParcelableExtra(CropImage.CROP_IMAGE_EXTRA_RESULT) as? Uri
 
                 val uriListData = Intent().apply {
-                    putExtra(ARG_IMAGE_URI_LIST, arrayOf(resultUri))
+                    putExtra(ARG_IMAGE_URI, arrayOf(resultUri))
                 }
                 targetFragment?.onActivityResult(
                     targetRequestCode,
@@ -217,6 +206,6 @@ class ImagePickerFragment : BottomSheetDialogFragment() {
     }
 
     companion object {
-        const val ARG_IMAGE_URI_LIST = "ARG_IMAGE_URI_LIST"
+        const val ARG_IMAGE_URI = "ARG_IMAGE_URI"
     }
 }

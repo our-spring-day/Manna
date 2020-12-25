@@ -98,9 +98,11 @@ class ImagePickerViewModel @ViewModelInject constructor() : BaseViewModel() {
 
 
     fun addSelectedItemPosition(selectedPosition: Int) {
-        _selectedPositionList.value = selectedPositionList.value?.toMutableList()?.apply {
-            add(selectedPosition)
-        } ?: listOf(selectedPosition)
+        _selectedPositionList.value =
+//            selectedPositionList.value?.toMutableList()?.apply {
+//            add(selectedPosition)
+//        } ?:
+            listOf(selectedPosition)
     }
 
     fun removeSelectedItemPosition(removePosition: Int) {
