@@ -4,6 +4,7 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
+import com.wswon.picker.common.BaseRecyclerViewHolder
 
 abstract class BaseRecyclerViewAdapter<ITEM : Any, B : ViewDataBinding, VH : BaseRecyclerViewHolder<B>>(
     @LayoutRes private val layoutRes: Int,

@@ -16,7 +16,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".picker.ImageCropActivity"></activity>
         <activity
             android:name=".presentation.location.MeetDetailActivity"
             android:screenOrientation="portrait"
@@ -32,11 +31,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".picker.ImageDetailActivity" />
+
         <activity android:name=".presentation.SocketIOTestActivity" />
-        <activity
-            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
-            android:theme="@style/Base.Theme.AppCompat" />
 
         <service
             android:name=".fcm.MyFirebaseMessagingService"

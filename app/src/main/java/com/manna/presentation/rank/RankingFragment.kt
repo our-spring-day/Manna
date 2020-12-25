@@ -4,11 +4,11 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.activityViewModels
 import com.manna.R
-import com.manna.common.BaseFragment
 import com.manna.databinding.FragmentRankingBinding
 import com.manna.presentation.User
 import com.manna.presentation.location.MeetDetailViewModel
 import com.manna.util.Logger
+import com.wswon.picker.common.BaseFragment
 
 
 class RankingFragment : BaseFragment<FragmentRankingBinding>(R.layout.fragment_ranking) {

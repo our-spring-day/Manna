@@ -25,10 +25,8 @@ import com.google.gson.JsonObject
 import com.manna.LocationResponse
 import com.manna.MyLatLng
 import com.manna.R
-import com.manna.common.BaseActivity
 import com.manna.databinding.ActivityMeetDetailBinding
 import com.manna.databinding.ViewImageMarkerBinding
-import com.manna.ext.EventObserver
 import com.manna.network.model.chat.Sender
 import com.manna.presentation.CheckInFragment
 import com.manna.presentation.User
@@ -45,6 +43,8 @@ import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.MultipartPathOverlay
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
+import com.wswon.picker.common.BaseActivity
+import com.wswon.picker.ext.EventObserver
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import kotlin.collections.set
