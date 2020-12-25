@@ -14,7 +14,6 @@ package com.theartofdev.edmodo.cropper;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
@@ -23,13 +22,10 @@ import android.graphics.RectF;
 import android.graphics.Region;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
-
-import androidx.annotation.NonNull;
 
 import java.util.Arrays;
 
@@ -614,9 +610,10 @@ public class CropOverlayView extends View {
 //        canvas.drawRect(left, rect.top, rect.left, rect.bottom, mBackgroundPaint);
 //        canvas.drawRect(rect.right, rect.top, right, rect.bottom, mBackgroundPaint);
 
+        float width  = rect.right - rect.left;
         mPath.reset();
         mDrawRect.set(rect.left, rect.top, rect.right, rect.bottom);
-        mPath.addRoundRect(rect, getRadius(), getRadius(), Path.Direction.CW);
+        mPath.addRoundRect(rect, getRadius(width), getRadius(width), Path.Direction.CW);
         canvas.save();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
           canvas.clipOutPath(mPath);
@@ -719,7 +716,8 @@ public class CropOverlayView extends View {
 
       if (mCropShape == CropImageView.CropShape.RECTANGLE) {
         // Draw rectangle crop window border.
-        canvas.drawRoundRect(rect, getRadius(), getRadius(), mBorderPaint);
+        float width = rect.right - rect.left;
+        canvas.drawRoundRect(rect, getRadius(width), getRadius(width), mBorderPaint);
       } else {
         // Draw circular crop window border
         canvas.drawOval(rect, mBorderPaint);
@@ -727,17 +725,9 @@ public class CropOverlayView extends View {
     }
   }
 
-  private int getRadius() {
-    return (int) convertDpToPixel(getContext(), 120f);
+  private int getRadius(float width) {
+    return (int) (width * 0.4286);
   }
-
-  public static float convertDpToPixel(@NonNull Context context, float dp) {
-    Resources resources = context.getResources();
-    DisplayMetrics metrics = resources.getDisplayMetrics();
-    float px = dp * (metrics.densityDpi / 160f);
-    return px;
-  }
-
 
   /** Draw the corner of crop overlay. */
   private void drawCorners(Canvas canvas) {
