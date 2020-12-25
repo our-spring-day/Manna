@@ -38,17 +38,19 @@ class MeetViewHolder(parent: ViewGroup, private val onClickItem: (MeetResponseIt
             }
 
 
-            (0..4).forEach {
-                val imageView = ImageView(itemView.context)
-                imageView.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            participantContainer.post {
+                (0..4).forEach {
+                    val imageView = ImageView(itemView.context)
+                    imageView.layoutParams = LinearLayout.LayoutParams(participantContainer.height, participantContainer.height)
 
 
-                Glide.with(itemView.context)
-                    .applyDefaultRequestOptions(RequestOptions.circleCropTransform())
-                    .load("http://mimg.segye.com/content/image/2020/03/12/20200312506832.jpg")
-                    .into(imageView)
+                    Glide.with(itemView.context)
+                        .applyDefaultRequestOptions(RequestOptions.circleCropTransform())
+                        .load("http://mimg.segye.com/content/image/2020/03/12/20200312506832.jpg")
+                        .into(imageView)
 
-                participantContainer.addView(imageView)
+                    participantContainer.addView(imageView)
+                }
             }
 
 
