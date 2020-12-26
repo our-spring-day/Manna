@@ -78,13 +78,16 @@ class CreateNameFragment : BaseFragment<FragmentCreateNameBinding>(R.layout.frag
             val matcher = pattern.matcher(binding.edtName.text.toString())
             when {
                 matcher.matches() -> {
-                    binding.tvError.text = "자음, 모음은 불가능합니다."
+                    binding.tvError.text =
+                        getString(R.string.sign_up_create_name_error_message_consonant_vowel)
                 }
                 binding.edtName.text.length > 6 -> {
-                    binding.tvError.text = "6자 이내로 입력해주세요."
+                    binding.tvError.text =
+                        getString(R.string.sign_up_create_name_error_message_length)
                 }
                 else -> {
-                    binding.tvError.text = "한글만 입력 가능합니다."
+                    binding.tvError.text =
+                        getString(R.string.sign_up_create_name_error_message_hangul)
                 }
             }
             binding.tvError.setTextColor(ContextCompat.getColor(requireContext(), R.color.ff0000))
@@ -98,7 +101,7 @@ class CreateNameFragment : BaseFragment<FragmentCreateNameBinding>(R.layout.frag
             binding.tvNext.background =
                 ContextCompat.getDrawable(requireContext(), R.drawable.bg_btn_gray)
         } else {
-            binding.tvError.text = "사용 가능합니다."
+            binding.tvError.text = getString(R.string.sign_up_create_name_available_message)
             binding.tvError.setTextColor(ContextCompat.getColor(requireContext(), R.color.keyColor))
             binding.ivError.setImageDrawable(
                 ContextCompat.getDrawable(

@@ -37,4 +37,20 @@
     <string name="denied_storage">갤러리 접근을 위해\n저장공간 권한에 동의해주세요.</string>
     <string name="input_chat_hint">메시지 작성</string>
     <string name="dda_bong">👍</string>
+
+    <string name="sign_up_create_name_title">6자 이내로\n이름을 알려주세요.</string>
+    <string name="sign_up_create_name_edt_hint">김만나</string>
+    <string name="sign_up_create_name_error_message_consonant_vowel">자음, 모음은 불가능합니다.</string>
+    <string name="sign_up_create_name_error_message_length">6자 이내로 입력해주세요.</string>
+    <string name="sign_up_create_name_error_message_hangul">한글만 입력 가능합니다.</string>
+    <string name="sign_up_create_name_available_message">사용 가능합니다.</string>
+    <string name="sign_up_next">다음 단계로</string>
+    <string name="sign_up_profile_guide_title">친구들에게 보여줄\n프로필을 등록해주세요.</string>
+    <string name="sign_up_profile_guide_tip">셀피를 등록하면 친구들이 알아보기 좋아요 :D</string>
+    <string name="sign_up_album">앨범에서 가져오기</string>
+    <string name="sign_up_profile_confirm_title">멋진 사진이네요!\n이대로 진행할까요?</string>
+    <string name="sign_up_modify">다시 수정할래요</string>
+    <string name="sign_up_service_terms_title">서비스 이용약관에\n동의해주세요.</string>
+    <string name="sign_up_service_terms_agree">위 이용약관에 동의합니다(필수)</string>
+    <string name="sign_up_sign_up">동의하고 가입하기</string>
 </resources>
