@@ -45,6 +45,8 @@ class CreateNameFragment : BaseFragment<FragmentCreateNameBinding>(R.layout.frag
                     binding.tvError.visibility = View.VISIBLE
                     binding.ivError.visibility = View.VISIBLE
                     checkNickname()
+                } else {
+                    clearEditText()
                 }
             }
         })
@@ -56,13 +58,7 @@ class CreateNameFragment : BaseFragment<FragmentCreateNameBinding>(R.layout.frag
         }
 
         binding.ivClear.setOnClickListener {
-            binding.ivClear.visibility = View.GONE
-            binding.tvError.text = ""
-            binding.ivError.visibility = View.GONE
-            binding.edtName.text.clear()
-            binding.tvNext.isEnabled = false
-            binding.tvNext.background =
-                ContextCompat.getDrawable(requireContext(), R.drawable.bg_btn_gray)
+            clearEditText()
         }
 
         binding.tvNext.setOnClickListener {
@@ -70,11 +66,21 @@ class CreateNameFragment : BaseFragment<FragmentCreateNameBinding>(R.layout.frag
         }
     }
 
+    fun clearEditText(){
+        binding.ivClear.visibility = View.GONE
+        binding.tvError.text = ""
+        binding.ivError.visibility = View.GONE
+        binding.edtName.text.clear()
+        binding.tvNext.isEnabled = false
+        binding.tvNext.background =
+            ContextCompat.getDrawable(requireContext(), R.drawable.bg_btn_gray)
+    }
+
     fun checkNickname() {
         val pattern = Pattern.compile("^[가-힣]{1,6}")
         val matcher = pattern.matcher(binding.edtName.text.toString())
         if (!matcher.matches()) {
-            val pattern = Pattern.compile("^[ㄱ-ㅎㅏ-ㅣ]")
+            val pattern = Pattern.compile(".*[ㄱ-ㅎㅏ-ㅣ].*")
             val matcher = pattern.matcher(binding.edtName.text.toString())
             when {
                 matcher.matches() -> {
