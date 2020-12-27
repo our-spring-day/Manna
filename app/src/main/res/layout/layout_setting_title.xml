@@ -1,0 +1,28 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/iv_setting_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tool:src="@drawable/ic_test" />
+
+    <TextView
+        android:id="@+id/tv_setting_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@+id/iv_setting_icon"
+        app:layout_constraintTop_toTopOf="@+id/iv_setting_icon"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_setting_icon"
+        tool:text="공지사항" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
