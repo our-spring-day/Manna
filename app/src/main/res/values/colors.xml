@@ -34,4 +34,9 @@
     <color name="ff4d4d4d">#ff4d4d4d</color>
     <color name="white_alpha10">#1affffff</color>
     <color name="white_alpha15">#26ffffff</color>
+    <color name="fff3f3f3">#fff3f3f3</color>
+    <color name="ff383838">#ff383838</color>
+    <color name="ff1b1b1b">#ff1b1b1b</color>
+    <color name="fffafafa">#fffafafa</color>
+    <color name="ffebedff">#ffebedff</color>
 </resources>
