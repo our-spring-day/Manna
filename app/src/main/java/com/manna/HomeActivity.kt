@@ -1,13 +1,37 @@
 package com.manna
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.commitNow
 import com.manna.databinding.ActivityHomeBinding
+import com.manna.databinding.DialogSomeBinding
 import com.manna.util.ViewUtil
 import com.wswon.picker.common.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
+
+class SomeDialog : DialogFragment() {
+
+    private lateinit var binding: DialogSomeBinding
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        binding = DataBindingUtil.inflate(inflater, R.layout.dialog_some, container, false)
+        return binding.root
+    }
+
+}
 
 @AndroidEntryPoint
 class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
@@ -22,7 +46,9 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
         changeTab(0)
         binding.run {
             meetListTab.setOnClickListener {
+                SomeDialog().show(supportFragmentManager, "")
                 changeTab(0)
+
             }
 
             profileTab.setOnClickListener {
