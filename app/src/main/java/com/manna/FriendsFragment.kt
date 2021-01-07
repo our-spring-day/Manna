@@ -1,7 +1,7 @@
 package com.manna
 
-import com.manna.common.BaseFragment
 import com.manna.databinding.FragmentFriendsBinding
+import com.wswon.picker.common.BaseFragment
 
 class FriendsFragment : BaseFragment<FragmentFriendsBinding>(R.layout.fragment_friends) {
 

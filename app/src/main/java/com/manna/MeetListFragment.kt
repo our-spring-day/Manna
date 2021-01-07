@@ -9,12 +9,12 @@ import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gun0912.tedpermission.TedPermissionResult
-import com.manna.common.BaseFragment
 import com.manna.databinding.FragmentMeetListBinding
 import com.manna.presentation.location.MeetDetailActivity
 import com.manna.presentation.search.SearchActivity
 import com.manna.util.UserHolder
 import com.tedpark.tedpermission.rx2.TedRx2Permission
+import com.wswon.picker.common.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 

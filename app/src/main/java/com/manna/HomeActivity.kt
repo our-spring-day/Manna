@@ -3,8 +3,8 @@ package com.manna
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentStatePagerAdapter
-import com.manna.common.BaseActivity
 import com.manna.databinding.ActivityHomeBinding
+import com.wswon.picker.common.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

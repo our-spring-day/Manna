@@ -7,9 +7,9 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import com.manna.common.BaseFragment
 import com.manna.databinding.FragmentSettingBinding
-import com.manna.picker.ImagePickerFragment
+import com.wswon.picker.ImagePickerFragment
+import com.wswon.picker.common.BaseFragment
 
 
 class SettingFragment : BaseFragment<FragmentSettingBinding>(R.layout.fragment_setting) {
@@ -36,72 +36,13 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(R.layout.fragment_s
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
-//            REQ_CAMERA_CAP -> {
-//                if (resultCode == Activity.RESULT_OK) {
-//                    val file = File(
-//                        context?.getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-//                        currentPhotoName
-//                    )
-//
-//                    val uri = FileProvider.getUriForFile(
-//                        requireContext(),
-//                        App.instance.context().packageName + ".fileprovider",
-//                        file
-//                    )
-//
-//                    imageAdapter.add(
-//                        ImageItem(
-//                            image = uri,
-//                            removeClick = removeClickEvent,
-//                            cameraPic = file
-//                        )
-//                    )
-//                }
-//            }
             REQ_IMAGE_PICKER -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    val uriList =
-                        data?.getParcelableArrayExtra(ImagePickerFragment.ARG_IMAGE_URI_LIST)
-                            ?.mapNotNull {
-                                (it as? Uri)
-//                                    ?.let { uri ->
-//                                    ImageItem(
-//                                        uri,
-//                                        removeClickEvent
-//                                    )
-//                                }
-                            }
-
-                    val uri = uriList?.getOrNull(0)
-                    binding.profileImage.setImageURI(uri)
-
-//                    imageAdapter.addAll(uriList)
+                    val imageUri =
+                        data?.getParcelableExtra<Uri>(ImagePickerFragment.ARG_IMAGE_URI)
+                    binding.profileImage.setImageURI(imageUri)
                 }
             }
-//            REQ_URL_INPUT -> {
-//                if (resultCode == Activity.RESULT_OK) {
-//                    val responseUrl =
-//                        data?.getStringExtra(UrlInputFragment.EXTRA_IMAGE_URL).orEmpty()
-//
-//                    if (responseUrl.isEmpty()) {
-//                        return
-//                    }
-//
-//                    imageAdapter.getItemList()
-//                        .find { it.urlPic == responseUrl }
-//                        ?.let {
-//                            Toast.makeText(
-//                                context,
-//                                getString(R.string.toat_url_duplicate),
-//                                Toast.LENGTH_SHORT
-//                            )
-//                                .show()
-//                            return
-//                        }
-//
-//                    checkValidUrl(responseUrl)
-//                }
-//            }
         }
     }
 
@@ -116,8 +57,6 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(R.layout.fragment_s
         fun newInstance() =
             SettingFragment()
 
-        private const val REQ_CAMERA_CAP = 98
-        private const val REQ_URL_INPUT = 99
         private const val REQ_IMAGE_PICKER = 100
         private const val DIALOG_TAG = "IMAGE_PICKER"
     }

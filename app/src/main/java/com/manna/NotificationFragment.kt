@@ -1,7 +1,7 @@
 package com.manna
 
-import com.manna.common.BaseFragment
 import com.manna.databinding.FragmentNotificationBinding
+import com.wswon.picker.common.BaseFragment
 
 class NotificationFragment : BaseFragment<FragmentNotificationBinding>(R.layout.fragment_notification) {
 
