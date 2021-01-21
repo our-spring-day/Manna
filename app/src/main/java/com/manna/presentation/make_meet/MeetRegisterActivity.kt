@@ -9,6 +9,7 @@ import com.manna.R
 import com.manna.common.BaseActivity
 import com.manna.common.BaseViewModel
 import com.manna.databinding.ActivityMeetRegisterBinding
+import com.manna.presentation.search.SearchActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -27,20 +28,32 @@ class MeetRegisterActivity :
 
 
         setupView()
+        setupViewModel()
 
     }
 
     private fun setupView() {
 
         with(binding) {
+            dateLayout.root.setOnClickListener {
 
+            }
+            locationLayout.root.setOnClickListener {
+                startActivity(SearchActivity.getIntent(this@MeetRegisterActivity))
+            }
+            participantLayout.root.setOnClickListener {
 
+            }
+            memoLayout.root.setOnClickListener {
 
+            }
+            penaltyLayout.root.setOnClickListener {
+
+            }
             sendButton.setOnClickListener {
 
             }
         }
-
     }
 
     private fun setupViewModel() {
