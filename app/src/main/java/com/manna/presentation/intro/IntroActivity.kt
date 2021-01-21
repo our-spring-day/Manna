@@ -20,6 +20,9 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>(R.layout.activity_intro
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        startActivity(Intent(this, HomeActivity::class.java))
+        finish()
+
         viewModel.checkDevice(DeviceUtil.getAndroidID(this))
 
         viewModel.isValidDevice.observe(this, EventObserver { isValid ->

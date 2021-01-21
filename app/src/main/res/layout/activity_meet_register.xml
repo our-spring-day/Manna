@@ -41,11 +41,11 @@
             android:id="@+id/required_info_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="31dp"
             android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toBottomOf="@id/title">
 
             <TextView
                 android:id="@+id/required_info_title"
@@ -53,7 +53,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/noto_sans_regular"
                 android:letterSpacing="-0.06"
-                android:text="필수 정보"
+                android:text="@string/required_title"
                 android:textColor="@color/black"
                 android:textSize="16dp" />
 
@@ -65,15 +65,15 @@
                 <include
                     android:id="@+id/date_layout"
                     layout="@layout/view_make_meet_content"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_marginTop="10dp"
+                    app:content="@{@string/make_meet_date_and_time}"
+                    app:icon="@{@drawable/ic_calendar}"
                     app:layout_constraintDimensionRatio="W, 1:5.234"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:icon="@drawable/ic_map_tracking"
-                    app:content="@string/memo_edit_title" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <include
                     android:id="@+id/location_layout"
@@ -81,12 +81,12 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_marginTop="10dp"
+                    app:content="@{@string/make_meet_location}"
+                    app:icon="@{@drawable/ic_goal}"
                     app:layout_constraintDimensionRatio="W, 1:5.234"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/date_layout"
-                    app:icon="@drawable/ic_map_tracking"
-                    app:content="@string/memo_edit_title" />
+                    app:layout_constraintTop_toBottomOf="@id/date_layout" />
 
                 <include
                     android:id="@+id/participant_layout"
@@ -94,12 +94,12 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_marginTop="10dp"
+                    app:content="@{@string/make_meet_participant}"
+                    app:icon="@{@drawable/ic_people}"
                     app:layout_constraintDimensionRatio="W, 1:5.234"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/location_layout"
-                    app:icon="@drawable/ic_map_tracking"
-                    app:content="@string/memo_edit_title" />
+                    app:layout_constraintTop_toBottomOf="@id/location_layout" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -110,10 +110,11 @@
             android:id="@+id/optional_info_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="31dp"
             android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/required_info_container">
 
             <TextView
                 android:id="@+id/optional_info_title"
@@ -121,7 +122,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/noto_sans_regular"
                 android:letterSpacing="-0.06"
-                android:text="추가 정보"
+                android:text="@string/optional_title"
                 android:textColor="@color/black"
                 android:textSize="16dp" />
 
@@ -136,6 +137,8 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_marginTop="10dp"
+                    app:content="@{@string/make_meet_memo}"
+                    app:icon="@{@drawable/ic_pencil}"
                     app:layout_constraintDimensionRatio="W, 1:5.234"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -147,6 +150,8 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_marginTop="10dp"
+                    app:content="@{@string/make_meet_penalty}"
+                    app:icon="@{@drawable/ic_poo}"
                     app:layout_constraintDimensionRatio="W, 1:5.234"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -156,6 +161,19 @@
 
         </LinearLayout>
 
-
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/send_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:background="@drawable/selector_button"
+            android:fontFamily="@font/noto_sans_bold"
+            android:gravity="center"
+            android:minHeight="60dp"
+            android:text="@string/send_invitation_card"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

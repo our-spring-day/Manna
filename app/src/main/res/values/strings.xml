@@ -36,4 +36,13 @@
     <string name="denied_storage">갤러리 접근을 위해\n저장공간 권한에 동의해주세요.</string>
     <string name="input_chat_hint">메시지 작성</string>
     <string name="dda_bong">👍</string>
+    <string name="optional_title">추가 정보</string>
+    <string name="required_title">필수 정보</string>
+    
+    <string name="make_meet_date_and_time">날짜 및 시간</string>
+    <string name="make_meet_location">장소</string>
+    <string name="make_meet_participant">참석 인원</string>
+    <string name="make_meet_memo">메모 남기기</string>
+    <string name="make_meet_penalty">벌칙 정하기</string>
+    <string name="send_invitation_card">초대장 보내기</string>
 </resources>
