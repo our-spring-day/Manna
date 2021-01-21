@@ -34,7 +34,7 @@
                 android:layout_marginStart="16dp"
                 android:text="@{item.placeName}"
                 android:textColor="@color/warning_color"
-                android:textSize="14sp"
+                android:textSize="14dp"
                 app:layout_constraintBottom_toTopOf="@id/tv_road_address_title"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -47,7 +47,7 @@
                 android:layout_marginStart="16dp"
                 android:text="도로명"
                 android:textColor="@color/black"
-                android:textSize="14sp"
+                android:textSize="14dp"
                 app:layout_constraintBottom_toTopOf="@id/tv_address_title"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_zone_number" />
@@ -59,7 +59,7 @@
                 android:layout_marginStart="16dp"
                 android:text="@{item.roadAddressName}"
                 android:textColor="@color/black"
-                android:textSize="14sp"
+                android:textSize="14dp"
                 app:layout_constraintStart_toEndOf="@id/tv_road_address_title"
                 app:layout_constraintTop_toTopOf="@id/tv_road_address_title"
                 tools:text="서울 강남구 강남대로 468 (충림빌딩)" />
@@ -71,7 +71,7 @@
                 android:layout_marginStart="16dp"
                 android:text="지번"
                 android:textColor="@color/black"
-                android:textSize="14sp"
+                android:textSize="14dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_road_address_title" />
@@ -81,7 +81,7 @@
                 android:layout_height="wrap_content"
                 android:text="@{item.addressName}"
                 android:textColor="@color/gray7C7C7C"
-                android:textSize="14sp"
+                android:textSize="14dp"
                 app:layout_constraintStart_toStartOf="@id/tv_road_address"
                 app:layout_constraintTop_toTopOf="@id/tv_address_title"
                 tools:text="서울 강남구 역삼동 808-5" />
@@ -113,7 +113,7 @@
                     android:layout_height="wrap_content"
                     android:text="지도"
                     android:textColor="@color/black"
-                    android:textSize="14sp"
+                    android:textSize="14dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />

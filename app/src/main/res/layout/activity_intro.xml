@@ -19,7 +19,7 @@
             android:lineSpacingMultiplier="1.0476"
             android:text="유효성 검증 중 ..."
             android:textColor="@color/black"
-            android:textSize="20sp"
+            android:textSize="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
