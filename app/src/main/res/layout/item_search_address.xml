@@ -3,6 +3,7 @@
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -34,13 +35,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:fontFamily="@font/noto_sans_regular"
-                android:text="@{item.placeName}"
                 android:textColor="@color/black"
                 android:textSize="15dp"
                 app:layout_constraintBottom_toTopOf="@id/tv_road_address"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_chainStyle="packed"
+                bind:highlightWords="@{item.keyWord}"
+                bind:text="@{item.placeName}"
                 tools:text="카카오프렌즈 수원AK점" />
 
 
@@ -50,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
                 android:fontFamily="@font/noto_sans_regular"
-                android:text="@{item.roadAddressName}"
+                android:text="@{item.addressName}"
                 android:textColor="@color/ff7f7f7f"
                 android:textSize="12dp"
                 app:layout_constraintBottom_toBottomOf="parent"

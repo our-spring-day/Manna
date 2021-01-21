@@ -36,16 +36,12 @@ class SearchViewModel @ViewModelInject constructor(private val addressRepository
 
 
     fun search(keyWord: String) {
-        Logger.d("$keyWord")
         compositeDisposable += addressRepository.getAddressByKeyword(keyWord, 0.0, 0.0)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                Logger.d("${it.searchAddresses}")
-
-
-                val list = it.searchAddresses.map {
-                    SearchAddressItem.of(it, onClick, onMapClick)
+                val list = it.searchAddresses.map {response ->
+                    SearchAddressItem.of(response, keyWord, onClick, onMapClick)
                 }
                 _addressItems.value = list
             }, {
