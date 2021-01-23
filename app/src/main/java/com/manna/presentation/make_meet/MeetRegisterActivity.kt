@@ -33,10 +33,10 @@ class MeetRegisterActivity :
     }
 
     private fun setupView() {
-
+        
         with(binding) {
             dateLayout.root.setOnClickListener {
-
+                DatePickerBottomSheetFragment().show(supportFragmentManager, "")
             }
             locationLayout.root.setOnClickListener {
                 startActivity(SearchActivity.getIntent(this@MeetRegisterActivity))
