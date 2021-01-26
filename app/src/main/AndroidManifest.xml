@@ -33,6 +33,7 @@
 
         <activity android:name=".picker.ImageDetailActivity" />
         <activity android:name=".presentation.SocketIOTestActivity" />
+        <activity android:name=".presentation.settings.NoticeActivity"/>
 
 
         <service

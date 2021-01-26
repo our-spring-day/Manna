@@ -1,5 +1,6 @@
 package com.manna.presentation.settings
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.manna.R
@@ -9,10 +10,12 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class SettingsFragment : BaseFragment<FragmentSettingsBinding>(R.layout.fragment_settings) {
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.btnNotice.setOnClickListener {
+            startActivity(Intent(requireContext(), NoticeActivity::class.java))
+        }
     }
 
     companion object {
