@@ -1,7 +1,6 @@
 package com.manna.presentation.sign_up
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import com.manna.R
 import com.manna.common.BaseActivity
 import com.manna.databinding.ActivitySignUpBinding
@@ -12,26 +11,8 @@ class SignUpActivity : BaseActivity<ActivitySignUpBinding>(R.layout.activity_sig
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        replace(CreateNameFragment())
-    }
-
-    fun replace(fragment: Fragment) {
-        val transaction = supportFragmentManager.beginTransaction()
-        val fragmentTag =
-            supportFragmentManager.findFragmentByTag(fragment::class.java.simpleName)
-        if (fragmentTag != null) {
-            transaction.show(fragment).commit()
-        } else {
-            transaction.replace(R.id.fl_sign_up, fragment, fragment::class.java.simpleName)
-                .commit()
-        }
-    }
-
-    fun remove(fragment: Fragment) {
-        val fragmentTag =
-            supportFragmentManager.findFragmentByTag(fragment::class.java.simpleName)
-                ?: return
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.remove(fragmentTag).commit()
+        val fragment = CreateNameFragment.newInstance()
+        supportFragmentManager.beginTransaction()
+            .add(R.id.fl_sign_up, fragment, fragment::class.java.simpleName).commit()
     }
 }

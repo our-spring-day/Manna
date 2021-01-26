@@ -19,8 +19,13 @@ class ProfileConfirmFragment :
             true
         ) {
             override fun handleOnBackPressed() {
-                (activity as SignUpActivity).remove(ProfileConfirmFragment())
-                (activity as SignUpActivity).replace(ProfileGuideFragment())
+                val fragment =
+                    parentFragmentManager.fragments.findLast { it !is ProfileConfirmFragment }
+                if (fragment != null) {
+                    parentFragmentManager.beginTransaction().show(fragment).commit()
+                }
+                parentFragmentManager.beginTransaction().remove(this@ProfileConfirmFragment)
+                    .commit()
             }
         }
         requireActivity().onBackPressedDispatcher.addCallback(this, callback)
@@ -30,7 +35,10 @@ class ProfileConfirmFragment :
         super.onViewCreated(view, savedInstanceState)
 
         binding.tvNext.setOnClickListener {
-            (activity as SignUpActivity).replace(ServiceTermsFragment())
+            parentFragmentManager.beginTransaction().hide(this@ProfileConfirmFragment).commit()
+            val fragment = ServiceTermsFragment.newInstance()
+            parentFragmentManager.beginTransaction()
+                .add(R.id.fl_sign_up, fragment, fragment::class.java.simpleName).commit()
         }
     }
 

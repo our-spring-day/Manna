@@ -20,8 +20,12 @@ class ProfileGuideFragment :
             true
         ) {
             override fun handleOnBackPressed() {
-                (activity as SignUpActivity).remove(ProfileGuideFragment())
-                (activity as SignUpActivity).replace(CreateNameFragment())
+                val fragment =
+                    parentFragmentManager.fragments.findLast { it !is ProfileGuideFragment }
+                if (fragment != null) {
+                    parentFragmentManager.beginTransaction().show(fragment).commit()
+                }
+                parentFragmentManager.beginTransaction().remove(this@ProfileGuideFragment).commit()
             }
         }
         requireActivity().onBackPressedDispatcher.addCallback(this, callback)
@@ -35,7 +39,10 @@ class ProfileGuideFragment :
         }
 
         binding.tvAlbum.setOnClickListener {
-            (activity as SignUpActivity).replace(ProfileConfirmFragment())
+            parentFragmentManager.beginTransaction().hide(this@ProfileGuideFragment).commit()
+            val fragment = ProfileConfirmFragment.newInstance()
+            parentFragmentManager.beginTransaction()
+                .add(R.id.fl_sign_up, fragment, fragment::class.java.simpleName).commit()
         }
     }
 

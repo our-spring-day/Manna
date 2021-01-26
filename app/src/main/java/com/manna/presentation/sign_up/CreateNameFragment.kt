@@ -7,6 +7,7 @@ import android.text.TextWatcher
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
+import androidx.core.widget.doAfterTextChanged
 import com.manna.R
 import com.manna.common.BaseFragment
 import com.manna.databinding.FragmentCreateNameBinding
@@ -32,24 +33,16 @@ class CreateNameFragment : BaseFragment<FragmentCreateNameBinding>(R.layout.frag
         super.onViewCreated(view, savedInstanceState)
         initButton()
 
-        binding.edtName.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+        binding.edtName.doAfterTextChanged {
+            if (binding.edtName.text.isNotEmpty()) {
+                binding.ivClear.visibility = View.VISIBLE
+                binding.tvError.visibility = View.VISIBLE
+                binding.ivError.visibility = View.VISIBLE
+                checkNickname()
+            } else {
+                clearEditText()
             }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                if (binding.edtName.text.isNotEmpty()) {
-                    binding.ivClear.visibility = View.VISIBLE
-                    binding.tvError.visibility = View.VISIBLE
-                    binding.ivError.visibility = View.VISIBLE
-                    checkNickname()
-                } else {
-                    clearEditText()
-                }
-            }
-        })
+        }
     }
 
     private fun initButton() {
@@ -62,7 +55,10 @@ class CreateNameFragment : BaseFragment<FragmentCreateNameBinding>(R.layout.frag
         }
 
         binding.tvNext.setOnClickListener {
-            (activity as SignUpActivity).replace(ProfileGuideFragment())
+            parentFragmentManager.beginTransaction().hide(this@CreateNameFragment).commit()
+            val fragment = ProfileGuideFragment.newInstance()
+            parentFragmentManager.beginTransaction()
+                .add(R.id.fl_sign_up, fragment, fragment::class.java.simpleName).commit()
         }
     }
 

@@ -22,8 +22,12 @@ class ServiceTermsFragment :
             true
         ) {
             override fun handleOnBackPressed() {
-                (activity as SignUpActivity).remove(ServiceTermsFragment())
-                (activity as SignUpActivity).replace(ProfileConfirmFragment())
+                val fragment =
+                    parentFragmentManager.fragments.findLast { it !is ServiceTermsFragment }
+                if (fragment != null) {
+                    parentFragmentManager.beginTransaction().show(fragment).commit()
+                }
+                parentFragmentManager.beginTransaction().remove(this@ServiceTermsFragment).commit()
             }
         }
         requireActivity().onBackPressedDispatcher.addCallback(this, callback)
