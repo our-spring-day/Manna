@@ -1,13 +1,16 @@
 package com.manna.presentation.intro
+
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import com.manna.DeviceUtil
 import com.manna.HomeActivity
 import com.manna.R
 import com.manna.databinding.ActivityIntroBinding
+import com.manna.util.Logger
 import com.wswon.picker.common.BaseActivity
 import com.wswon.picker.ext.EventObserver
 import dagger.hilt.android.AndroidEntryPoint
@@ -20,8 +23,7 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>(R.layout.activity_intro
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        startActivity(Intent(this, HomeActivity::class.java))
-        finish()
+        handleDeepLink()
 
         viewModel.checkDevice(DeviceUtil.getAndroidID(this))
 
@@ -47,6 +49,33 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>(R.layout.activity_intro
                 viewModel.registerDevice(name, DeviceUtil.getAndroidID(this))
             }
         }
+
+    }
+
+
+    private fun handleDeepLink() {
+        FirebaseDynamicLinks.getInstance()
+            .getDynamicLink(intent)
+            .addOnSuccessListener { pendingDynamicLinkData ->
+                if (pendingDynamicLinkData == null) {
+                    Logger.d("No have dynamic link")
+                    return@addOnSuccessListener
+                }
+                val deepLink = pendingDynamicLinkData.link
+                Logger.d("deepLink: $deepLink");
+
+                val segment = deepLink?.lastPathSegment
+                Logger.d("segment $segment")
+                when (segment) {
+//                        SEGMENT_PROMOTION:
+//                        String code = deepLink.getQueryParameter(KEY_CODE);
+//                        showPromotionDialog(code);
+//                        break;
+                }
+            }
+            .addOnFailureListener { exception ->
+                Logger.d("$exception")
+            }
 
     }
 }
