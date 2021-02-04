@@ -33,10 +33,10 @@ class MeetRegisterActivity :
     }
 
     private fun setupView() {
-        
+
         with(binding) {
             dateLayout.root.setOnClickListener {
-                DatePickerBottomSheetFragment().show(supportFragmentManager, "")
+                DatePickerBottomSheetFragment.newInstance().show(supportFragmentManager, "")
             }
             locationLayout.root.setOnClickListener {
                 startActivity(SearchActivity.getIntent(this@MeetRegisterActivity))
@@ -45,7 +45,7 @@ class MeetRegisterActivity :
 
             }
             memoLayout.root.setOnClickListener {
-
+                MemoBottomSheetFragment.newInstance().show(supportFragmentManager, "")
             }
             penaltyLayout.root.setOnClickListener {
 

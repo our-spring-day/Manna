@@ -10,6 +10,7 @@ import androidx.databinding.ViewDataBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.manna.R
 import com.manna.databinding.FragmentDatePickerBinding
+import com.manna.databinding.FragmentMemoBinding
 
 abstract class BaseBottomSheetFragment<B : ViewDataBinding>(@LayoutRes private val layoutId: Int) :
     BottomSheetDialogFragment() {
@@ -32,5 +33,17 @@ abstract class BaseBottomSheetFragment<B : ViewDataBinding>(@LayoutRes private v
 class DatePickerBottomSheetFragment :
     BaseBottomSheetFragment<FragmentDatePickerBinding>(R.layout.fragment_date_picker) {
 
+    companion object {
+        fun newInstance() =
+            DatePickerBottomSheetFragment()
+    }
+}
 
+class MemoBottomSheetFragment:
+    BaseBottomSheetFragment<FragmentMemoBinding>(R.layout.fragment_memo) {
+
+    companion object {
+        fun newInstance() =
+            MemoBottomSheetFragment()
+    }
 }

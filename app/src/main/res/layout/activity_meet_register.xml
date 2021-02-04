@@ -169,6 +169,7 @@
             android:background="@drawable/selector_button"
             android:fontFamily="@font/noto_sans_bold"
             android:gravity="center"
+            android:textSize="14dp"
             android:minHeight="60dp"
             android:enabled="false"
             android:text="@string/send_invitation_card"

@@ -18,43 +18,74 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <DatePicker
-                android:id="@+id/date_picker"
+            <ImageView
+                android:id="@+id/title_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:calendarViewShown="false"
-                android:datePickerMode="spinner"
-                android:theme="@style/PickerStyle"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="24dp"
+                android:src="@drawable/ic_pencil"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TimePicker
-                android:id="@+id/time_picker"
+            <TextView
+                android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:theme="@style/PickerStyle"
-                android:timePickerMode="spinner"
+                android:layout_marginStart="7dp"
+                android:fontFamily="@font/noto_sans_medium"
+                android:text="메모 남기기"
+                android:textColor="@color/black"
+                android:textSize="20dp"
+                app:layout_constraintBottom_toBottomOf="@id/title_icon"
+                app:layout_constraintStart_toEndOf="@id/title_icon"
+                app:layout_constraintTop_toTopOf="@id/title_icon" />
+
+            <ImageView
+                android:id="@+id/close"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="20dp"
+                android:src="@drawable/ic_close_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/input_memo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="26dp"
+                android:background="@color/transparent"
+                android:fontFamily="@font/noto_sans_regular"
+                android:gravity="top"
+                android:minHeight="315dp"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:textColor="@color/black"
+                android:textSize="15dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/date_picker" />
+                app:layout_constraintTop_toBottomOf="@id/title" />
+
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/send_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/selector_button"
-                android:enabled="false"
                 android:fontFamily="@font/noto_sans_bold"
                 android:gravity="center"
                 android:minHeight="44dp"
-                android:textSize="14dp"
                 android:text="@string/ok"
                 android:textColor="@color/white"
+                android:textSize="14dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/time_picker"
+                app:layout_constraintTop_toBottomOf="@id/input_memo"
                 app:layout_constraintWidth_percent=".8" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
