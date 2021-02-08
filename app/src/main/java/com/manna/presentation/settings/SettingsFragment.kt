@@ -16,6 +16,10 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>(R.layout.fragment
         binding.btnNotice.setOnClickListener {
             startActivity(Intent(requireContext(), NoticeActivity::class.java))
         }
+
+        binding.btnFeedback.setOnClickListener {
+            startActivity(Intent(requireContext(), FeedbackActivity::class.java))
+        }
     }
 
     companion object {
