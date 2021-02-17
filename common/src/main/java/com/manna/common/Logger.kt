@@ -1,17 +1,15 @@
-package com.manna.util
+package com.manna.common
 
 import android.util.Log
-import com.manna.BuildConfig
 
 object Logger {
-    var socketLogging = false
-    var apiLogging = true
-
     var lineNumber = 0
     var className: String? = null
     var methodName: String? = null
     private val isDebuggable: Boolean
         get() = BuildConfig.DEBUG
+
+    val socketLogging = false
 
     private fun log(mode: Int, className: String?, msg: String) {
         if (isDebuggable) return

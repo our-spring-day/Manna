@@ -1,4 +1,4 @@
-package com.manna.common
+package com.wswon.picker.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

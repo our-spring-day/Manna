@@ -7,9 +7,8 @@ import androidx.core.view.isVisible
 import com.manna.DeviceUtil
 import com.manna.HomeActivity
 import com.manna.R
+import com.manna.common.BaseActivity
 import com.manna.databinding.ActivityIntroBinding
-import com.wswon.picker.common.BaseActivity
-import com.wswon.picker.ext.EventObserver
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -25,7 +24,7 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>(R.layout.activity_intro
 
         viewModel.checkDevice(DeviceUtil.getAndroidID(this))
 
-        viewModel.isValidDevice.observe(this, EventObserver { isValid ->
+        viewModel.isValidDevice.observe(this, com.manna.common.EventObserver { isValid ->
             if (isValid) {
                 startActivity(Intent(this, HomeActivity::class.java))
                 finish()

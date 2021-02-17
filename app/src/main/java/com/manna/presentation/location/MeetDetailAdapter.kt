@@ -10,9 +10,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.manna.R
+import com.manna.common.Logger
+import com.manna.databinding.ItemRoundViewBinding
 import com.manna.presentation.User
-import com.manna.util.Logger
-import kotlinx.android.synthetic.main.item_round_view.view.*
 
 class MeetDetailAdapter :
     ListAdapter<User, MeetDetailAdapter.ViewHolder>(
@@ -55,43 +55,54 @@ class MeetDetailAdapter :
         return itemViewType
     }
 
-    class ViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
-        LayoutInflater.from(parent.context).inflate(R.layout.item_round_view, parent, false)
+    class ViewHolder(
+        parent: ViewGroup,
+        private val binding: ItemRoundViewBinding = ItemRoundViewBinding.inflate(
+            LayoutInflater.from(
+                parent.context
+            ), parent, false
+        )
+    ) : RecyclerView.ViewHolder(
+        binding.root
     ) {
 
         private val remainValue = itemView.findViewById<TextView>(R.id.remain_value)
 
         fun bind(item: User, listener: OnClickListener?) {
-            itemView.run {
-                setOnClickListener {
-                    listener?.onClick(item)
-                }
+            itemView.setOnClickListener {
+                listener?.onClick(item)
+            }
 
-                setRemainValue(item)
+            setRemainValue(item)
+
+            with(binding) {
                 if (itemViewType == VIEW_TYPE_TEXT) {
-                    tv_name.visibility = View.VISIBLE
-                    iv_image.visibility = View.GONE
-                    if (item.name.orEmpty().length > 2) {
-                        tv_name.text = item.name.subSequence(1, item.name.length)
+                    tvName.visibility = View.VISIBLE
+                    ivImage.visibility = View.GONE
+                    if (item.name.length > 2) {
+                        tvName.text = item.name.subSequence(1, item.name.length)
                     } else {
-                        tv_name.text = item.name
+                        tvName.text = item.name
                     }
                 } else {
-                    tv_name.visibility = View.GONE
-                    iv_image.visibility = View.VISIBLE
+                    tvName.visibility = View.GONE
+                    ivImage.visibility = View.VISIBLE
+
+                    val context = itemView.context
                     when (item.name) {
-                        "이연재" -> Glide.with(this).load(R.drawable.test_2).into(iv_image)
-                        "원우석" -> Glide.with(this).load(R.drawable.image_3).into(iv_image)
-                        "윤상원" -> Glide.with(this).load(R.drawable.image_2).into(iv_image)
-                        "정재인" -> Glide.with(this).load(R.drawable.image_4).into(iv_image)
-                        "양종찬" -> Glide.with(this).load(R.drawable.image_6).into(iv_image)
-                        "최용권" -> Glide.with(this).load(R.drawable.image_1).into(iv_image)
-                        "김규리" -> Glide.with(this).load(R.drawable.image_5).into(iv_image)
-                        "이효근" -> Glide.with(this).load(R.drawable.image_7).into(iv_image)
-                        else -> Glide.with(this).load(R.drawable.test_1).into(iv_image)
+                        "이연재" -> Glide.with(context).load(R.drawable.test_2).into(ivImage)
+                        "원우석" -> Glide.with(context).load(R.drawable.image_3).into(ivImage)
+                        "윤상원" -> Glide.with(context).load(R.drawable.image_2).into(ivImage)
+                        "정재인" -> Glide.with(context).load(R.drawable.image_4).into(ivImage)
+                        "양종찬" -> Glide.with(context).load(R.drawable.image_6).into(ivImage)
+                        "최용권" -> Glide.with(context).load(R.drawable.image_1).into(ivImage)
+                        "김규리" -> Glide.with(context).load(R.drawable.image_5).into(ivImage)
+                        "이효근" -> Glide.with(context).load(R.drawable.image_7).into(ivImage)
+                        else -> Glide.with(context).load(R.drawable.test_1).into(ivImage)
                     }
                 }
             }
+
         }
 
         private fun setRemainValue(item: User) {

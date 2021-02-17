@@ -13,12 +13,12 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.manna.common.BaseFragment
 import com.manna.databinding.FragmentProfileBinding
 import com.manna.databinding.ItemFriendsBinding
 import com.manna.ext.setImage
 import com.manna.util.ViewUtil
 import com.wswon.picker.ImagePickerFragment
-import com.wswon.picker.common.BaseFragment
 
 
 class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_profile) {

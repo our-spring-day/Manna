@@ -6,8 +6,8 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.manna.DeviceUtil
 import com.manna.MannaApp
+import com.manna.common.Logger
 import com.manna.di.ApiModule
-import com.manna.util.Logger
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 

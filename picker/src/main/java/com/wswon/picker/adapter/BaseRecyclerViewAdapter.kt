@@ -1,4 +1,4 @@
-package com.wswon.picker.common
+package com.wswon.picker.adapter
 
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes

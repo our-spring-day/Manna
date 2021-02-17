@@ -10,13 +10,13 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.manna.common.BaseFragment
 import com.gun0912.tedpermission.TedPermissionResult
 import com.manna.databinding.FragmentMeetListBinding
 import com.manna.presentation.location.MeetDetailActivity
 import com.manna.util.UserHolder
 import com.manna.util.ViewUtil
 import com.tedpark.tedpermission.rx2.TedRx2Permission
-import com.wswon.picker.common.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 

@@ -1,4 +1,4 @@
-package com.wswon.picker.ext
+package com.manna.common
 
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable

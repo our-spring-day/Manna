@@ -6,20 +6,18 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.hilt.lifecycle.ViewModelInject
 import com.manna.R
-import com.manna.common.BaseActivity
-import com.manna.common.BaseViewModel
 import com.manna.databinding.ActivityMeetRegisterBinding
 import com.manna.presentation.search.SearchActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 
-class MeetRegisterViewModel @ViewModelInject constructor() : BaseViewModel() {
+class MeetRegisterViewModel @ViewModelInject constructor() : com.manna.common.BaseViewModel() {
 
 }
 
 @AndroidEntryPoint
 class MeetRegisterActivity :
-    BaseActivity<ActivityMeetRegisterBinding>(R.layout.activity_meet_register) {
+    com.manna.common.BaseActivity<ActivityMeetRegisterBinding>(R.layout.activity_meet_register) {
 
     private val viewModel by viewModels<MeetRegisterViewModel>()
 
@@ -36,7 +34,7 @@ class MeetRegisterActivity :
 
         with(binding) {
             dateLayout.root.setOnClickListener {
-                DatePickerBottomSheetFragment.newInstance().show(supportFragmentManager, "")
+//                DatePickerBottomSheetFragment.newInstance().show(supportFragmentManager, "")
             }
             locationLayout.root.setOnClickListener {
                 startActivity(SearchActivity.getIntent(this@MeetRegisterActivity))
@@ -45,7 +43,7 @@ class MeetRegisterActivity :
 
             }
             memoLayout.root.setOnClickListener {
-                MemoBottomSheetFragment.newInstance().show(supportFragmentManager, "")
+//                MemoBottomSheetFragment.newInstance().show(supportFragmentManager, "")
             }
             penaltyLayout.root.setOnClickListener {
 

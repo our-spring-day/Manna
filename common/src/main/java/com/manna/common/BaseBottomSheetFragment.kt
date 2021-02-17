@@ -1,14 +1,17 @@
-package com.wswon.picker.common
+package com.manna.common
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
-import androidx.fragment.app.Fragment
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-abstract class BaseFragment<B : ViewDataBinding>(private val layoutId: Int) : Fragment() {
+abstract class BaseBottomSheetFragment<B : ViewDataBinding>(@LayoutRes private val layoutId: Int) :
+    BottomSheetDialogFragment() {
+
     protected lateinit var binding: B
 
     override fun onCreateView(
@@ -21,4 +24,5 @@ abstract class BaseFragment<B : ViewDataBinding>(private val layoutId: Int) : Fr
         binding.lifecycleOwner = this
         return binding.root
     }
+
 }

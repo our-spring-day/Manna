@@ -6,8 +6,6 @@ import androidx.core.view.isVisible
 import com.wswon.picker.BR
 import com.wswon.picker.ImagePickerSelectorItem
 import com.wswon.picker.R
-import com.wswon.picker.common.BaseRecyclerViewAdapter
-import com.wswon.picker.common.BaseRecyclerViewHolder
 import com.wswon.picker.databinding.ItemImagePickerSelectorBinding
 import com.wswon.picker.ext.setUriImg
 
