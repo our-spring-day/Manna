@@ -26,6 +26,7 @@ import com.manna.LocationResponse
 import com.manna.MyLatLng
 import com.manna.R
 import com.manna.common.BaseActivity
+import com.manna.common.EventObserver
 import com.manna.common.Logger
 import com.manna.databinding.ActivityMeetDetailBinding
 import com.manna.databinding.ViewImageMarkerBinding
@@ -269,7 +270,7 @@ class MeetDetailActivity :
                     viewModel.submitUserList(userList)
                 })
             bottomUserItemClickEvent.observe(this@MeetDetailActivity,
-                com.manna.common.EventObserver { clickUser ->
+                EventObserver { clickUser ->
                     markerHolders.find { it.uuid == clickUser.deviceToken }?.let {
                         viewModel.findRoute(
                             user = clickUser,

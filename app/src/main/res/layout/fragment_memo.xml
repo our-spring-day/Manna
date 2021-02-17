@@ -13,7 +13,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:paddingBottom="10dp"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -55,20 +54,21 @@
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/input_memo"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
+                app:layout_constraintDimensionRatio="W,1:1.7"
                 android:layout_marginTop="26dp"
                 android:background="@color/transparent"
                 android:fontFamily="@font/noto_sans_regular"
                 android:gravity="top"
-                android:minHeight="315dp"
+                android:minHeight="260dp"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"
+                android:paddingBottom="20dp"
                 android:textColor="@color/black"
                 android:textSize="15dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/title" />
-
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/send_button"

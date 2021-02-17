@@ -46,4 +46,5 @@
     <string name="make_meet_penalty">벌칙 정하기</string>
     <string name="send_invitation_card">초대장 보내기</string>
     <string name="search_location_hint">장소 입력</string>
+    <string name="empty_memo">메모를 입력해주세요</string>
 </resources>

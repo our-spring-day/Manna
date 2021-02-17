@@ -4,37 +4,40 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.fragment.app.commit
 import androidx.hilt.lifecycle.ViewModelInject
 import com.manna.R
+import com.manna.common.BaseActivity
+import com.manna.common.BaseViewModel
 import com.manna.databinding.ActivityMeetRegisterBinding
 import com.manna.presentation.search.SearchActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 
-class MeetRegisterViewModel @ViewModelInject constructor() : com.manna.common.BaseViewModel() {
+class MeetRegisterViewModel @ViewModelInject constructor() : BaseViewModel() {
 
 }
 
 @AndroidEntryPoint
 class MeetRegisterActivity :
-    com.manna.common.BaseActivity<ActivityMeetRegisterBinding>(R.layout.activity_meet_register) {
+    BaseActivity<ActivityMeetRegisterBinding>(R.layout.activity_meet_register) {
 
     private val viewModel by viewModels<MeetRegisterViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
         setupView()
         setupViewModel()
-
     }
 
     private fun setupView() {
 
         with(binding) {
             dateLayout.root.setOnClickListener {
-//                DatePickerBottomSheetFragment.newInstance().show(supportFragmentManager, "")
+                supportFragmentManager.commit {
+                    replace(android.R.id.content, DatePickerFragment.newInstance())
+                }
             }
             locationLayout.root.setOnClickListener {
                 startActivity(SearchActivity.getIntent(this@MeetRegisterActivity))
@@ -43,7 +46,15 @@ class MeetRegisterActivity :
 
             }
             memoLayout.root.setOnClickListener {
-//                MemoBottomSheetFragment.newInstance().show(supportFragmentManager, "")
+                val dialog = MemoBottomSheetFragment.newInstance("")
+                supportFragmentManager.setFragmentResultListener(
+                    dialog::class.java.simpleName,
+                    this@MeetRegisterActivity
+                ) { requestKey, data ->
+
+                }
+
+                dialog.show(supportFragmentManager, "")
             }
             penaltyLayout.root.setOnClickListener {
 
