@@ -10,8 +10,11 @@ import com.manna.R
 import com.manna.common.BaseActivity
 import com.manna.common.BaseViewModel
 import com.manna.databinding.ActivityMeetRegisterBinding
+import com.manna.ext.toast
 import com.manna.presentation.search.SearchActivity
 import dagger.hilt.android.AndroidEntryPoint
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class MeetRegisterViewModel @ViewModelInject constructor() : BaseViewModel() {
@@ -32,11 +35,21 @@ class MeetRegisterActivity :
     }
 
     private fun setupView() {
-
         with(binding) {
             dateLayout.root.setOnClickListener {
+                val fragment = DatePickerFragment.newInstance()
+                supportFragmentManager.setFragmentResultListener(
+                    fragment::class.java.simpleName,
+                    this@MeetRegisterActivity
+                ) { requestKey, data ->
+                    val date: Date? = data.getSerializable(DatePickerFragment.DATE_TIME) as? Date
+                    date ?: return@setFragmentResultListener
+
+                    toast("$requestKey : ${SimpleDateFormat("yyyy/MM/dd a hh:mm").format(date)}")
+                }
+
                 supportFragmentManager.commit {
-                    replace(android.R.id.content, DatePickerFragment.newInstance())
+                    replace(android.R.id.content, fragment)
                 }
             }
             locationLayout.root.setOnClickListener {
@@ -51,7 +64,9 @@ class MeetRegisterActivity :
                     dialog::class.java.simpleName,
                     this@MeetRegisterActivity
                 ) { requestKey, data ->
+                    val memo = data.getString(MemoBottomSheetFragment.MEMO).orEmpty()
 
+                    toast("$requestKey : $memo")
                 }
 
                 dialog.show(supportFragmentManager, "")

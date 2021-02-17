@@ -38,7 +38,7 @@
     <string name="dda_bong">👍</string>
     <string name="optional_title">추가 정보</string>
     <string name="required_title">필수 정보</string>
-    
+
     <string name="make_meet_date_and_time">날짜 및 시간</string>
     <string name="make_meet_location">장소</string>
     <string name="make_meet_participant">참석 인원</string>
@@ -47,4 +47,5 @@
     <string name="send_invitation_card">초대장 보내기</string>
     <string name="search_location_hint">장소 입력</string>
     <string name="empty_memo">메모를 입력해주세요</string>
+    <string name="date_and_time_announce">언제, 몇시에 만나나요?</string>
 </resources>
