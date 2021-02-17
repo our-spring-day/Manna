@@ -9,7 +9,7 @@
             type="android.graphics.drawable.Drawable" />
 
         <variable
-            name="content"
+            name="hint"
             type="String" />
     </data>
 
@@ -35,13 +35,15 @@
             android:layout_marginStart="14dp"
             android:fontFamily="@font/noto_sans_regular"
             android:letterSpacing="-0.06"
-            android:text="@{content}"
+            android:hint="@{hint}"
             android:textColor="@color/black"
+            android:textColorHint="@color/black"
+            android:maxLines="3"
             android:textSize="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/icon"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="필수 정보" />
+            tools:hint="필수 정보" />
 
         <ImageView
             android:layout_width="wrap_content"

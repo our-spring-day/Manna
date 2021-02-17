@@ -10,7 +10,6 @@ import com.manna.R
 import com.manna.common.BaseActivity
 import com.manna.common.BaseViewModel
 import com.manna.databinding.ActivityMeetRegisterBinding
-import com.manna.ext.toast
 import com.manna.presentation.search.SearchActivity
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
@@ -41,11 +40,12 @@ class MeetRegisterActivity :
                 supportFragmentManager.setFragmentResultListener(
                     fragment::class.java.simpleName,
                     this@MeetRegisterActivity
-                ) { requestKey, data ->
+                ) { _, data ->
                     val date: Date? = data.getSerializable(DatePickerFragment.DATE_TIME) as? Date
                     date ?: return@setFragmentResultListener
 
-                    toast("$requestKey : ${SimpleDateFormat("yyyy/MM/dd a hh:mm").format(date)}")
+                    dateLayout.content.text =
+                        SimpleDateFormat("MM.dd E요일 ・ a h시", Locale.KOREA).format(date)
                 }
 
                 supportFragmentManager.commit {
@@ -59,14 +59,19 @@ class MeetRegisterActivity :
 
             }
             memoLayout.root.setOnClickListener {
-                val dialog = MemoBottomSheetFragment.newInstance("")
+                val prevMemo = memoLayout.content.text.toString()
+
+                val dialog = MemoBottomSheetFragment.newInstance(prevMemo)
+
                 supportFragmentManager.setFragmentResultListener(
                     dialog::class.java.simpleName,
                     this@MeetRegisterActivity
-                ) { requestKey, data ->
+                ) { _, data ->
                     val memo = data.getString(MemoBottomSheetFragment.MEMO).orEmpty()
 
-                    toast("$requestKey : $memo")
+                    if (memo.isNotEmpty()) {
+                        memoLayout.content.text = memo
+                    }
                 }
 
                 dialog.show(supportFragmentManager, "")
