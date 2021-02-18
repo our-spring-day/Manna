@@ -56,7 +56,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="28dp"
                 android:layout_marginBottom="61dp"
-                app:layout_constraintBottom_toTopOf="@id/send_button"
+                app:layout_constraintBottom_toTopOf="@id/submit_button"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/title">
@@ -94,7 +94,7 @@
 
                             <include
                                 android:id="@+id/target_layout_1"
-                                layout="@layout/view_make_meet_content"
+                                layout="@layout/view_penalty_content"
                                 android:layout_width="match_parent"
                                 android:layout_height="0dp"
                                 android:layout_marginTop="10dp"
@@ -107,7 +107,7 @@
 
                             <include
                                 android:id="@+id/target_layout_2"
-                                layout="@layout/view_make_meet_content"
+                                layout="@layout/view_penalty_content"
                                 android:layout_width="0dp"
                                 android:layout_height="0dp"
                                 android:layout_marginTop="10dp"
@@ -149,7 +149,7 @@
 
                             <include
                                 android:id="@+id/penalty_layout_1"
-                                layout="@layout/view_make_meet_content"
+                                layout="@layout/view_penalty_content"
                                 android:layout_width="0dp"
                                 android:layout_height="0dp"
                                 android:layout_marginTop="10dp"
@@ -162,7 +162,7 @@
 
                             <include
                                 android:id="@+id/penalty_layout_2"
-                                layout="@layout/view_make_meet_content"
+                                layout="@layout/view_penalty_content"
                                 android:layout_width="0dp"
                                 android:layout_height="0dp"
                                 android:layout_marginTop="10dp"
@@ -175,7 +175,7 @@
 
                             <include
                                 android:id="@+id/penalty_layout_3"
-                                layout="@layout/view_make_meet_content"
+                                layout="@layout/view_penalty_content"
                                 android:layout_width="0dp"
                                 android:layout_height="0dp"
                                 android:layout_marginTop="10dp"
@@ -188,7 +188,7 @@
 
                             <include
                                 android:id="@+id/penalty_layout_4"
-                                layout="@layout/view_make_meet_content"
+                                layout="@layout/view_penalty_content"
                                 android:layout_width="0dp"
                                 android:layout_height="0dp"
                                 android:layout_marginTop="10dp"
@@ -209,7 +209,7 @@
             </ScrollView>
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/send_button"
+                android:id="@+id/submit_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"

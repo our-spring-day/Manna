@@ -102,13 +102,20 @@ class MeetRegisterActivity :
             }
 
             penaltyLayout.root.setOnClickListener {
-                val dialog = PenaltyBottomSheetFragment.newInstance()
+                val prevPenalty = penaltyLayout.content.getTag(R.id.penalty_tag) as? Penalty
+                
+                val dialog = PenaltyBottomSheetFragment.newInstance(prevPenalty)
 
                 supportFragmentManager.setFragmentResultListener(
                     dialog::class.java.simpleName,
                     this@MeetRegisterActivity
                 ) { _, data ->
+                    val penalty = data.getParcelable<Penalty>(PenaltyBottomSheetFragment.PENALTY)
 
+                    if (penalty != null) {
+                        penaltyLayout.content.setTag(R.id.penalty_tag, penalty)
+                        penaltyLayout.content.text = "벌칙: ${penalty.target}가 ${penalty.penalty}"
+                    }
                 }
 
                 dialog.show(supportFragmentManager, dialog::class.java.simpleName)
