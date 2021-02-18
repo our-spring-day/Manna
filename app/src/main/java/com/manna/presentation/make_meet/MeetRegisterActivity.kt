@@ -36,7 +36,9 @@ class MeetRegisterActivity :
     private fun setupView() {
         with(binding) {
             dateLayout.root.setOnClickListener {
-                val fragment = DatePickerFragment.newInstance()
+                val prevDate = dateLayout.content.getTag(R.id.date_tag) as? Date
+
+                val fragment = DatePickerFragment.newInstance(prevDate)
                 supportFragmentManager.setFragmentResultListener(
                     fragment::class.java.simpleName,
                     this@MeetRegisterActivity
@@ -44,6 +46,7 @@ class MeetRegisterActivity :
                     val date: Date? = data.getSerializable(DatePickerFragment.DATE_TIME) as? Date
                     date ?: return@setFragmentResultListener
 
+                    dateLayout.content.setTag(R.id.date_tag, date)
                     dateLayout.content.text =
                         SimpleDateFormat("MM.dd E요일 ・ a h시", Locale.KOREA).format(date)
                 }
@@ -74,7 +77,7 @@ class MeetRegisterActivity :
                     }
                 }
 
-                dialog.show(supportFragmentManager, "")
+                dialog.show(supportFragmentManager, dialog::class.java.simpleName)
             }
             penaltyLayout.root.setOnClickListener {
 
@@ -91,6 +94,7 @@ class MeetRegisterActivity :
     }
 
     companion object {
+
         fun getIntent(context: Context) =
             Intent(context, MeetRegisterActivity::class.java).apply {
 

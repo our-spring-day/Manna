@@ -92,6 +92,9 @@ class DatePickerFragment :
 
             setDateResult(year, month, dayOfMonth)
         }
+
+        binding.timePicker.currentHour = initDate.get(Calendar.HOUR_OF_DAY)
+        binding.timePicker.currentMinute = initDate.get(Calendar.MINUTE)
     }
 
     private fun setDateResult(year: Int, month: Int, dayOfMonth: Int) {
