@@ -48,4 +48,6 @@
     <string name="search_location_hint">장소 입력</string>
     <string name="empty_memo">메모를 입력해주세요</string>
     <string name="date_and_time_announce">언제, 몇시에 만나나요?</string>
+    <string name="participant_announce">나중에도 인원을 수정할 수 있어요</string>
+    <string name="empty_participant_count">참석 인원을 입력해주세요.</string>
 </resources>

@@ -58,7 +58,18 @@ class MeetRegisterActivity :
                 startActivity(SearchActivity.getIntent(this@MeetRegisterActivity))
             }
             participantLayout.root.setOnClickListener {
+                val fragment = ParticipantFragment.newInstance()
 
+                supportFragmentManager.setFragmentResultListener(
+                    fragment::class.java.simpleName,
+                    this@MeetRegisterActivity
+                ) { _, data ->
+
+                }
+
+                supportFragmentManager.commit {
+                    replace(android.R.id.content, fragment)
+                }
             }
             memoLayout.root.setOnClickListener {
                 val prevMemo = memoLayout.content.text.toString()
@@ -79,7 +90,7 @@ class MeetRegisterActivity :
                 dialog.show(supportFragmentManager, dialog::class.java.simpleName)
             }
             penaltyLayout.root.setOnClickListener {
-
+                PenaltyFragment.newInstance()
             }
             sendButton.setOnClickListener {
 
