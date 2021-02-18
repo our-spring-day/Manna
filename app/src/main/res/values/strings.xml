@@ -50,4 +50,15 @@
     <string name="date_and_time_announce">언제, 몇시에 만나나요?</string>
     <string name="participant_announce">나중에도 인원을 수정할 수 있어요</string>
     <string name="empty_participant_count">참석 인원을 입력해주세요.</string>
+    <string name="target">대상</string>
+    <string name="penalty">벌칙</string>
+
+    <string name="target_1">꼴찌</string>
+    <string name="target_2">지각한 사람 모두</string>
+
+    <string name="penalty_1">커피 사기</string>
+    <string name="penalty_2">밥 사기</string>
+    <string name="penalty_3">춤추면서 입장하기</string>
+    <string name="penalty_4">벌금 내기</string>
+
 </resources>

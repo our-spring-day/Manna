@@ -102,7 +102,16 @@ class MeetRegisterActivity :
             }
 
             penaltyLayout.root.setOnClickListener {
-                PenaltyBottomSheetFragment.newInstance()
+                val dialog = PenaltyBottomSheetFragment.newInstance()
+
+                supportFragmentManager.setFragmentResultListener(
+                    dialog::class.java.simpleName,
+                    this@MeetRegisterActivity
+                ) { _, data ->
+
+                }
+
+                dialog.show(supportFragmentManager, dialog::class.java.simpleName)
             }
 
             sendButton.setOnClickListener {

@@ -44,7 +44,6 @@
                 app:layout_constraintTop_toTopOf="@id/title"
                 app:srcCompat="@drawable/ic_close_24" />
 
-
             <LinearLayout
                 android:id="@+id/required_info_container"
                 android:layout_width="match_parent"
@@ -113,7 +112,6 @@
 
             </LinearLayout>
 
-
             <LinearLayout
                 android:id="@+id/optional_info_container"
                 android:layout_width="match_parent"
@@ -174,7 +172,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="30dp"
-                android:background="@drawable/selector_button"
+                android:background="@drawable/selector_round_button"
                 android:enabled="false"
                 android:fontFamily="@font/noto_sans_bold"
                 android:gravity="center"
