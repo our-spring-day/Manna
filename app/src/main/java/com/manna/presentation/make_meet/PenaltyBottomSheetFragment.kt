@@ -6,7 +6,7 @@ import com.manna.R
 import com.manna.common.BaseBottomSheetFragment
 import com.manna.databinding.FragmentPenaltyBinding
 
-class PenaltyFragment :
+class PenaltyBottomSheetFragment :
     BaseBottomSheetFragment<FragmentPenaltyBinding>(R.layout.fragment_penalty) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -16,6 +16,6 @@ class PenaltyFragment :
 
     companion object {
         fun newInstance() =
-            PenaltyFragment()
+            PenaltyBottomSheetFragment()
     }
 }

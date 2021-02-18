@@ -71,8 +71,13 @@ class ParticipantFragment :
 
     companion object {
         const val PARTICIPANT_COUNT = "participant_count"
-        fun newInstance() =
-            ParticipantFragment()
+
+        fun newInstance(count: Int) =
+            ParticipantFragment().apply {
+                arguments = Bundle().apply {
+                    putInt(PARTICIPANT_COUNT, count)
+                }
+            }
     }
 }
 

@@ -35,6 +35,7 @@ class MeetRegisterActivity :
 
     private fun setupView() {
         with(binding) {
+
             dateLayout.root.setOnClickListener {
                 val prevDate = dateLayout.content.getTag(R.id.date_tag) as? Date
 
@@ -43,7 +44,8 @@ class MeetRegisterActivity :
                     fragment::class.java.simpleName,
                     this@MeetRegisterActivity
                 ) { _, data ->
-                    val date: Date = data.getSerializable(DatePickerFragment.DATE_TIME) as? Date ?: return@setFragmentResultListener
+                    val date: Date = data.getSerializable(DatePickerFragment.DATE_TIME) as? Date
+                        ?: return@setFragmentResultListener
 
                     dateLayout.content.setTag(R.id.date_tag, date)
                     dateLayout.content.text =
@@ -54,23 +56,32 @@ class MeetRegisterActivity :
                     replace(android.R.id.content, fragment)
                 }
             }
+
             locationLayout.root.setOnClickListener {
                 startActivity(SearchActivity.getIntent(this@MeetRegisterActivity))
             }
+
             participantLayout.root.setOnClickListener {
-                val fragment = ParticipantFragment.newInstance()
+                val prevCount =
+                    participantLayout.content.getTag(R.id.participant_container) as? Int ?: 0
+
+                val fragment = ParticipantFragment.newInstance(prevCount)
 
                 supportFragmentManager.setFragmentResultListener(
                     fragment::class.java.simpleName,
                     this@MeetRegisterActivity
                 ) { _, data ->
+                    val count = data.getInt(ParticipantFragment.PARTICIPANT_COUNT)
 
+                    participantLayout.content.setTag(R.id.participant_count_tag, count)
+                    participantLayout.content.text = "${count}명 참석"
                 }
 
                 supportFragmentManager.commit {
                     replace(android.R.id.content, fragment)
                 }
             }
+
             memoLayout.root.setOnClickListener {
                 val prevMemo = memoLayout.content.text.toString()
 
@@ -89,9 +100,11 @@ class MeetRegisterActivity :
 
                 dialog.show(supportFragmentManager, dialog::class.java.simpleName)
             }
+
             penaltyLayout.root.setOnClickListener {
-                PenaltyFragment.newInstance()
+                PenaltyBottomSheetFragment.newInstance()
             }
+
             sendButton.setOnClickListener {
 
             }
