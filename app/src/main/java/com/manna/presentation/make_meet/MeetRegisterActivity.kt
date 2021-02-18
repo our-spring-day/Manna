@@ -43,8 +43,7 @@ class MeetRegisterActivity :
                     fragment::class.java.simpleName,
                     this@MeetRegisterActivity
                 ) { _, data ->
-                    val date: Date? = data.getSerializable(DatePickerFragment.DATE_TIME) as? Date
-                    date ?: return@setFragmentResultListener
+                    val date: Date = data.getSerializable(DatePickerFragment.DATE_TIME) as? Date ?: return@setFragmentResultListener
 
                     dateLayout.content.setTag(R.id.date_tag, date)
                     dateLayout.content.text =
