@@ -6,9 +6,9 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import com.manna.common.BaseActivity
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
-import com.wswon.picker.common.BaseActivity
 import com.wswon.picker.databinding.ActivityImageCropBinding
 import java.io.ByteArrayOutputStream
 import java.io.File

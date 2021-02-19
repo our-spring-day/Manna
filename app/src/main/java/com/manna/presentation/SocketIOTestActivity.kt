@@ -16,11 +16,11 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.gson.JsonObject
 import com.manna.LocationResponse
 import com.manna.R
+import com.manna.common.BaseActivity
 import com.manna.databinding.ActivityWebsocketBinding
 import com.manna.databinding.ItemRouteBinding
 import com.manna.network.api.MeetApi
 import com.manna.network.model.meet.MeetResponseItem
-import com.manna.util.Logger
 import com.manna.util.ViewUtil
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraUpdate
@@ -29,14 +29,13 @@ import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
-import com.wswon.picker.common.BaseActivity
-import com.wswon.picker.common.BaseRecyclerViewAdapter
-import com.wswon.picker.common.BaseRecyclerViewHolder
+import com.wswon.picker.adapter.BaseRecyclerViewAdapter
+import com.wswon.picker.adapter.BaseRecyclerViewHolder
+import com.manna.common.Logger
 import io.socket.client.IO
 import io.socket.client.Manager
 import io.socket.client.Socket
 import io.socket.emitter.Emitter
-import kotlinx.android.synthetic.main.activity_websocket.*
 import okhttp3.OkHttpClient
 import java.net.URI
 import java.security.cert.X509Certificate
@@ -231,18 +230,18 @@ class SocketIOTestActivity : BaseActivity<ActivityWebsocketBinding>(R.layout.act
 
         ViewUtil.setStatusBarTransparent(this)
 
-        top_panel.fitsSystemWindows = true
+        binding.topPanel.fitsSystemWindows = true
 
-        btn_back.setOnClickListener {
+        binding.btnBack.setOnClickListener {
             onBackPressed()
         }
 
-        btn_menu.setOnClickListener {
+        binding.btnMenu.setOnClickListener {
 
         }
 
-        BottomSheetBehavior.from(bottom_sheet)
-            .addBottomSheetCallback(createBottomSheetCallback(bottom_sheet_state))
+        BottomSheetBehavior.from(binding.bottomSheet)
+            .addBottomSheetCallback(createBottomSheetCallback(binding.bottomSheetState))
 
         val builder: LocationSettingsRequest.Builder = LocationSettingsRequest.Builder()
         builder.addLocationRequest(locationRequest)
@@ -294,7 +293,7 @@ class SocketIOTestActivity : BaseActivity<ActivityWebsocketBinding>(R.layout.act
                 naverMap?.moveCamera(cameraUpdate)
 
                 val markerView = LayoutInflater.from(this@SocketIOTestActivity)
-                    .inflate(R.layout.view_marker, this@SocketIOTestActivity.root_view, false)
+                    .inflate(R.layout.view_marker, this@SocketIOTestActivity.binding.rootView, false)
                 markerView.findViewById<TextView>(R.id.name).text =
                     fromUserName.subSequence(1, fromUserName.length)
 

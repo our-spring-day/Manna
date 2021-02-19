@@ -4,9 +4,10 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.commitNow
+import com.manna.common.BaseActivity
 import com.manna.databinding.ActivityHomeBinding
+import com.manna.presentation.make_meet.MeetRegisterActivity
 import com.manna.util.ViewUtil
-import com.wswon.picker.common.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -21,6 +22,10 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
 
         changeTab(0)
         binding.run {
+            addButton.setOnClickListener {
+                startActivity(MeetRegisterActivity.getIntent(this@HomeActivity))
+            }
+
             meetListTab.setOnClickListener {
                 changeTab(0)
             }

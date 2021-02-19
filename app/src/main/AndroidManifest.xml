@@ -16,6 +16,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".presentation.make_meet.MeetRegisterActivity"
+            android:windowSoftInputMode="adjustPan"/>
 
         <activity
             android:name=".presentation.location.MeetDetailActivity"
@@ -32,7 +34,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".presentation.SocketIOTestActivity" />
         <activity android:name=".presentation.settings.NoticeActivity"/>
         <activity android:name=".presentation.settings.FeedbackActivity"/>

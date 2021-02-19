@@ -15,11 +15,11 @@ import androidx.databinding.library.baseAdapters.BR
 import com.google.android.gms.location.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.manna.R
+import com.manna.common.BaseActivity
 import com.manna.databinding.ActivityRouteBinding
 import com.manna.databinding.ItemRouteBinding
 import com.manna.di.ApiModule
 import com.manna.presentation.location.WayPoint
-import com.manna.util.Logger
 import com.manna.util.ViewUtil
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraUpdate
@@ -28,13 +28,12 @@ import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.MultipartPathOverlay
-import com.wswon.picker.common.BaseActivity
-import com.wswon.picker.common.BaseRecyclerViewAdapter
-import com.wswon.picker.common.BaseRecyclerViewHolder
+import com.wswon.picker.adapter.BaseRecyclerViewAdapter
+import com.wswon.picker.adapter.BaseRecyclerViewHolder
+import com.manna.common.Logger
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_route.*
 
 class RouteActivity : BaseActivity<ActivityRouteBinding>(R.layout.activity_route),
     OnMapReadyCallback {
@@ -89,6 +88,7 @@ class RouteActivity : BaseActivity<ActivityRouteBinding>(R.layout.activity_route
 
     private var naverMap: NaverMap? = null
 
+    @SuppressLint("MissingPermission")
     @UiThread
     override fun onMapReady(naverMap: NaverMap) {
         this.naverMap = naverMap
@@ -335,18 +335,18 @@ class RouteActivity : BaseActivity<ActivityRouteBinding>(R.layout.activity_route
 
         ViewUtil.setStatusBarTransparent(this)
 
-        top_panel.fitsSystemWindows = true
+        binding.topPanel.fitsSystemWindows = true
 
-        btn_back.setOnClickListener {
+        binding.btnBack.setOnClickListener {
             onBackPressed()
         }
 
-        btn_menu.setOnClickListener {
-            drawer.openDrawer(side_panel)
+        binding.btnMenu.setOnClickListener {
+            binding.drawer.openDrawer(binding.sidePanel)
         }
 
-        BottomSheetBehavior.from(bottom_sheet)
-            .addBottomSheetCallback(createBottomSheetCallback(bottom_sheet_state))
+        BottomSheetBehavior.from(binding.bottomSheet)
+            .addBottomSheetCallback(createBottomSheetCallback(binding.bottomSheetState))
 
 
         Handler().postDelayed({

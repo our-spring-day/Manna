@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#6200EE</color>
-    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorPrimaryDark">@color/transparent</color>
     <color name="colorAccent">@color/keyColor</color>
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
@@ -22,6 +22,7 @@
     <color name="ff666666">#ff666666</color>
     <color name="keyColor">#ff5a6bff</color>
 
+    <color name="keyColor_alpha80">#CC5a6bff</color>
     <color name="keyColor_alpha01">#1a5a6bff</color>
     <color name="ffffed94">#ffffed94</color>
     <color name="ff414141">#ff414141</color>
@@ -45,4 +46,8 @@
     <color name="ff1b1b1b">#ff1b1b1b</color>
     <color name="fffafafa">#fffafafa</color>
     <color name="ffebedff">#ffebedff</color>
+    <color name="ffc4c4c4">#ffc4c4c4</color>
+    <color name="fff5f6f6">#fff5f6f6</color>
+    <color name="ffe4e4e4">#ffe4e4e4</color>
+    <color name="ff7f7f7f">#ff7f7f7f</color>
 </resources>

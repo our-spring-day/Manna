@@ -2,7 +2,7 @@ package com.wswon.picker.ext
 
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.wswon.picker.common.BaseRecyclerViewAdapter
+import com.wswon.picker.adapter.BaseRecyclerViewAdapter
 
 @BindingAdapter("bind:replaceAll")
 fun RecyclerView.replaceAll(list: List<Any>?) {

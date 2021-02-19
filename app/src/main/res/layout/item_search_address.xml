@@ -3,6 +3,7 @@
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -15,119 +16,57 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:minHeight="50dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:background="?android:selectableItemBackground"
             android:onClick="@{()-> item.onClick.invoke(item)}"
-            app:layout_constraintDimensionRatio="W, 1:3"
+            app:layout_constraintDimensionRatio="W, 1:5.859"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
-                android:id="@+id/tv_zone_number"
+                android:id="@+id/tv_place_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:text="@{item.placeName}"
-                android:textColor="@color/warning_color"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toTopOf="@id/tv_road_address_title"
+                android:layout_marginStart="20dp"
+                android:fontFamily="@font/noto_sans_regular"
+                android:textColor="@color/black"
+                android:textSize="15dp"
+                app:layout_constraintBottom_toTopOf="@id/tv_road_address"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="01721" />
+                app:layout_constraintVertical_chainStyle="packed"
+                bind:highlightWords="@{item.keyWord}"
+                bind:text="@{item.placeName}"
+                tools:text="카카오프렌즈 수원AK점" />
 
-            <TextView
-                android:id="@+id/tv_road_address_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:text="도로명"
-                android:textColor="@color/black"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toTopOf="@id/tv_address_title"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_zone_number" />
 
             <TextView
                 android:id="@+id/tv_road_address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:text="@{item.roadAddressName}"
-                android:textColor="@color/black"
-                android:textSize="14sp"
-                app:layout_constraintStart_toEndOf="@id/tv_road_address_title"
-                app:layout_constraintTop_toTopOf="@id/tv_road_address_title"
-                tools:text="서울 강남구 강남대로 468 (충림빌딩)" />
-
-            <TextView
-                android:id="@+id/tv_address_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:text="지번"
-                android:textColor="@color/black"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_road_address_title" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:fontFamily="@font/noto_sans_regular"
                 android:text="@{item.addressName}"
-                android:textColor="@color/gray7C7C7C"
-                android:textSize="14sp"
-                app:layout_constraintStart_toStartOf="@id/tv_road_address"
-                app:layout_constraintTop_toTopOf="@id/tv_address_title"
-                tools:text="서울 강남구 역삼동 808-5" />
-
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/cl_map_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:background="?android:selectableItemBackgroundBorderless"
-                android:onClick="@{()-> item.onMapClick.invoke(item)}"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/tv_zone_number">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:src="@drawable/ic_map_black_24dp"
-                    app:layout_constraintBottom_toBottomOf="@id/tv_map_title"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/tv_map_title"
-                    app:layout_constraintTop_toTopOf="@id/tv_map_title" />
-
-                <TextView
-                    android:id="@+id/tv_map_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="지도"
-                    android:textColor="@color/black"
-                    android:textSize="14sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
+                android:textColor="@color/ff7f7f7f"
+                android:textSize="12dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@id/tv_place_name"
+                app:layout_constraintTop_toBottomOf="@id/tv_place_name"
+                tools:text="경기 수원시 팔달구 덕영대로 924" />
 
             <View
                 android:layout_width="0dp"
                 android:layout_height="0.5dp"
-                android:background="@color/gray7C7C7C"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:background="@color/ffe4e4e4"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

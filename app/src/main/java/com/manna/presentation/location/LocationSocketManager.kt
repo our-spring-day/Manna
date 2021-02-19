@@ -3,8 +3,8 @@ package com.manna.presentation.location
 import androidx.annotation.MainThread
 import com.google.gson.Gson
 import com.manna.LocationResponse
+import com.manna.common.Logger
 import com.manna.network.api.MeetApi
-import com.manna.util.Logger
 import com.manna.util.UserHolder
 import io.socket.client.IO
 import io.socket.client.Manager
