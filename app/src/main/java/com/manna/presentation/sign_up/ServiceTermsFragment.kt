@@ -23,7 +23,9 @@ class ServiceTermsFragment :
         ) {
             override fun handleOnBackPressed() {
                 val fragment =
-                    parentFragmentManager.fragments.findLast { it !is ServiceTermsFragment }
+                    parentFragmentManager.fragments.findLast {
+                        it !is ServiceTermsFragment && it is BaseFragment<*>
+                    }
                 if (fragment != null) {
                     parentFragmentManager.beginTransaction().show(fragment).commit()
                 }

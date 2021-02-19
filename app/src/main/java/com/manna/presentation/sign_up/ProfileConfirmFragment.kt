@@ -20,7 +20,9 @@ class ProfileConfirmFragment :
         ) {
             override fun handleOnBackPressed() {
                 val fragment =
-                    parentFragmentManager.fragments.findLast { it !is ProfileConfirmFragment }
+                    parentFragmentManager.fragments.findLast {
+                        it !is ProfileConfirmFragment && it is BaseFragment<*>
+                    }
                 if (fragment != null) {
                     parentFragmentManager.beginTransaction().show(fragment).commit()
                 }
