@@ -37,17 +37,36 @@ class MeetListFragment : BaseFragment<FragmentMeetListBinding>(R.layout.fragment
         super.onViewCreated(view, savedInstanceState)
 
         view.updatePadding(top = ViewUtil.getStatusBarHeight(requireContext()))
-        binding.run {
+
+        setupView()
+        setupViewModel()
+
+        meetAdapter.submitList(
+            listOf(
+                MeetResponseItem(
+                    mannaName = "테스트용 아이템",
+                    createTimestamp = System.currentTimeMillis(),
+                    uuid = "roomId",
+                    locationJoinUserList = "",
+                    chatJoinUserList = ""
+                )
+            )
+        )
+    }
+
+    private fun setupView() {
+        with(binding) {
             meetList.run {
                 layoutManager = LinearLayoutManager(context)
 
                 addItemDecoration(getDecoration())
-
                 adapter = meetAdapter
             }
         }
+    }
 
-        viewModel.run {
+    private fun setupViewModel() {
+        with(viewModel) {
             getMeetList(UserHolder.deviceId)
             meetList.observe(viewLifecycleOwner, { meetList ->
                 meetAdapter.submitList(meetList)
