@@ -1,16 +1,20 @@
 package com.manna.presentation.make_meet
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.fragment.app.commit
 import androidx.hilt.lifecycle.ViewModelInject
+import androidx.lifecycle.MutableLiveData
 import com.manna.R
 import com.manna.common.BaseActivity
 import com.manna.common.BaseViewModel
 import com.manna.databinding.ActivityMeetRegisterBinding
 import com.manna.presentation.search.SearchActivity
+import com.manna.presentation.search.SearchAddressResult
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.*
@@ -18,6 +22,11 @@ import java.util.*
 
 class MeetRegisterViewModel @ViewModelInject constructor() : BaseViewModel() {
 
+    val date = MutableLiveData<Date>()
+    val addressItem = MutableLiveData<SearchAddressResult>()
+    val participantCount = MutableLiveData<Int>()
+    val memo = MutableLiveData<String>()
+    val penalty = MutableLiveData<Penalty>()
 }
 
 @AndroidEntryPoint
@@ -25,6 +34,21 @@ class MeetRegisterActivity :
     BaseActivity<ActivityMeetRegisterBinding>(R.layout.activity_meet_register) {
 
     private val viewModel by viewModels<MeetRegisterViewModel>()
+
+    private val requestActivity = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { activityResult ->
+        if (activityResult.resultCode == Activity.RESULT_OK) {
+            val result = activityResult.data?.getParcelableExtra<SearchAddressResult>(
+                SearchActivity.ADDRESS_ITEM
+            )
+
+            if (result != null) {
+                binding.locationLayout.content.text = result.addressName
+                viewModel.addressItem.value = result
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,9 +59,8 @@ class MeetRegisterActivity :
 
     private fun setupView() {
         with(binding) {
-
             dateLayout.root.setOnClickListener {
-                val prevDate = dateLayout.content.getTag(R.id.date_tag) as? Date
+                val prevDate = viewModel.date.value
 
                 val fragment = DatePickerFragment.newInstance(prevDate)
                 supportFragmentManager.setFragmentResultListener(
@@ -47,7 +70,6 @@ class MeetRegisterActivity :
                     val date: Date = data.getSerializable(DatePickerFragment.DATE_TIME) as? Date
                         ?: return@setFragmentResultListener
 
-                    dateLayout.content.setTag(R.id.date_tag, date)
                     dateLayout.content.text =
                         SimpleDateFormat("MM.dd E요일 ・ a h시", Locale.KOREA).format(date)
                 }
@@ -58,12 +80,11 @@ class MeetRegisterActivity :
             }
 
             locationLayout.root.setOnClickListener {
-                startActivity(SearchActivity.getIntent(this@MeetRegisterActivity))
+                requestActivity.launch(SearchActivity.getIntent(this@MeetRegisterActivity))
             }
 
             participantLayout.root.setOnClickListener {
-                val prevCount =
-                    participantLayout.content.getTag(R.id.participant_container) as? Int ?: 0
+                val prevCount = viewModel.participantCount.value ?: -1
 
                 val fragment = ParticipantFragment.newInstance(prevCount)
 
@@ -73,7 +94,6 @@ class MeetRegisterActivity :
                 ) { _, data ->
                     val count = data.getInt(ParticipantFragment.PARTICIPANT_COUNT)
 
-                    participantLayout.content.setTag(R.id.participant_count_tag, count)
                     participantLayout.content.text = "${count}명 참석"
                 }
 
@@ -83,7 +103,7 @@ class MeetRegisterActivity :
             }
 
             memoLayout.root.setOnClickListener {
-                val prevMemo = memoLayout.content.text.toString()
+                val prevMemo = viewModel.memo.value.orEmpty()
 
                 val dialog = MemoBottomSheetFragment.newInstance(prevMemo)
 
@@ -102,8 +122,8 @@ class MeetRegisterActivity :
             }
 
             penaltyLayout.root.setOnClickListener {
-                val prevPenalty = penaltyLayout.content.getTag(R.id.penalty_tag) as? Penalty
-                
+                val prevPenalty = viewModel.penalty.value
+
                 val dialog = PenaltyBottomSheetFragment.newInstance(prevPenalty)
 
                 supportFragmentManager.setFragmentResultListener(
@@ -113,7 +133,6 @@ class MeetRegisterActivity :
                     val penalty = data.getParcelable<Penalty>(PenaltyBottomSheetFragment.PENALTY)
 
                     if (penalty != null) {
-                        penaltyLayout.content.setTag(R.id.penalty_tag, penalty)
                         penaltyLayout.content.text = "벌칙: ${penalty.target}가 ${penalty.penalty}"
                     }
                 }
