@@ -2,7 +2,7 @@ package com.manna.ext
 
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.manna.common.BaseRecyclerViewAdapter
+import com.wswon.picker.common.BaseRecyclerViewAdapter
 
 @BindingAdapter("bind:replaceAll")
 fun RecyclerView.replaceAll(list: List<Any>?) {

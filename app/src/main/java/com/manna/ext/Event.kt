@@ -1,6 +1,7 @@
 package com.manna.ext
 
 import androidx.lifecycle.Observer
+import com.wswon.picker.ext.Event
 
 open class Event<out T>(private val content: T) {
 
