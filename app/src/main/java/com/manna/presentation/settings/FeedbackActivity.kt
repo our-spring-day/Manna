@@ -28,9 +28,11 @@ class FeedbackActivity : BaseActivity<ActivityFeedbackBinding>(R.layout.activity
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val categoryList = listOf(FeedbackCategory("오류 제보", false, viewModel.onClick),
+        val categoryList = listOf(
+            FeedbackCategory("오류 제보", false, viewModel.onClick),
             FeedbackCategory("피드백", false, viewModel.onClick),
-            FeedbackCategory("문의", false, viewModel.onClick))
+            FeedbackCategory("문의", false, viewModel.onClick)
+        )
 
         binding.run {
             layoutTitleBar.tv_title.text = "문의 및 피드백 보내기"

@@ -20,6 +20,10 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>(R.layout.fragment
         binding.btnFeedback.setOnClickListener {
             startActivity(Intent(requireContext(), FeedbackActivity::class.java))
         }
+
+        binding.btnDeleteAccount.setOnClickListener {
+            startActivity(Intent(requireContext(), DeleteAccountActivity::class.java))
+        }
     }
 
     companion object {

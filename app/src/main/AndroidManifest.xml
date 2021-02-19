@@ -35,7 +35,7 @@
         <activity android:name=".presentation.SocketIOTestActivity" />
         <activity android:name=".presentation.settings.NoticeActivity"/>
         <activity android:name=".presentation.settings.FeedbackActivity"/>
-
+        <activity android:name=".presentation.settings.DeleteAccountActivity"/>
 
         <service
             android:name=".fcm.MyFirebaseMessagingService"
