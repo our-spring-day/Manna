@@ -28,7 +28,7 @@
             android:letterSpacing="-0.02"
             android:text="도착 정보"
             android:textColor="@color/ff414141"
-            android:textSize="16sp"
+            android:textSize="16dp"
             app:layout_constraintBottom_toBottomOf="@id/down_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

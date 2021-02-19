@@ -3,10 +3,10 @@ package com.manna.presentation.search
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.manna.common.BaseViewModel
+import com.manna.common.Logger
+import com.manna.common.plusAssign
 import com.manna.data.source.repo.AddressRepository
-import com.manna.util.Logger
-import com.wswon.picker.common.BaseViewModel
-import com.wswon.picker.ext.plusAssign
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -36,16 +36,12 @@ class SearchViewModel @ViewModelInject constructor(private val addressRepository
 
 
     fun search(keyWord: String) {
-        Logger.d("$keyWord")
         compositeDisposable += addressRepository.getAddressByKeyword(keyWord, 0.0, 0.0)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                Logger.d("${it.searchAddresses}")
-
-
-                val list = it.searchAddresses.map {
-                    SearchAddressItem.of(it, onClick, onMapClick)
+                val list = it.searchAddresses.map {response ->
+                    SearchAddressItem.of(response, keyWord, onClick, onMapClick)
                 }
                 _addressItems.value = list
             }, {

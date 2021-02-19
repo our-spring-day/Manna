@@ -12,47 +12,52 @@
         android:layout_height="match_parent"
         tools:context=".SearchActivity">
 
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/input_layout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toStartOf="@id/iv_search"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edt_keyword"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:imeOptions="actionSearch"
-                android:inputType="text">
-
-            </com.google.android.material.textfield.TextInputEditText>
-        </com.google.android.material.textfield.TextInputLayout>
-
-
         <ImageView
-            android:id="@+id/iv_search"
+            android:id="@+id/btn_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="?android:selectableItemBackgroundBorderless"
-            android:padding="10dp"
-            android:src="@drawable/ic_search_black_24dp"
-            app:layout_constraintBottom_toBottomOf="@id/input_layout"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/ic_back"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+
+        <EditText
+            android:id="@+id/edt_keyword"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="15dp"
+            android:background="@drawable/rounded_circle_corner"
+            android:backgroundTint="@color/fff5f6f6"
+            android:fontFamily="@font/noto_sans_regular"
+            android:hint="@string/search_location_hint"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:minHeight="44dp"
+            android:paddingStart="17dp"
+            android:paddingTop="5dp"
+            android:paddingEnd="17dp"
+            android:layout_marginStart="10dp"
+            android:paddingBottom="5dp"
+            android:textColor="@color/black"
+            android:textSize="16dp"
+            app:layout_constraintBottom_toBottomOf="@id/btn_back"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/btn_back"
+            app:layout_constraintTop_toTopOf="@id/btn_back" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_address_list"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_marginTop="18dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/input_layout"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/edt_keyword"
+            tools:listitem="@layout/item_search_address" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

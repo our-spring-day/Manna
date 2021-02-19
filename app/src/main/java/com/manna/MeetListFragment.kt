@@ -1,6 +1,7 @@
 package com.manna
 
 import android.Manifest
+import android.content.Intent
 import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
@@ -10,13 +11,14 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.manna.common.BaseFragment
 import com.gun0912.tedpermission.TedPermissionResult
 import com.manna.databinding.FragmentMeetListBinding
 import com.manna.presentation.location.MeetDetailActivity
+import com.manna.presentation.sign_up.SignUpActivity
 import com.manna.util.UserHolder
 import com.manna.util.ViewUtil
 import com.tedpark.tedpermission.rx2.TedRx2Permission
-import com.wswon.picker.common.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -38,7 +40,7 @@ class MeetListFragment : BaseFragment<FragmentMeetListBinding>(R.layout.fragment
 
                     TedRx2Permission.with(requireContext())
                         .setRationaleTitle("위치정보 권한 요청")
-                        .setRationaleMessage("항상 허용으로 좀 해주세요 ㅠ") // "we need permission for read contact and find your location"
+                        .setRationaleMessage("항상 허용으로 해주세요") // "we need permission for read contact and find your location"
                         .setPermissions(
                             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) Manifest.permission.ACCESS_FINE_LOCATION else Manifest.permission.ACCESS_BACKGROUND_LOCATION
                         )
@@ -69,6 +71,9 @@ class MeetListFragment : BaseFragment<FragmentMeetListBinding>(R.layout.fragment
 
                 adapter = meetAdapter
             }
+            btnSignUp.setOnClickListener {
+                startActivity(Intent(requireContext(), SignUpActivity::class.java))
+            }
         }
 
         viewModel.run {
@@ -92,6 +97,7 @@ class MeetListFragment : BaseFragment<FragmentMeetListBinding>(R.layout.fragment
                 outRect.bottom = ViewUtil.convertDpToPixel(requireContext(), 14f).toInt()
             }
         }
+
 
     companion object {
         fun newInstance() =

@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
-import com.wswon.picker.common.BaseActivity
+import com.manna.common.BaseActivity
 import com.wswon.picker.databinding.ActivityImageDetailBinding
 import dagger.hilt.android.AndroidEntryPoint
 

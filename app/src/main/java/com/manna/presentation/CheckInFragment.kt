@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.updatePadding
 import com.manna.R
+import com.manna.common.BaseFragment
 import com.manna.databinding.FragmentCheckInBinding
 import com.manna.view.ProfileImageView
-import com.wswon.picker.common.BaseFragment
 
 class CheckInFragment : BaseFragment<FragmentCheckInBinding>(R.layout.fragment_check_in) {
 

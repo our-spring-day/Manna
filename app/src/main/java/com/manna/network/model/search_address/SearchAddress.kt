@@ -23,7 +23,7 @@ data class SearchAddress(
     @SerializedName("place_url")
     val placeUrl: String,
     @SerializedName("road_address_name")
-    val roadAddressName: String,
+    val roadAddressName: String?,
     @SerializedName("x")
     val x: String,
     @SerializedName("y")

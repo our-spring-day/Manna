@@ -16,6 +16,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".presentation.make_meet.MeetRegisterActivity"
+            android:windowSoftInputMode="adjustResize"/>
+
         <activity
             android:name=".presentation.location.MeetDetailActivity"
             android:screenOrientation="portrait"
@@ -31,8 +34,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".presentation.SocketIOTestActivity" />
+        <activity android:name=".presentation.settings.NoticeActivity"/>
+        <activity android:name=".presentation.settings.FeedbackActivity"/>
+        <activity android:name=".presentation.settings.DeleteAccountActivity"/>
+        <activity
+            android:name=".presentation.sign_up.SignUpActivity"
+            android:windowSoftInputMode="adjustResize" />
 
         <service
             android:name=".fcm.MyFirebaseMessagingService"

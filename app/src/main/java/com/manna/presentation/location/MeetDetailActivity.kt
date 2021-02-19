@@ -25,6 +25,9 @@ import com.google.gson.JsonObject
 import com.manna.LocationResponse
 import com.manna.MyLatLng
 import com.manna.R
+import com.manna.common.BaseActivity
+import com.manna.common.EventObserver
+import com.manna.common.Logger
 import com.manna.databinding.ActivityMeetDetailBinding
 import com.manna.databinding.ViewImageMarkerBinding
 import com.manna.network.model.chat.Sender
@@ -32,7 +35,6 @@ import com.manna.presentation.CheckInFragment
 import com.manna.presentation.User
 import com.manna.presentation.chat.ChatFragment
 import com.manna.presentation.rank.RankingFragment
-import com.manna.util.Logger
 import com.manna.util.UserHolder
 import com.manna.util.ViewUtil
 import com.naver.maps.geometry.LatLng
@@ -43,8 +45,6 @@ import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.MultipartPathOverlay
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
-import com.wswon.picker.common.BaseActivity
-import com.wswon.picker.ext.EventObserver
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import kotlin.collections.set
@@ -269,16 +269,17 @@ class MeetDetailActivity :
 
                     viewModel.submitUserList(userList)
                 })
-            bottomUserItemClickEvent.observe(this@MeetDetailActivity, EventObserver { clickUser ->
-                markerHolders.find { it.uuid == clickUser.deviceToken }?.let {
-                    viewModel.findRoute(
-                        user = clickUser,
-                        startPoint = WayPoint(it.marker.position, ""),
-                        endPoint = WayPoint(LatLng(37.475370, 126.980438), "")
-                    )
-                    moveLocation(it.marker.position, 13.0)
-                }
-            })
+            bottomUserItemClickEvent.observe(this@MeetDetailActivity,
+                EventObserver { clickUser ->
+                    markerHolders.find { it.uuid == clickUser.deviceToken }?.let {
+                        viewModel.findRoute(
+                            user = clickUser,
+                            startPoint = WayPoint(it.marker.position, ""),
+                            endPoint = WayPoint(LatLng(37.475370, 126.980438), "")
+                        )
+                        moveLocation(it.marker.position, 13.0)
+                    }
+                })
         }
     }
 

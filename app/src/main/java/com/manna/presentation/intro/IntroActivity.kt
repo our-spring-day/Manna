@@ -1,4 +1,5 @@
 package com.manna.presentation.intro
+
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
@@ -7,9 +8,11 @@ import androidx.core.view.isVisible
 import com.manna.DeviceUtil
 import com.manna.HomeActivity
 import com.manna.R
+import com.manna.common.BaseActivity
+import com.manna.common.EventObserver
 import com.manna.databinding.ActivityIntroBinding
-import com.wswon.picker.common.BaseActivity
-import com.wswon.picker.ext.EventObserver
+import com.manna.presentation.sign_up.SignUpActivity
+import com.manna.util.ViewUtil
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -20,7 +23,21 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>(R.layout.activity_intro
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.checkDevice(DeviceUtil.getAndroidID(this))
+        ViewUtil.setStatusBarTransparent(this)
+
+        binding.startButton.setOnClickListener {
+            startActivity(SignUpActivity.getIntent(this@IntroActivity))
+            finish()
+        }
+
+        binding.homeButton.setOnClickListener {
+            startActivity(Intent(this, HomeActivity::class.java))
+            finish()
+        }
+
+        return
+
+        // viewModel.checkDevice(DeviceUtil.getAndroidID(this))
 
         viewModel.isValidDevice.observe(this, EventObserver { isValid ->
             if (isValid) {
@@ -44,6 +61,5 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>(R.layout.activity_intro
                 viewModel.registerDevice(name, DeviceUtil.getAndroidID(this))
             }
         }
-
     }
 }

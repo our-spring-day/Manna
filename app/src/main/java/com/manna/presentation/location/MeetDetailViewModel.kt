@@ -3,15 +3,15 @@ package com.manna.presentation.location
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.manna.common.BaseViewModel
+import com.manna.common.Event
+import com.manna.common.Logger
+import com.manna.common.plusAssign
 import com.manna.network.api.BingApi
 import com.manna.network.api.MeetApi
 import com.manna.presentation.User
-import com.manna.util.Logger
 import com.manna.util.UserHolder
 import com.naver.maps.geometry.LatLng
-import com.wswon.picker.common.BaseViewModel
-import com.wswon.picker.ext.Event
-import com.wswon.picker.ext.plusAssign
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 

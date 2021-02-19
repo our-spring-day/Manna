@@ -4,8 +4,9 @@ import android.net.Uri
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.wswon.picker.common.BaseViewModel
-import com.wswon.picker.ext.plusAssign
+import com.manna.common.BaseViewModel
+import com.manna.common.Logger
+import com.manna.common.plusAssign
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
