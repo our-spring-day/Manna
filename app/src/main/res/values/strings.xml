@@ -36,6 +36,8 @@
     <string name="denied_storage">갤러리 접근을 위해\n저장공간 권한에 동의해주세요.</string>
     <string name="input_chat_hint">메시지 작성</string>
     <string name="dda_bong">👍</string>
+    <string name="sign_up_success_title">가입을 축하드려요!</string>
+    <string name="sign_up_success_message">친구들을 추가해서 약속을 만들어보세요 :D</string>
     <string name="optional_title">추가 정보</string>
     <string name="required_title">필수 정보</string>
 
