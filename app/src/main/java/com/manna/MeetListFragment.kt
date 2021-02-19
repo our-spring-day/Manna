@@ -14,6 +14,8 @@ import com.manna.common.BaseFragment
 import com.gun0912.tedpermission.TedPermissionResult
 import com.manna.databinding.FragmentMeetListBinding
 import com.manna.presentation.location.MeetDetailActivity
+import com.manna.presentation.search.SearchActivity
+import com.manna.presentation.sign_up.SignUpActivity
 import com.manna.util.UserHolder
 import com.manna.util.ViewUtil
 import com.tedpark.tedpermission.rx2.TedRx2Permission
@@ -69,6 +71,9 @@ class MeetListFragment : BaseFragment<FragmentMeetListBinding>(R.layout.fragment
 
                 adapter = meetAdapter
             }
+            btnSignUp.setOnClickListener {
+                startActivity(Intent(requireContext(), SignUpActivity::class.java))
+            }
         }
 
         viewModel.run {
@@ -92,6 +97,7 @@ class MeetListFragment : BaseFragment<FragmentMeetListBinding>(R.layout.fragment
                 outRect.bottom = ViewUtil.convertDpToPixel(requireContext(), 14f).toInt()
             }
         }
+
 
     companion object {
         fun newInstance() =
