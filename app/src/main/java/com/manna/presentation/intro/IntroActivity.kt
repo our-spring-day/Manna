@@ -11,6 +11,8 @@ import com.manna.R
 import com.manna.common.BaseActivity
 import com.manna.common.EventObserver
 import com.manna.databinding.ActivityIntroBinding
+import com.manna.presentation.sign_up.SignUpActivity
+import com.manna.util.ViewUtil
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -21,8 +23,20 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>(R.layout.activity_intro
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        startActivity(Intent(this, HomeActivity::class.java))
-        finish()
+        ViewUtil.setStatusBarTransparent(this)
+
+        binding.startButton.setOnClickListener {
+            startActivity(SignUpActivity.getIntent(this@IntroActivity))
+            finish()
+        }
+
+        binding.homeButton.setOnClickListener {
+            startActivity(Intent(this, HomeActivity::class.java))
+            finish()
+        }
+
+        return
+
         // viewModel.checkDevice(DeviceUtil.getAndroidID(this))
 
         viewModel.isValidDevice.observe(this, EventObserver { isValid ->
