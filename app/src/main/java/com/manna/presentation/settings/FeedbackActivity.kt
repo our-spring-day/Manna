@@ -6,12 +6,12 @@ import androidx.activity.viewModels
 import androidx.databinding.library.baseAdapters.BR
 import com.manna.R
 import com.manna.common.BaseActivity
-import com.manna.common.BaseRecyclerViewAdapter
-import com.manna.common.BaseRecyclerViewHolder
+
 import com.manna.databinding.ActivityFeedbackBinding
 import com.manna.databinding.ItemFeedbackCategoryBinding
+import com.wswon.picker.adapter.BaseRecyclerViewAdapter
+import com.wswon.picker.adapter.BaseRecyclerViewHolder
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.layout_title_bar.view.*
 
 @AndroidEntryPoint
 class FeedbackActivity : BaseActivity<ActivityFeedbackBinding>(R.layout.activity_feedback) {
@@ -35,7 +35,7 @@ class FeedbackActivity : BaseActivity<ActivityFeedbackBinding>(R.layout.activity
         )
 
         binding.run {
-            layoutTitleBar.tv_title.text = "문의 및 피드백 보내기"
+            layoutTitleBar.tvTitle.text = "문의 및 피드백 보내기"
             rvCategory.run {
                 adapter = feedbackAdapter
             }

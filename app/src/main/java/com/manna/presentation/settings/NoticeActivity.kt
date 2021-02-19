@@ -4,13 +4,13 @@ import android.os.Bundle
 import androidx.databinding.library.baseAdapters.BR
 import com.manna.R
 import com.manna.common.BaseActivity
-import com.manna.common.BaseRecyclerViewAdapter
-import com.manna.common.BaseRecyclerViewHolder
+
 import com.manna.data.model.NoticeItem
 import com.manna.databinding.ActivityNoticeBinding
 import com.manna.databinding.ItemNoticeBinding
+import com.wswon.picker.adapter.BaseRecyclerViewAdapter
+import com.wswon.picker.adapter.BaseRecyclerViewHolder
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.layout_title_bar.view.*
 
 @AndroidEntryPoint
 class NoticeActivity : BaseActivity<ActivityNoticeBinding>(R.layout.activity_notice) {
@@ -29,7 +29,7 @@ class NoticeActivity : BaseActivity<ActivityNoticeBinding>(R.layout.activity_not
             listOf(NoticeItem("연재생일", "20.09.08"), NoticeItem("공지사항", "21.01.26"))
 
         binding.run {
-            layoutTitleBar.tv_title.text = "공지사항"
+            layoutTitleBar.tvTitle.text = "공지사항"
             rvNotice.run {
                 adapter = noticeAdapter
             }

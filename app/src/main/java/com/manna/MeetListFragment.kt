@@ -1,6 +1,7 @@
 package com.manna
 
 import android.Manifest
+import android.content.Intent
 import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
@@ -14,7 +15,6 @@ import com.manna.common.BaseFragment
 import com.gun0912.tedpermission.TedPermissionResult
 import com.manna.databinding.FragmentMeetListBinding
 import com.manna.presentation.location.MeetDetailActivity
-import com.manna.presentation.search.SearchActivity
 import com.manna.presentation.sign_up.SignUpActivity
 import com.manna.util.UserHolder
 import com.manna.util.ViewUtil
@@ -40,7 +40,7 @@ class MeetListFragment : BaseFragment<FragmentMeetListBinding>(R.layout.fragment
 
                     TedRx2Permission.with(requireContext())
                         .setRationaleTitle("위치정보 권한 요청")
-                        .setRationaleMessage("항상 허용으로 좀 해주세요 ㅠ") // "we need permission for read contact and find your location"
+                        .setRationaleMessage("항상 허용으로 해주세요") // "we need permission for read contact and find your location"
                         .setPermissions(
                             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) Manifest.permission.ACCESS_FINE_LOCATION else Manifest.permission.ACCESS_BACKGROUND_LOCATION
                         )
