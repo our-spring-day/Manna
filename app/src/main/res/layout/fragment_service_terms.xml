@@ -39,7 +39,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginTop="44dp"
-            android:background="@drawable/bg_tv_gray"
+            android:background="@drawable/bg_gray_big"
             android:padding="20dp"
             android:scrollbars="vertical"
             android:text="모든 국민은 행위시의 법률에 의하여 범죄를 구성하지 아니하는 행위로 소추되지 아니하며, 동일한 범죄에 대하여 거듭 처벌받지 아니한다. 헌법개정안은 국회가 의결한 후 30일 이내에 국민투표에 붙여 국회의원선거권자 과반수의 투표와 투표자 과반수의 찬성을 얻어야 한다.\n\n

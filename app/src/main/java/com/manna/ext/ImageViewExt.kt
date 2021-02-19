@@ -7,32 +7,36 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 
 fun ImageView.setImage(imageUrl: String) {
-    val result = runCatching {
-        Glide.with(this)
-            .applyDefaultRequestOptions(
-                RequestOptions.bitmapTransform(RoundedCorners(getRadius(this.width)))
-            )
-            .load(imageUrl)
-            .into(this)
-    }
+    post {
+        val result = runCatching {
+            Glide.with(this)
+                .applyDefaultRequestOptions(
+                    RequestOptions.bitmapTransform(RoundedCorners(getRadius(this.width)))
+                )
+                .load(imageUrl)
+                .into(this)
+        }
 
-    if (result.isFailure) {
-        result.exceptionOrNull()?.printStackTrace()
+        if (result.isFailure) {
+            result.exceptionOrNull()?.printStackTrace()
+        }
     }
 }
 
 fun ImageView.setImage(imageUri: Uri) {
-    val result = runCatching {
-        Glide.with(this)
-            .applyDefaultRequestOptions(
-                RequestOptions.bitmapTransform(RoundedCorners(getRadius(this.width)))
-            )
-            .load(imageUri)
-            .into(this)
-    }
+    post {
+        val result = runCatching {
+            Glide.with(this)
+                .applyDefaultRequestOptions(
+                    RequestOptions.bitmapTransform(RoundedCorners(getRadius(this.width)))
+                )
+                .load(imageUri)
+                .into(this)
+        }
 
-    if (result.isFailure) {
-        result.exceptionOrNull()?.printStackTrace()
+        if (result.isFailure) {
+            result.exceptionOrNull()?.printStackTrace()
+        }
     }
 }
 

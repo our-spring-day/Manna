@@ -3,7 +3,6 @@ package com.manna
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -21,6 +20,9 @@ import com.manna.databinding.FragmentProfileBinding
 import com.manna.databinding.ItemFriendsBinding
 import com.manna.ext.setImage
 import com.manna.ext.toast
+import com.manna.presentation.settings.DeleteAccountActivity
+import com.manna.presentation.settings.FeedbackActivity
+import com.manna.presentation.settings.NoticeActivity
 import com.manna.util.ViewUtil
 import com.tedpark.tedpermission.rx2.TedRx2Permission
 import com.wswon.picker.ImagePickerFragment
@@ -37,45 +39,53 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.profileImage.post {
-            binding.profileImage.setImage("http://mimg.segye.com/content/image/2020/03/12/20200312506832.jpg")
-        }
 
+        setupView()
+        setupViewModel()
+    }
+
+    private fun setupView() {
         with(binding) {
             profileHeader.updatePadding(top = ViewUtil.getStatusBarHeight(requireContext()))
-            profileButton.setOnClickListener {
+
+            profileImage.setImage("http://mimg.segye.com/content/image/2020/03/12/20200312506832.jpg")
+            profileImage.setOnClickListener {
                 showImagePicker()
             }
 
-            friendsList.adapter = adapter
-            friendsList.addItemDecoration(getDecoration())
+            notice.setOnClickListener {
+                startActivity(Intent(requireContext(), NoticeActivity::class.java))
+            }
+            questions.setOnClickListener {
+                startActivity(Intent(requireContext(), FeedbackActivity::class.java))
+            }
+            storeEvaluate.setOnClickListener {
 
-            adapter.submitList((0..10).map {
-                FriendsItem(
-                    "펭수",
-                    "http://mimg.segye.com/content/image/2020/03/12/20200312506832.jpg",
-                    "$it"
-                )
-            })
+            }
+            setupAlarm.setOnClickListener {
 
-            friendsCount.text = "${adapter.currentList.size}"
+            }
+            terms.setOnClickListener {
+
+            }
+            mapInfoProvider.setOnClickListener {
+
+            }
+            appVersion.setOnClickListener {
+
+            }
+            logout.setOnClickListener {
+
+            }
+            leave.setOnClickListener {
+                startActivity(Intent(requireContext(), DeleteAccountActivity::class.java))
+            }
         }
     }
 
-    private fun getDecoration(): RecyclerView.ItemDecoration =
-        object : RecyclerView.ItemDecoration() {
-            override fun getItemOffsets(
-                outRect: Rect,
-                view: View,
-                parent: RecyclerView,
-                state: RecyclerView.State
-            ) {
-                super.getItemOffsets(outRect, view, parent, state)
+    private fun setupViewModel() {
 
-                outRect.bottom = ViewUtil.convertDpToPixel(requireContext(), 14f).toInt()
-            }
-        }
-
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -96,7 +106,10 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
         checkPermissions {
             val imagePickerFragment = ImagePickerFragment()
             imagePickerFragment.setTargetFragment(this, REQ_IMAGE_PICKER)
-            imagePickerFragment.show(parentFragmentManager, imagePickerFragment::class.java.simpleName)
+            imagePickerFragment.show(
+                parentFragmentManager,
+                imagePickerFragment::class.java.simpleName
+            )
         }
     }
 

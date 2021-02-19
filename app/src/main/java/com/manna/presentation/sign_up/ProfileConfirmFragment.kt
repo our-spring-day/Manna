@@ -33,9 +33,7 @@ class ProfileConfirmFragment :
         val selectedImageUri = arguments?.getParcelable<Uri>(SELECTED_IMAGE)
 
         if (selectedImageUri != null) {
-            binding.ivSelectedImage.post {
-                binding.ivSelectedImage.setImage(selectedImageUri)
-            }
+            binding.ivSelectedImage.setImage(selectedImageUri)
         }
 
         binding.tvModify.setOnClickListener {
