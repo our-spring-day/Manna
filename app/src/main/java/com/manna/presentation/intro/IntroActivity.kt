@@ -1,4 +1,5 @@
 package com.manna.presentation.intro
+
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
@@ -21,8 +22,7 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>(R.layout.activity_intro
 
         startActivity(Intent(this, HomeActivity::class.java))
         finish()
-
-        viewModel.checkDevice(DeviceUtil.getAndroidID(this))
+        // viewModel.checkDevice(DeviceUtil.getAndroidID(this))
 
         viewModel.isValidDevice.observe(this, com.manna.common.EventObserver { isValid ->
             if (isValid) {
@@ -46,6 +46,5 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>(R.layout.activity_intro
                 viewModel.registerDevice(name, DeviceUtil.getAndroidID(this))
             }
         }
-
     }
 }
