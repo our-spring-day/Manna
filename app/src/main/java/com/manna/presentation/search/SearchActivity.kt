@@ -5,12 +5,12 @@ import android.view.inputmethod.EditorInfo
 import androidx.activity.viewModels
 import androidx.databinding.library.baseAdapters.BR
 import com.manna.R
-import com.manna.common.BaseActivity
-import com.manna.common.BaseRecyclerViewAdapter
-import com.manna.common.BaseRecyclerViewHolder
 import com.manna.databinding.ActivitySearchBinding
 import com.manna.databinding.ItemSearchAddressBinding
 import com.naver.maps.geometry.LatLng
+import com.wswon.picker.common.BaseActivity
+import com.wswon.picker.common.BaseRecyclerViewAdapter
+import com.wswon.picker.common.BaseRecyclerViewHolder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_search.*
 

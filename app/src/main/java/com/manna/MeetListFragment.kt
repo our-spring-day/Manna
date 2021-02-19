@@ -1,20 +1,24 @@
 package com.manna
 
 import android.Manifest
-import android.content.Intent
+import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.core.view.updatePadding
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.gun0912.tedpermission.TedPermissionResult
-import com.manna.common.BaseFragment
 import com.manna.databinding.FragmentMeetListBinding
 import com.manna.presentation.location.MeetDetailActivity
 import com.manna.presentation.search.SearchActivity
+import com.manna.presentation.sign_up.SignUpActivity
 import com.manna.util.UserHolder
+import com.manna.util.ViewUtil
 import com.tedpark.tedpermission.rx2.TedRx2Permission
+import com.wswon.picker.common.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -28,6 +32,7 @@ class MeetListFragment : BaseFragment<FragmentMeetListBinding>(R.layout.fragment
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        view.updatePadding(top = ViewUtil.getStatusBarHeight(requireContext()))
         binding.run {
             meetList.run {
                 layoutManager = LinearLayoutManager(context)
@@ -61,7 +66,13 @@ class MeetListFragment : BaseFragment<FragmentMeetListBinding>(R.layout.fragment
                         })
 
                 }
+
+                addItemDecoration(getDecoration())
+
                 adapter = meetAdapter
+            }
+            btnSignUp.setOnClickListener {
+                startActivity(Intent(requireContext(), SignUpActivity::class.java))
             }
         }
 
@@ -71,12 +82,22 @@ class MeetListFragment : BaseFragment<FragmentMeetListBinding>(R.layout.fragment
                 meetAdapter.submitList(meetList)
             })
         }
+    }
 
-        binding.route.setOnClickListener {
-            startActivity(Intent(requireContext(), SearchActivity::class.java))
+    private fun getDecoration() : RecyclerView.ItemDecoration =
+        object : RecyclerView.ItemDecoration() {
+            override fun getItemOffsets(
+                outRect: Rect,
+                view: View,
+                parent: RecyclerView,
+                state: RecyclerView.State
+            ) {
+                super.getItemOffsets(outRect, view, parent, state)
+
+                outRect.bottom = ViewUtil.convertDpToPixel(requireContext(), 14f).toInt()
+            }
         }
 
-    }
 
     companion object {
         fun newInstance() =

@@ -7,9 +7,9 @@ import androidx.core.view.isVisible
 import com.manna.DeviceUtil
 import com.manna.HomeActivity
 import com.manna.R
-import com.manna.common.BaseActivity
 import com.manna.databinding.ActivityIntroBinding
-import com.manna.ext.EventObserver
+import com.wswon.picker.common.BaseActivity
+import com.wswon.picker.ext.EventObserver
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
