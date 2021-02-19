@@ -53,6 +53,8 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
                 showImagePicker()
             }
 
+            version.text = "현재 ${BuildConfig.VERSION_NAME} / 최신 1.0"
+
             notice.setOnClickListener {
                 startActivity(Intent(requireContext(), NoticeActivity::class.java))
             }
@@ -71,7 +73,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
             mapInfoProvider.setOnClickListener {
 
             }
-            appVersion.setOnClickListener {
+            appVersionLayout.setOnClickListener {
 
             }
             logout.setOnClickListener {
