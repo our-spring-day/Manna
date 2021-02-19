@@ -1,5 +1,7 @@
 package com.manna
 
+import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
@@ -15,14 +17,14 @@ import androidx.fragment.app.commit
 import androidx.fragment.app.commitNow
 import com.manna.common.BaseActivity
 import com.manna.databinding.ActivityHomeBinding
-import com.manna.databinding.DialogSomeBinding
+import com.manna.databinding.DialogWelcomeBinding
 import com.manna.presentation.make_meet.MeetRegisterActivity
 import com.manna.util.ViewUtil
 import dagger.hilt.android.AndroidEntryPoint
 
-class SomeDialog : DialogFragment() {
+class WelcomeDialog : DialogFragment() {
 
-    private lateinit var binding: DialogSomeBinding
+    private lateinit var binding: DialogWelcomeBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,7 +32,7 @@ class SomeDialog : DialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        binding = DataBindingUtil.inflate(inflater, R.layout.dialog_some, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.dialog_welcome, container, false)
         return binding.root
     }
 
@@ -51,6 +53,9 @@ class SomeDialog : DialogFragment() {
             cornerRadii = array
             setColor(ContextCompat.getColor(requireContext(), R.color.keyColor))
         }
+        binding.panel2.setOnClickListener {
+            dismiss()
+        }
     }
 }
 
@@ -65,6 +70,10 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
 
         ViewUtil.setStatusBarTransparent(this)
 
+        if (intent?.getBooleanExtra(IS_WELCOME, false) == true) {
+            WelcomeDialog().show(supportFragmentManager, "")
+        }
+
         changeTab(0)
         binding.run {
             addButton.setOnClickListener {
@@ -72,9 +81,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
             }
 
             meetListTab.setOnClickListener {
-                SomeDialog().show(supportFragmentManager, "")
                 changeTab(0)
-
             }
 
             profileTab.setOnClickListener {
@@ -114,5 +121,14 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
             1 -> ProfileFragment.newInstance()
             else -> error("Invalid position")
         }
+    }
+
+    companion object {
+        private const val IS_WELCOME = "is_welcome"
+
+        fun getIntent(context: Context, isWelcome: Boolean = false) =
+            Intent(context, HomeActivity::class.java).apply {
+                putExtra(IS_WELCOME, isWelcome)
+            }
     }
 }

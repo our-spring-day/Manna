@@ -6,6 +6,7 @@ import android.text.method.ScrollingMovementMethod
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
+import com.manna.HomeActivity
 import com.manna.R
 import com.manna.common.BaseFragment
 import com.manna.databinding.FragmentServiceTermsBinding
@@ -50,6 +51,7 @@ class ServiceTermsFragment :
             }
         }
         binding.tvSignUp.setOnClickListener {
+            startActivity(HomeActivity.getIntent(requireContext(), isWelcome = true))
             requireActivity().finish()
         }
     }

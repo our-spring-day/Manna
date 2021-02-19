@@ -3,14 +3,13 @@ package com.manna.presentation.rank
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-
 import com.manna.presentation.User
 
 class RankingAdapter :
     ListAdapter<User, RankingViewHolder>(
         object : DiffUtil.ItemCallback<User>() {
             override fun areItemsTheSame(oldItem: User, newItem: User): Boolean =
-                oldItem.deviceToken == newItem.deviceToken
+                oldItem.remainDistance == newItem.remainDistance
 
             override fun areContentsTheSame(oldItem: User, newItem: User): Boolean =
                 oldItem == newItem
@@ -32,5 +31,4 @@ class RankingAdapter :
     override fun onBindViewHolder(holder: RankingViewHolder, position: Int) {
         (holder as RankingViewHolder.OngoingViewHolder).bind(currentList[position], onClickListener)
     }
-
 }

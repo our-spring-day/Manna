@@ -2,8 +2,6 @@ package com.manna.presentation.sign_up
 
 import android.content.Context
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
@@ -11,6 +9,7 @@ import androidx.core.widget.doAfterTextChanged
 import com.manna.R
 import com.manna.common.BaseFragment
 import com.manna.databinding.FragmentCreateNameBinding
+import com.manna.ext.closeKeyboard
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.regex.Pattern
 
@@ -55,6 +54,8 @@ class CreateNameFragment : BaseFragment<FragmentCreateNameBinding>(R.layout.frag
         }
 
         binding.tvNext.setOnClickListener {
+            binding.edtName.closeKeyboard()
+
             parentFragmentManager.beginTransaction().hide(this@CreateNameFragment).commit()
             val fragment = ProfileGuideFragment.newInstance()
             parentFragmentManager.beginTransaction()
@@ -62,7 +63,7 @@ class CreateNameFragment : BaseFragment<FragmentCreateNameBinding>(R.layout.frag
         }
     }
 
-    fun clearEditText(){
+    private fun clearEditText(){
         binding.ivClear.visibility = View.GONE
         binding.tvError.text = ""
         binding.ivError.visibility = View.GONE
@@ -72,7 +73,7 @@ class CreateNameFragment : BaseFragment<FragmentCreateNameBinding>(R.layout.frag
             ContextCompat.getDrawable(requireContext(), R.drawable.bg_btn_gray)
     }
 
-    fun checkNickname() {
+    private fun checkNickname() {
         val pattern = Pattern.compile("^[가-힣]{1,6}")
         val matcher = pattern.matcher(binding.edtName.text.toString())
         if (!matcher.matches()) {

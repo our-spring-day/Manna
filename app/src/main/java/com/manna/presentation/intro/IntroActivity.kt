@@ -1,6 +1,5 @@
 package com.manna.presentation.intro
 
-import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -31,7 +30,7 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>(R.layout.activity_intro
         }
 
         binding.homeButton.setOnClickListener {
-            startActivity(Intent(this, HomeActivity::class.java))
+            startActivity(HomeActivity.getIntent(this@IntroActivity))
             finish()
         }
 
@@ -41,7 +40,7 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>(R.layout.activity_intro
 
         viewModel.isValidDevice.observe(this, EventObserver { isValid ->
             if (isValid) {
-                startActivity(Intent(this, HomeActivity::class.java))
+                startActivity(HomeActivity.getIntent(this@IntroActivity))
                 finish()
             } else {
                 val message = if (binding.registerNameGroup.isVisible) {

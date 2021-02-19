@@ -19,15 +19,7 @@ class ProfileConfirmFragment :
             true
         ) {
             override fun handleOnBackPressed() {
-                val fragment =
-                    parentFragmentManager.fragments.findLast {
-                        it !is ProfileConfirmFragment && it is BaseFragment<*>
-                    }
-                if (fragment != null) {
-                    parentFragmentManager.beginTransaction().show(fragment).commit()
-                }
-                parentFragmentManager.beginTransaction().remove(this@ProfileConfirmFragment)
-                    .commit()
+                onBackPressed()
             }
         }
         requireActivity().onBackPressedDispatcher.addCallback(this, callback)
@@ -36,12 +28,29 @@ class ProfileConfirmFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+        binding.tvModify.setOnClickListener {
+            onBackPressed()
+        }
+
         binding.tvNext.setOnClickListener {
             parentFragmentManager.beginTransaction().hide(this@ProfileConfirmFragment).commit()
             val fragment = ServiceTermsFragment.newInstance()
             parentFragmentManager.beginTransaction()
                 .add(R.id.fl_sign_up, fragment, fragment::class.java.simpleName).commit()
         }
+    }
+
+    private fun onBackPressed() {
+        val fragment =
+            parentFragmentManager.fragments.findLast {
+                it !is ProfileConfirmFragment && it is BaseFragment<*>
+            }
+        if (fragment != null) {
+            parentFragmentManager.beginTransaction().show(fragment).commit()
+        }
+        parentFragmentManager.beginTransaction().remove(this@ProfileConfirmFragment)
+            .commit()
     }
 
     companion object {
