@@ -1,0 +1,123 @@
+package com.manna.presentation.sign_up
+
+import android.content.Context
+import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.View
+import androidx.activity.OnBackPressedCallback
+import androidx.core.content.ContextCompat
+import androidx.core.widget.doAfterTextChanged
+import com.manna.R
+import com.manna.common.BaseFragment
+import com.manna.databinding.FragmentCreateNameBinding
+import dagger.hilt.android.AndroidEntryPoint
+import java.util.regex.Pattern
+
+@AndroidEntryPoint
+class CreateNameFragment : BaseFragment<FragmentCreateNameBinding>(R.layout.fragment_create_name) {
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        val callback: OnBackPressedCallback = object : OnBackPressedCallback(
+            true
+        ) {
+            override fun handleOnBackPressed() {
+                requireActivity().finish()
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initButton()
+
+        binding.edtName.doAfterTextChanged {
+            if (binding.edtName.text.isNotEmpty()) {
+                binding.ivClear.visibility = View.VISIBLE
+                binding.tvError.visibility = View.VISIBLE
+                binding.ivError.visibility = View.VISIBLE
+                checkNickname()
+            } else {
+                clearEditText()
+            }
+        }
+    }
+
+    private fun initButton() {
+        binding.ivBack.setOnClickListener {
+
+        }
+
+        binding.ivClear.setOnClickListener {
+            clearEditText()
+        }
+
+        binding.tvNext.setOnClickListener {
+            parentFragmentManager.beginTransaction().hide(this@CreateNameFragment).commit()
+            val fragment = ProfileGuideFragment.newInstance()
+            parentFragmentManager.beginTransaction()
+                .add(R.id.fl_sign_up, fragment, fragment::class.java.simpleName).commit()
+        }
+    }
+
+    fun clearEditText(){
+        binding.ivClear.visibility = View.GONE
+        binding.tvError.text = ""
+        binding.ivError.visibility = View.GONE
+        binding.edtName.text.clear()
+        binding.tvNext.isEnabled = false
+        binding.tvNext.background =
+            ContextCompat.getDrawable(requireContext(), R.drawable.bg_btn_gray)
+    }
+
+    fun checkNickname() {
+        val pattern = Pattern.compile("^[가-힣]{1,6}")
+        val matcher = pattern.matcher(binding.edtName.text.toString())
+        if (!matcher.matches()) {
+            val pattern = Pattern.compile(".*[ㄱ-ㅎㅏ-ㅣ].*")
+            val matcher = pattern.matcher(binding.edtName.text.toString())
+            when {
+                matcher.matches() -> {
+                    binding.tvError.text =
+                        getString(R.string.sign_up_create_name_error_message_consonant_vowel)
+                }
+                binding.edtName.text.length > 6 -> {
+                    binding.tvError.text =
+                        getString(R.string.sign_up_create_name_error_message_length)
+                }
+                else -> {
+                    binding.tvError.text =
+                        getString(R.string.sign_up_create_name_error_message_hangul)
+                }
+            }
+            binding.tvError.setTextColor(ContextCompat.getColor(requireContext(), R.color.ff0000))
+            binding.ivError.setImageDrawable(
+                ContextCompat.getDrawable(
+                    requireContext(),
+                    R.drawable.ic_error
+                )
+            )
+            binding.tvNext.isEnabled = false
+            binding.tvNext.background =
+                ContextCompat.getDrawable(requireContext(), R.drawable.bg_btn_gray)
+        } else {
+            binding.tvError.text = getString(R.string.sign_up_create_name_available_message)
+            binding.tvError.setTextColor(ContextCompat.getColor(requireContext(), R.color.keyColor))
+            binding.ivError.setImageDrawable(
+                ContextCompat.getDrawable(
+                    requireContext(),
+                    R.drawable.ic_available
+                )
+            )
+            binding.tvNext.isEnabled = true
+            binding.tvNext.background =
+                ContextCompat.getDrawable(requireContext(), R.drawable.bg_btn_blue)
+        }
+    }
+
+    companion object {
+        fun newInstance() = CreateNameFragment()
+    }
+}

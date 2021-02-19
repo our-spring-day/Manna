@@ -16,6 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+
         <activity
             android:name=".presentation.location.MeetDetailActivity"
             android:screenOrientation="portrait"
@@ -33,6 +34,9 @@
         </activity>
 
         <activity android:name=".presentation.SocketIOTestActivity" />
+        <activity
+            android:name=".presentation.sign_up.SignUpActivity"
+            android:windowSoftInputMode="adjustResize" />
 
         <service
             android:name=".fcm.MyFirebaseMessagingService"
