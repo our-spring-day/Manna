@@ -6,9 +6,10 @@ import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.manna.common.BaseViewModel
+import com.manna.common.Event
 import com.manna.common.Logger
-import com.manna.data.source.repo.MeetRepository
 import com.manna.common.plusAssign
+import com.manna.data.source.repo.MeetRepository
 import com.manna.network.api.MeetApi
 import com.manna.util.UserHolder
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -20,8 +21,8 @@ class IntroViewModel @ViewModelInject constructor(
 ) :
     BaseViewModel() {
 
-    private val _isValidDevice = MutableLiveData<com.manna.common.Event<Boolean>>()
-    val isValidDevice: LiveData<com.manna.common.Event<Boolean>> get() = _isValidDevice
+    private val _isValidDevice = MutableLiveData<Event<Boolean>>()
+    val isValidDevice: LiveData<Event<Boolean>> get() = _isValidDevice
 
     fun checkDevice(deviceId: String) {
         compositeDisposable += repository.getUser(deviceId)
@@ -30,13 +31,13 @@ class IntroViewModel @ViewModelInject constructor(
             .subscribe({
                 if (it.deviceId != null && it.username != null) {
                     UserHolder.userResponse = it
-                    _isValidDevice.value = com.manna.common.Event(true)
+                    _isValidDevice.value = Event(true)
                 } else {
-                    _isValidDevice.value = com.manna.common.Event(false)
+                    _isValidDevice.value = Event(false)
                 }
             }, {
                 Logger.d("$it")
-                _isValidDevice.value = com.manna.common.Event(false)
+                _isValidDevice.value = Event(false)
             })
     }
 
@@ -49,11 +50,11 @@ class IntroViewModel @ViewModelInject constructor(
                     UserHolder.userResponse = it
                     registerPushToken(deviceId)
                 } else {
-                    _isValidDevice.value = com.manna.common.Event(false)
+                    _isValidDevice.value = Event(false)
                 }
             }, {
                 Logger.d("$it")
-                _isValidDevice.value = com.manna.common.Event(false)
+                _isValidDevice.value = Event(false)
             })
     }
 
@@ -61,7 +62,7 @@ class IntroViewModel @ViewModelInject constructor(
         FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
             if (!task.isSuccessful) {
                 Logger.d("${task.exception}")
-                _isValidDevice.value = com.manna.common.Event(false)
+                _isValidDevice.value = Event(false)
                 return@OnCompleteListener
             }
 
@@ -73,10 +74,10 @@ class IntroViewModel @ViewModelInject constructor(
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     Logger.d("$it")
-                    _isValidDevice.value = com.manna.common.Event(true)
+                    _isValidDevice.value = Event(true)
                 }, {
                     Logger.d("$it")
-                    _isValidDevice.value = com.manna.common.Event(false)
+                    _isValidDevice.value = Event(false)
                 })
 
         })

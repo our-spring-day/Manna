@@ -4,6 +4,7 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.manna.common.BaseViewModel
+import com.manna.common.Event
 import com.manna.common.Logger
 import com.manna.common.plusAssign
 import com.manna.network.api.BingApi
@@ -27,7 +28,7 @@ class MeetDetailViewModel @ViewModelInject constructor(
 
     val userList = MutableLiveData<List<User>>()
 
-    val bottomUserItemClickEvent = MutableLiveData<com.manna.common.Event<User>>()
+    val bottomUserItemClickEvent = MutableLiveData<Event<User>>()
 
     fun submitUserList(userList: List<User>) {
         this.userList.value = userList

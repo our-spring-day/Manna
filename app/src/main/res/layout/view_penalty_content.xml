@@ -46,10 +46,11 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
+            android:id="@+id/checker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:alpha="0.2"
-            android:src="@drawable/ic_navigate_next_24_black"
+            android:src="@drawable/ic_content_check"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

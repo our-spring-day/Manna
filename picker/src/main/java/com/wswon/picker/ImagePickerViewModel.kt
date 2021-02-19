@@ -5,6 +5,7 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.manna.common.BaseViewModel
+import com.manna.common.Logger
 import com.manna.common.plusAssign
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -66,11 +67,11 @@ class ImagePickerViewModel @ViewModelInject constructor(private val imageLoadMan
             }
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ imageList ->
-                com.manna.common.Logger.d("$imageList")
+                Logger.d("$imageList")
                 _selectorItemList.value = imageList
                 _progressState.value = false
             }, {
-                com.manna.common.Logger.d("$it")
+                Logger.d("$it")
             })
     }
 

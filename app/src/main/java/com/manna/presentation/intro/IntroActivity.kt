@@ -9,6 +9,7 @@ import com.manna.DeviceUtil
 import com.manna.HomeActivity
 import com.manna.R
 import com.manna.common.BaseActivity
+import com.manna.common.EventObserver
 import com.manna.databinding.ActivityIntroBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -24,7 +25,7 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>(R.layout.activity_intro
         finish()
         // viewModel.checkDevice(DeviceUtil.getAndroidID(this))
 
-        viewModel.isValidDevice.observe(this, com.manna.common.EventObserver { isValid ->
+        viewModel.isValidDevice.observe(this, EventObserver { isValid ->
             if (isValid) {
                 startActivity(Intent(this, HomeActivity::class.java))
                 finish()

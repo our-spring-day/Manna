@@ -38,7 +38,7 @@
     <string name="dda_bong">👍</string>
     <string name="optional_title">추가 정보</string>
     <string name="required_title">필수 정보</string>
-    
+
     <string name="make_meet_date_and_time">날짜 및 시간</string>
     <string name="make_meet_location">장소</string>
     <string name="make_meet_participant">참석 인원</string>
@@ -46,6 +46,21 @@
     <string name="make_meet_penalty">벌칙 정하기</string>
     <string name="send_invitation_card">초대장 보내기</string>
     <string name="search_location_hint">장소 입력</string>
+
+    <string name="empty_memo">메모를 입력해주세요</string>
+    <string name="date_and_time_announce">언제, 몇시에 만나나요?</string>
+    <string name="participant_announce">나중에도 인원을 수정할 수 있어요</string>
+    <string name="empty_participant_count">참석 인원을 입력해주세요.</string>
+    <string name="target">대상</string>
+    <string name="penalty">벌칙</string>
+
+    <string name="target_1">꼴찌</string>
+    <string name="target_2">지각한 사람 모두</string>
+
+    <string name="penalty_1">커피 사기</string>
+    <string name="penalty_2">밥 사기</string>
+    <string name="penalty_3">춤추면서 입장하기</string>
+    <string name="penalty_4">벌금 내기</string>
 
     <string name="sign_up_create_name_title">6자 이내로\n이름을 알려주세요.</string>
     <string name="sign_up_create_name_edt_hint">김만나</string>

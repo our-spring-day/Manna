@@ -1,5 +1,6 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -7,56 +8,150 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:background="@color/white">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/top_bar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:paddingBottom="10dp"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <DatePicker
-                android:id="@+id/date_picker"
+            <ImageView
+                android:id="@+id/btn_back"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:calendarViewShown="false"
-                android:datePickerMode="spinner"
-                android:theme="@style/PickerStyle"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="19dp"
+                android:layout_marginBottom="19dp"
+                android:padding="10dp"
+                android:src="@drawable/ic_back"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TimePicker
-                android:id="@+id/time_picker"
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:theme="@style/PickerStyle"
-                android:timePickerMode="spinner"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/date_picker" />
+                android:layout_marginStart="14dp"
+                android:fontFamily="@font/noto_sans_medium"
+                android:letterSpacing="-0.06"
+                android:text="@string/make_meet_date_and_time"
+                android:textColor="@color/black"
+                android:textSize="20dp"
+                app:layout_constraintBottom_toBottomOf="@id/btn_back"
+                app:layout_constraintStart_toEndOf="@id/btn_back"
+                app:layout_constraintTop_toTopOf="@id/btn_back" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/send_button"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:background="@drawable/selector_button"
-                android:enabled="false"
-                android:fontFamily="@font/noto_sans_bold"
-                android:gravity="center"
-                android:minHeight="44dp"
-                android:textSize="14dp"
-                android:text="@string/ok"
-                android:textColor="@color/white"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/time_picker"
-                app:layout_constraintWidth_percent=".8" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <TextView
+            android:id="@+id/result_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?android:selectableItemBackground"
+            android:fontFamily="@font/noto_sans_regular"
+            android:letterSpacing="0.01"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:textColor="@color/black"
+            android:textSize="30dp"
+            app:layout_constraintBottom_toTopOf="@id/result_time"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/top_bar"
+            app:layout_constraintVertical_bias=".4"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="2021.02.01 일요일" />
+
+        <TextView
+            android:id="@+id/result_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="13dp"
+            android:background="?android:selectableItemBackground"
+            android:fontFamily="@font/noto_sans_regular"
+            android:letterSpacing="0.01"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:textColor="@color/black"
+            android:textSize="30dp"
+            app:layout_constraintBottom_toTopOf="@id/announce"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/result_date"
+            tools:text="오후 02:00" />
+
+        <TextView
+            android:id="@+id/announce"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="15dp"
+            android:background="#ffededff"
+            android:fontFamily="@font/noto_sans_medium"
+            android:gravity="center"
+            android:letterSpacing="-0.05"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:text="@string/date_and_time_announce"
+            android:textColor="@color/keyColor"
+            android:textSize="15dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/picker_barrier"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/picker_barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="top"
+            app:constraint_referenced_ids="date_picker,time_picker" />
+
+        <DatePicker
+            android:id="@+id/date_picker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:calendarViewShown="false"
+            android:datePickerMode="spinner"
+            android:theme="@style/PickerStyle"
+            app:layout_constraintBottom_toTopOf="@id/ok_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TimePicker
+            android:id="@+id/time_picker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:theme="@style/PickerStyle"
+            android:timePickerMode="spinner"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@id/ok_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/ok_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:background="@drawable/selector_round_button"
+            android:fontFamily="@font/noto_sans_bold"
+            android:gravity="center"
+            android:minHeight="44dp"
+            android:text="@string/ok"
+            android:textColor="@color/white"
+            android:textSize="14dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintWidth_percent=".8" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

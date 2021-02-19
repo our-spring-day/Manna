@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="date_tag" type="id" />
+    <item name="participant_count_tag" type="id" />
+    <item name="penalty_tag" type="id" />
+</resources>
