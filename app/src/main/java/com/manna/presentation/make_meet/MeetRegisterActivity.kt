@@ -27,6 +27,7 @@ class MeetRegisterViewModel @ViewModelInject constructor() : BaseViewModel() {
     val participantCount = MutableLiveData<Int>()
     val memo = MutableLiveData<String>()
     val penalty = MutableLiveData<Penalty>()
+
 }
 
 @AndroidEntryPoint
@@ -47,6 +48,8 @@ class MeetRegisterActivity :
                 binding.locationLayout.content.text = result.addressName
                 viewModel.addressItem.value = result
             }
+
+            checkState()
         }
     }
 
@@ -55,6 +58,16 @@ class MeetRegisterActivity :
 
         setupView()
         setupViewModel()
+    }
+
+    private fun checkState() {
+        with(binding) {
+            val hasRequired = dateLayout.content.text.isNotEmpty() && locationLayout.content.text.isNotEmpty()
+
+            sendButton.isEnabled = hasRequired
+            sendButton.setText(if (hasRequired) R.string.make_meet_button_enable else R.string.make_meet_button_disable)
+        }
+
     }
 
     private fun setupView() {
@@ -72,6 +85,8 @@ class MeetRegisterActivity :
 
                     dateLayout.content.text =
                         SimpleDateFormat("MM.dd E요일 ・ a h시", Locale.KOREA).format(date)
+
+                    checkState()
                 }
 
                 supportFragmentManager.commit {

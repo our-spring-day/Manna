@@ -41,6 +41,8 @@
     <string name="optional_title">추가 정보</string>
     <string name="required_title">필수 정보</string>
 
+    <string name="make_meet_button_disable">필수 정보를 모두 입력해 주세요.</string>
+    <string name="make_meet_button_enable">약속 만들기</string>
     <string name="make_meet_date_and_time">날짜 및 시간</string>
     <string name="make_meet_location">장소</string>
     <string name="make_meet_participant">참석 인원</string>
