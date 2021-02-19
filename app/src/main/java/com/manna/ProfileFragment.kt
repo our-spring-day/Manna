@@ -1,5 +1,6 @@
 package com.manna
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Rect
@@ -13,11 +14,15 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.gun0912.tedpermission.TedPermissionResult
 import com.manna.common.BaseFragment
+import com.manna.common.plusAssign
 import com.manna.databinding.FragmentProfileBinding
 import com.manna.databinding.ItemFriendsBinding
 import com.manna.ext.setImage
+import com.manna.ext.toast
 import com.manna.util.ViewUtil
+import com.tedpark.tedpermission.rx2.TedRx2Permission
 import com.wswon.picker.ImagePickerFragment
 
 
@@ -57,7 +62,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
         }
     }
 
-    private fun getDecoration() : RecyclerView.ItemDecoration =
+    private fun getDecoration(): RecyclerView.ItemDecoration =
         object : RecyclerView.ItemDecoration() {
             override fun getItemOffsets(
                 outRect: Rect,
@@ -88,17 +93,35 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
     }
 
     private fun showImagePicker() {
-        val imagePickerFragment = ImagePickerFragment()
-        imagePickerFragment.setTargetFragment(this, REQ_IMAGE_PICKER)
-        imagePickerFragment.show(parentFragmentManager, DIALOG_TAG)
+        checkPermissions {
+            val imagePickerFragment = ImagePickerFragment()
+            imagePickerFragment.setTargetFragment(this, REQ_IMAGE_PICKER)
+            imagePickerFragment.show(parentFragmentManager, imagePickerFragment::class.java.simpleName)
+        }
+    }
+
+    private fun checkPermissions(success: () -> Unit) {
+        compositeDisposable += TedRx2Permission.with(requireContext())
+            .setRationaleTitle("저장소 접근 권한")
+            .setRationaleMessage("사진을 가져오기 위해 권한에 동의해 주세요.")
+            .setPermissions(Manifest.permission.READ_EXTERNAL_STORAGE)
+            .request()
+            .subscribe({ tedPermissionResult: TedPermissionResult ->
+                if (tedPermissionResult.isGranted) {
+                    success()
+                } else {
+                    toast("허용되지 않은 권한 : ${tedPermissionResult.deniedPermissions}")
+                }
+            }, { throwable: Throwable? ->
+
+            })
     }
 
     companion object {
+        private const val REQ_IMAGE_PICKER = 100
+
         fun newInstance() =
             ProfileFragment()
-
-        private const val REQ_IMAGE_PICKER = 100
-        private const val DIALOG_TAG = "IMAGE_PICKER"
     }
 }
 

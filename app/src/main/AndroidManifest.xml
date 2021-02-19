@@ -40,7 +40,7 @@
         <activity android:name=".presentation.settings.DeleteAccountActivity"/>
         <activity
             android:name=".presentation.sign_up.SignUpActivity"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
 
         <service
             android:name=".fcm.MyFirebaseMessagingService"
