@@ -12,11 +12,12 @@
         android:layout_height="wrap_content">
 
         <ImageView
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:id="@+id/iv_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="15.75dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="16dp"
             android:padding="10dp"
             android:src="@drawable/ic_back"
             app:layout_constraintStart_toStartOf="parent"
@@ -27,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="14.13dp"
+            android:layout_marginTop="15dp"
             android:textColor="@color/black"
             android:textSize="24dp"
             app:layout_constraintStart_toStartOf="parent"
