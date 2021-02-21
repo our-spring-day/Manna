@@ -24,7 +24,7 @@
             android:id="@+id/rv_category"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="25dp"
+            android:layout_marginStart="19dp"
             android:layout_marginTop="15dp"
             android:orientation="horizontal"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
@@ -33,19 +33,50 @@
             tool:itemCount="3" />
 
         <EditText
+            android:overScrollMode="always"
+            android:scrollbarStyle="insideInset"
+            android:scrollbars="vertical"
+            android:id="@+id/edt_inquiry_content"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginStart="25dp"
             android:layout_marginTop="15dp"
             android:layout_marginEnd="25dp"
             android:background="@drawable/bg_edit_text_gray"
             android:gravity="top"
-            android:hint="문의할 종류를 고르고 작성해주세요:)"
+            android:hint="@string/hint_select_inquiry_type"
             android:padding="10dp"
             android:textSize="14dp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.45"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/rv_category" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/select_inquiry_type_message"
+            android:textColor="@color/e54747"
+            android:textSize="14dp"
+            android:visibility="invisible"
+            app:layout_constraintStart_toStartOf="@+id/edt_inquiry_content"
+            app:layout_constraintTop_toBottomOf="@+id/edt_inquiry_content" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/btn_send"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:background="@drawable/selector_round_button"
+            android:gravity="center"
+            android:minHeight="60dp"
+            android:text="@string/send"
+            android:textColor="@color/white"
+            android:textSize="14dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintWidth_percent=".8" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

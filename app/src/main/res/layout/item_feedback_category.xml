@@ -10,11 +10,13 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:onClick="@{()-> item.onClick.invoke(item)}"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:onClick="@{()-> item.onClick.invoke(item)}">
 
         <TextView
+            textColor="@{item.click}"
             textViewBackground="@{item.click}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

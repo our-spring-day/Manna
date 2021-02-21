@@ -1,12 +1,10 @@
 package com.manna.presentation.settings
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.databinding.library.baseAdapters.BR
 import com.manna.R
 import com.manna.common.BaseActivity
-
 import com.manna.databinding.ActivityFeedbackBinding
 import com.manna.databinding.ItemFeedbackCategoryBinding
 import com.wswon.picker.adapter.BaseRecyclerViewAdapter
@@ -29,13 +27,16 @@ class FeedbackActivity : BaseActivity<ActivityFeedbackBinding>(R.layout.activity
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val categoryList = listOf(
-            FeedbackCategory("오류 제보", false, viewModel.onClick),
-            FeedbackCategory("피드백", false, viewModel.onClick),
-            FeedbackCategory("문의", false, viewModel.onClick)
+            FeedbackCategory(getString(R.string.error_report), false, viewModel.onClick),
+            FeedbackCategory(getString(R.string.feedback), false, viewModel.onClick),
+            FeedbackCategory(getString(R.string.inquiry), false, viewModel.onClick)
         )
 
         binding.run {
-            layoutTitleBar.tvTitle.text = "문의 및 피드백 보내기"
+            layoutTitleBar.tvTitle.text = getString(R.string.inquiry_feedback_send)
+            layoutTitleBar.ivBack.setOnClickListener {
+                finish()
+            }
             rvCategory.run {
                 adapter = feedbackAdapter
             }
@@ -48,7 +49,6 @@ class FeedbackActivity : BaseActivity<ActivityFeedbackBinding>(R.layout.activity
                 category.click = false
             }
             it.click = true
-            Toast.makeText(this, it.category, Toast.LENGTH_SHORT).show()
             feedbackAdapter.replaceAll(categoryList)
         })
     }
