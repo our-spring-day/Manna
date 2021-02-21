@@ -55,6 +55,9 @@
         </RadioGroup>
 
         <EditText
+            android:textSize="14dp"
+            android:background="@null"
+            android:hint="@string/hint_delete_account_reason"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="20dp"
@@ -62,5 +65,20 @@
             app:layout_constraintStart_toStartOf="@+id/rg_delete_reason"
             app:layout_constraintTop_toBottomOf="@+id/rg_delete_reason" />
 
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/btn_send"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:background="@drawable/selector_round_button_red"
+            android:gravity="center"
+            android:minHeight="60dp"
+            android:text="@string/delete_account"
+            android:textColor="@color/white"
+            android:textSize="14dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintWidth_percent=".8" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
