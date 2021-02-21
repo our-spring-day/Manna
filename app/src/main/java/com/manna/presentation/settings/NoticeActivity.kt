@@ -29,7 +29,10 @@ class NoticeActivity : BaseActivity<ActivityNoticeBinding>(R.layout.activity_not
             listOf(NoticeItem("연재생일", "20.09.08"), NoticeItem("공지사항", "21.01.26"))
 
         binding.run {
-            layoutTitleBar.tvTitle.text = "공지사항"
+            layoutTitleBar.tvTitle.text = getString(R.string.notice)
+            layoutTitleBar.ivBack.setOnClickListener {
+                finish()
+            }
             rvNotice.run {
                 adapter = noticeAdapter
             }
