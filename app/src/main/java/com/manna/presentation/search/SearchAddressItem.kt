@@ -20,7 +20,7 @@ data class SearchAddressItem(
             onMapClick: (SearchAddressItem) -> Unit
         ): SearchAddressItem =
             SearchAddressItem(
-                addressName = if (!searchAddress.roadAddressName.isNullOrEmpty()) searchAddress.roadAddressName else searchAddress.addressName,
+                addressName = if (searchAddress.addressName.isNotEmpty()) searchAddress.addressName else searchAddress.roadAddressName.orEmpty(),
                 keyWord = keyWord,
                 placeName = searchAddress.placeName,
                 latitude = searchAddress.y,

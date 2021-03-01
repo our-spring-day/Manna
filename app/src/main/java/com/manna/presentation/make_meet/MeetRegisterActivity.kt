@@ -45,7 +45,12 @@ class MeetRegisterActivity :
             )
 
             if (result != null) {
-                binding.locationLayout.content.text = result.addressName
+                val addressName = result.addressName
+                    .split(" ")
+                    .dropLast(1)
+                    .joinToString(" ")
+
+                binding.locationLayout.content.text = addressName
                 viewModel.addressItem.value = result
             }
 
