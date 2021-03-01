@@ -84,7 +84,7 @@
 
     <string name="notice">공지사항</string>
     <string name="service_terms">서비스 이용약관</string>
-    <string name="delete_account_reason">탈퇴하려는 이유를 알려주세요</string>
+    <string name="delete_account_reason">탈퇴하려는 이유를\n알려주세요</string>
     <string name="inquiry_feedback_send">문의 및 피드백 보내기</string>
 
     <string name="delete_account_reason_1">개인 정보 유출이 걱정돼요.</string>
