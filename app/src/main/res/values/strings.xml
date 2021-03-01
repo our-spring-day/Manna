@@ -81,4 +81,6 @@
     <string name="sign_up_service_terms_title">서비스 이용약관에\n동의해주세요.</string>
     <string name="sign_up_service_terms_agree">위 이용약관에 동의합니다(필수)</string>
     <string name="sign_up_sign_up">동의하고 가입하기</string>
+    <string name="penalty_button_disable">대상과 벌칙을 선택해주세요</string>
+    <string name="penalty_button_enable">선택 완료</string>
 </resources>
