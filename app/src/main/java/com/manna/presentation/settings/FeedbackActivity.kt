@@ -1,7 +1,9 @@
 package com.manna.presentation.settings
 
 import android.os.Bundle
+import android.view.View
 import androidx.activity.viewModels
+import androidx.core.widget.doAfterTextChanged
 import androidx.databinding.library.baseAdapters.BR
 import com.manna.R
 import com.manna.common.BaseActivity
@@ -37,6 +39,8 @@ class FeedbackActivity : BaseActivity<ActivityFeedbackBinding>(R.layout.activity
             layoutTitleBar.ivBack.setOnClickListener {
                 finish()
             }
+            tvSend.tvBottom.text = getString(R.string.send)
+            tvSend.tvBottom.isEnabled = false
             rvCategory.run {
                 adapter = feedbackAdapter
             }
@@ -45,11 +49,26 @@ class FeedbackActivity : BaseActivity<ActivityFeedbackBinding>(R.layout.activity
         feedbackAdapter.replaceAll(categoryList)
 
         viewModel.clickItem.observe(this, {
+            binding.tvError.visibility = View.INVISIBLE
             categoryList.forEach { category ->
                 category.click = false
             }
             it.click = true
             feedbackAdapter.replaceAll(categoryList)
+
+            binding.tvSend.tvBottom.isEnabled = !binding.edtInquiryContent.text.isNullOrBlank()
         })
+
+        binding.edtInquiryContent.doAfterTextChanged {
+            if (!binding.edtInquiryContent.text.isNullOrBlank() && viewModel.clickItem.value?.click == true) {
+                binding.tvError.visibility = View.INVISIBLE
+                binding.tvSend.tvBottom.isEnabled = true
+            } else if (viewModel.clickItem.value?.click != true) {
+                binding.tvError.visibility = View.VISIBLE
+                binding.tvSend.tvBottom.isEnabled = false
+            } else {
+                binding.tvSend.tvBottom.isEnabled = false
+            }
+        }
     }
 }
