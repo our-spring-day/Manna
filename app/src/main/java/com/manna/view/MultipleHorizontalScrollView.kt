@@ -1,11 +1,12 @@
 package com.manna.view
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
 import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -19,26 +20,18 @@ class MultipleHorizontalScrollView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyle: Int = 0,
-) : HorizontalScrollView(context, attrs, defStyle) {
+) : LinearLayout(context, attrs, defStyle) {
 
     init {
-        val rootView = LinearLayout(context).apply {
-            orientation = LinearLayout.VERTICAL
-            layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        }
-        addView(rootView)
-
-        setOnScrollChangeListener { _, scrollX, _, _, _ ->
-            val maxScrollX = getChildAt(0).width - width
-
-            notifyScrollX(scrollX.toFloat() / maxScrollX)
-        }
-
-        setup(rootView, resources.getStringArray(R.array.urging_messages).toList())
+        orientation = VERTICAL
+        setup(resources.getStringArray(R.array.urging_messages).toList())
     }
 
+    private var currentTouchView: View? = null
+
     private fun notifyScrollX(scrollXPercent: Float) {
-        (getChildAt(0) as LinearLayout).children.forEach { view ->
+        children.forEach { view ->
+            if (currentTouchView === view) return@forEach
             val horizontalScrollView = view as HorizontalScrollView
 
             val maxScrollX = horizontalScrollView[0].width - horizontalScrollView.width
@@ -48,21 +41,40 @@ class MultipleHorizontalScrollView @JvmOverloads constructor(
         }
     }
 
-    private fun setup(rootView: LinearLayout, messages: List<String>) {
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setup(messages: List<String>) {
         (0 until messages.size / 4).forEach { _ ->
             val horizontalScrollView = HorizontalScrollView(context).also { scrollView ->
                 scrollView.overScrollMode = View.OVER_SCROLL_NEVER
                 scrollView.isHorizontalScrollBarEnabled = false
 
-                scrollView.setOnTouchListener { _, _ ->
-                    true
+                scrollView.setOnScrollChangeListener { _, scrollX, _, _, _ ->
+                    val maxScrollX = scrollView[0].width - scrollView.width
+
+                    if (currentTouchView === scrollView) {
+                        notifyScrollX(scrollX.toFloat() / maxScrollX)
+                    }
+                }
+
+                scrollView.setOnTouchListener { view, motionEvent ->
+                    when (motionEvent.action) {
+                        MotionEvent.ACTION_DOWN,
+                        MotionEvent.ACTION_MOVE -> {
+                            currentTouchView = view
+                        }
+                        MotionEvent.ACTION_CANCEL,
+                        MotionEvent.ACTION_UP -> {
+
+                        }
+                    }
+                    false
                 }
             }
             val linearLayout = LinearLayout(context).apply {
-                orientation = LinearLayout.HORIZONTAL
+                orientation = HORIZONTAL
             }
 
-            rootView.addView(horizontalScrollView)
+            addView(horizontalScrollView)
             horizontalScrollView.addView(linearLayout)
         }
 
@@ -71,7 +83,7 @@ class MultipleHorizontalScrollView @JvmOverloads constructor(
                 .inflate(R.layout.view_urging_message, this, false) as TextView
             messageView.text = message
 
-            val horizontalScrollView = rootView.getChildAt(index / 4) as HorizontalScrollView
+            val horizontalScrollView = getChildAt(index / 4) as HorizontalScrollView
             val container = horizontalScrollView.getChildAt(0) as LinearLayout
 
             container.addView(messageView)
