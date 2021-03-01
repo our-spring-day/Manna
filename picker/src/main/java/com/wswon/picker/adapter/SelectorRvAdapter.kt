@@ -85,16 +85,16 @@ class SelectorRvAdapter(
         ) {
 
         fun changeSelectNum() {
-            binding?.run {
-                tvSelectedNum.run {
-                    val selectNum = selectedPositionList.indexOf(adapterPosition)
-                    text = if (selectNum != -1) {
-                        "${selectNum + 1}"
-                    } else {
-                        ""
-                    }
-                }
-            }
+//            binding?.run {
+//                tvSelectedNum.run {
+//                    val selectNum = selectedPositionList.indexOf(adapterPosition)
+//                    text = if (selectNum != -1) {
+//                        "${selectNum + 1}"
+//                    } else {
+//                        ""
+//                    }
+//                }
+//            }
         }
 
         fun stateVisible(item: ImagePickerSelectorItem?) {
