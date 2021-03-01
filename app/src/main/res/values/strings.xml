@@ -83,4 +83,8 @@
     <string name="sign_up_sign_up">동의하고 가입하기</string>
     <string name="penalty_button_disable">대상과 벌칙을 선택해주세요</string>
     <string name="penalty_button_enable">선택 완료</string>
+    <string name="make_meet_success_title">약속 만들기 완료!</string>
+    <string name="make_meet_title">약속 만들기</string>
+    <string name="go_to_home">홈으로 이동</string>
+    <string name="invite_link_share">초대 링크 공유</string>
 </resources>
