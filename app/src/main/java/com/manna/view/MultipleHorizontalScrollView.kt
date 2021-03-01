@@ -14,6 +14,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.view.children
 import androidx.core.view.get
 import com.manna.R
+import com.manna.util.ViewUtil
 
 @RequiresApi(Build.VERSION_CODES.M)
 class MultipleHorizontalScrollView @JvmOverloads constructor(
@@ -42,11 +43,11 @@ class MultipleHorizontalScrollView @JvmOverloads constructor(
     }
 
     private fun setup(messages: List<String>) {
-        (0 until messages.size / ROW_MAX_ITEM_SIZE).forEach { _ ->
-            addView(makeRowView())
-        }
-
         messages.forEachIndexed { index, message ->
+            if (index % ROW_MAX_ITEM_SIZE == 0) {
+                addView(makeRowView())
+            }
+
             val horizontalScrollView = getChildAt(index / ROW_MAX_ITEM_SIZE) as HorizontalScrollView
             val container = horizontalScrollView.getChildAt(0) as LinearLayout
             container.addView(makeMessageView(message))
@@ -82,7 +83,11 @@ class MultipleHorizontalScrollView @JvmOverloads constructor(
             }
         }
 
-        horizontalScrollView.addView(LinearLayout(context).apply { orientation = HORIZONTAL })
+        horizontalScrollView.addView(LinearLayout(context).also { layout ->
+            val screenWidth = ViewUtil.getScreenWidthPixels(context)
+            layout.minimumWidth = (screenWidth * 1.3f).toInt()
+            layout.orientation = HORIZONTAL
+        })
         return horizontalScrollView
     }
 
