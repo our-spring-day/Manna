@@ -64,8 +64,6 @@ class DatePickerFragment :
                 datePicker.isGone = true
                 timePicker.isVisible = true
             }
-
-            root.setOnTouchListener { _, _ -> true }
         }
     }
 
@@ -147,7 +145,12 @@ class DatePickerFragment :
     }
 
     private fun finish() {
+        val prevFragment = parentFragmentManager.fragments.find { it is BaseFragment<*> && it !== this }
+
         parentFragmentManager.commit {
+            if (prevFragment != null) {
+                show(prevFragment)
+            }
             remove(this@DatePickerFragment)
         }
     }
