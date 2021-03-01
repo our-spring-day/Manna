@@ -41,53 +41,60 @@ class MultipleHorizontalScrollView @JvmOverloads constructor(
         }
     }
 
-    @SuppressLint("ClickableViewAccessibility")
     private fun setup(messages: List<String>) {
-        (0 until messages.size / 4).forEach { _ ->
-            val horizontalScrollView = HorizontalScrollView(context).also { scrollView ->
-                scrollView.overScrollMode = View.OVER_SCROLL_NEVER
-                scrollView.isHorizontalScrollBarEnabled = false
-
-                scrollView.setOnScrollChangeListener { _, scrollX, _, _, _ ->
-                    val maxScrollX = scrollView[0].width - scrollView.width
-
-                    if (currentTouchView === scrollView) {
-                        notifyScrollX(scrollX.toFloat() / maxScrollX)
-                    }
-                }
-
-                scrollView.setOnTouchListener { view, motionEvent ->
-                    when (motionEvent.action) {
-                        MotionEvent.ACTION_DOWN,
-                        MotionEvent.ACTION_MOVE -> {
-                            currentTouchView = view
-                        }
-                        MotionEvent.ACTION_CANCEL,
-                        MotionEvent.ACTION_UP -> {
-
-                        }
-                    }
-                    false
-                }
-            }
-            val linearLayout = LinearLayout(context).apply {
-                orientation = HORIZONTAL
-            }
-
-            addView(horizontalScrollView)
-            horizontalScrollView.addView(linearLayout)
+        (0 until messages.size / ROW_MAX_ITEM_SIZE).forEach { _ ->
+            addView(makeRowView())
         }
 
         messages.forEachIndexed { index, message ->
-            val messageView = LayoutInflater.from(context)
-                .inflate(R.layout.view_urging_message, this, false) as TextView
-            messageView.text = message
-
-            val horizontalScrollView = getChildAt(index / 4) as HorizontalScrollView
+            val horizontalScrollView = getChildAt(index / ROW_MAX_ITEM_SIZE) as HorizontalScrollView
             val container = horizontalScrollView.getChildAt(0) as LinearLayout
-
-            container.addView(messageView)
+            container.addView(makeMessageView(message))
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
+    private fun makeRowView(): View {
+        val horizontalScrollView = HorizontalScrollView(context).also { scrollView ->
+            scrollView.overScrollMode = View.OVER_SCROLL_NEVER
+            scrollView.isHorizontalScrollBarEnabled = false
+
+            scrollView.setOnScrollChangeListener { _, scrollX, _, _, _ ->
+                val maxScrollX = scrollView[0].width - scrollView.width
+
+                if (currentTouchView === scrollView) {
+                    notifyScrollX(scrollX.toFloat() / maxScrollX)
+                }
+            }
+
+            scrollView.setOnTouchListener { view, motionEvent ->
+                when (motionEvent.action) {
+                    MotionEvent.ACTION_DOWN,
+                    MotionEvent.ACTION_MOVE -> {
+                        currentTouchView = view
+                    }
+                    MotionEvent.ACTION_CANCEL,
+                    MotionEvent.ACTION_UP -> {
+
+                    }
+                }
+                false
+            }
+        }
+
+        horizontalScrollView.addView(LinearLayout(context).apply { orientation = HORIZONTAL })
+        return horizontalScrollView
+    }
+
+    private fun makeMessageView(message: String): View {
+        val messageView = LayoutInflater.from(context)
+            .inflate(R.layout.view_urging_message, this, false) as TextView
+        messageView.text = message
+
+        return messageView
+    }
+
+    companion object {
+        private const val ROW_MAX_ITEM_SIZE = 4
+    }
 }
