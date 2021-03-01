@@ -21,6 +21,11 @@ class DeleteAccountActivity :
             layoutTitleBar.ivBack.setOnClickListener {
                 finish()
             }
+
+            rgDeleteReason.setOnCheckedChangeListener { group, checkedId ->
+                edtDeleteReason.isEnabled = checkedId == R.id.rb_delete_reason_5
+                tvDelete.isEnabled = true
+            }
         }
     }
 }
