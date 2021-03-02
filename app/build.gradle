@@ -44,10 +44,13 @@ android {
         }
 
         debug {
+            debuggable true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
             buildConfigField STRING, KAKAO_KEY, KAKAO_KEY_RELEASE
             buildConfigField STRING, NAVER_KEY, NAVER_KEY_RELEASE
+
+            applicationIdSuffix = ".dev"
         }
     }
 
@@ -115,4 +118,6 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics-ktx'
 
     implementation 'com.google.android:flexbox:2.0.1'
+
+    implementation "com.kakao.sdk:v2-link:2.4.0"
 }
