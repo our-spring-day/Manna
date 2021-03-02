@@ -87,4 +87,6 @@
     <string name="make_meet_title">약속 만들기</string>
     <string name="go_to_home">홈으로 이동</string>
     <string name="invite_link_share">초대 링크 공유</string>
+    <string name="penalty_empty">벌칙 없음</string>
+    <string name="memo_empty">메모 없음</string>
 </resources>
