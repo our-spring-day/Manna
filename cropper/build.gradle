@@ -20,6 +20,10 @@ android {
     lintOptions {
         abortOnError false
     }
+    buildTypes {
+        signingConfigs {
+        }
+    }
 }
 
 // This configuration is used to publish the library to a local repo while a being forked and modified.
