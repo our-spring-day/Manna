@@ -101,6 +101,9 @@
     <string name="error_report">오류 제보</string>
     <string name="feedback">피드백</string>
     <string name="inquiry">문의</string>
+    <string name="toast_message_error_report">문의 전송 완료! 빠른 시일내 확인 후 답변드릴게요 :)</string>
+    <string name="toast_message_feedback">소중한 피드백을 보내주셔서 감사합니다 :)</string>
+    <string name="toast_message_inquiry">오류를 제보해주셔서 감사합니다 :)</string>
     <string name="hint_select_inquiry_type">문의할 종류를 고르고 작성해주세요:)</string>
     <string name="select_inquiry_type_message">문의할 종류를 선택해주세요:)</string>
     <string name="send">보내기</string>
