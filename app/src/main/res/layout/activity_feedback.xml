@@ -63,6 +63,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:fontFamily="@font/noto_sans_medium"
             android:text="@string/select_inquiry_type_message"
             android:textColor="@color/e54747"
             android:textSize="14dp"

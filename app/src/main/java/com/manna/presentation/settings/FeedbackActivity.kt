@@ -39,6 +39,23 @@ class FeedbackActivity : BaseActivity<ActivityFeedbackBinding>(R.layout.activity
             layoutTitleBar.ivBack.setOnClickListener {
                 finish()
             }
+            tvSend.tvBottom.setOnClickListener {
+                when (viewModel.clickItem.value?.category) {
+                    getString(R.string.error_report) -> CustomToast.toast(
+                        this@FeedbackActivity,
+                        getString(R.string.toast_message_error_report)
+                    )?.show()
+                    getString(R.string.feedback) -> CustomToast.toast(
+                        this@FeedbackActivity,
+                        getString(R.string.toast_message_feedback)
+                    )?.show()
+                    getString(R.string.inquiry) -> CustomToast.toast(
+                        this@FeedbackActivity,
+                        getString(R.string.toast_message_inquiry)
+                    )?.show()
+                }
+                finish()
+            }
             tvSend.tvBottom.text = getString(R.string.send)
             tvSend.tvBottom.isEnabled = false
             rvCategory.run {
