@@ -91,4 +91,5 @@
     <string name="memo_empty">메모 없음</string>
     <string name="close">닫기</string>
     <string name="share_list_title">초대 옵션 선택</string>
+    <string name="meet_request">참가 요청</string>
 </resources>
