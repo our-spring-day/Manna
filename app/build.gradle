@@ -9,6 +9,14 @@ plugins {
 
 
 android {
+    signingConfigs {
+        release {
+        storeFile file('/Users/wswon/WatchaProjects/keystore/vitamin_key_store')
+            storePassword 'duswo123'
+            keyAlias 'vitamin_mobile'
+            keyPassword 'duswo123'
+        }
+    }
     compileSdkVersion 30
     buildToolsVersion "30.0.1"
 
@@ -35,19 +43,39 @@ android {
         def NAVER_KEY = "NAVER_KEY"
         def NAVER_KEY_RELEASE = "\"KQhgkdup9nX6uAf7L3kKpC7510EaZxdwwu0SOLtR\""
 
+        def keystorePropertiesFile = rootProject.file("keystore.properties")
+        def keystoreProperties = new Properties()
+        keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
+//        signingConfigs {
+//            debug {
+//                storeFile(file("keystore/debug.keystore"))
+//            }
+//            release {
+//                keyAlias keystoreProperties['keyAlias']
+//                keyPassword keystoreProperties['keyPassword']
+//                storeFile file(keystoreProperties['storeFile'])
+//                storePassword keystoreProperties['storePassword']
+//            }
+//        }
+
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
             buildConfigField STRING, KAKAO_KEY, KAKAO_KEY_RELEASE
             buildConfigField STRING, NAVER_KEY, NAVER_KEY_RELEASE
+            signingConfig signingConfigs.release
         }
 
         debug {
+            debuggable true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
             buildConfigField STRING, KAKAO_KEY, KAKAO_KEY_RELEASE
             buildConfigField STRING, NAVER_KEY, NAVER_KEY_RELEASE
+
+            applicationIdSuffix = ".dev"
         }
     }
 
@@ -58,6 +86,18 @@ android {
 
     kotlinOptions {
         jvmTarget = '1.8'
+    }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
+        exclude("META-INF/*.kotlin_module")
     }
 }
 
@@ -115,4 +155,6 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics-ktx'
 
     implementation 'com.google.android:flexbox:2.0.1'
+
+    implementation "com.kakao.sdk:v2-link:2.4.0"
 }

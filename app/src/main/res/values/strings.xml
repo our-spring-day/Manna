@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Manna</string>
+    <string name="app_name">외않와</string>
 
     <string name="naver_client_id">djbet5rxjp</string>
 
@@ -110,4 +110,10 @@
     <string name="toast_inquiry_completion">문의 전송 완료! 빠른 시일내 확인 후 답변드릴게요:)</string>
     <string name="penalty_button_disable">대상과 벌칙을 선택해주세요</string>
     <string name="penalty_button_enable">선택 완료</string>
+    <string name="make_meet_success_title">약속 만들기 완료!</string>
+    <string name="make_meet_title">약속 만들기</string>
+    <string name="go_to_home">홈으로 이동</string>
+    <string name="invite_link_share">초대 링크 공유</string>
+    <string name="penalty_empty">벌칙 없음</string>
+    <string name="memo_empty">메모 없음</string>
 </resources>
