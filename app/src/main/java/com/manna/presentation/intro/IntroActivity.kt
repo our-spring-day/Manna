@@ -1,6 +1,5 @@
 package com.manna.presentation.intro
 
-import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -13,6 +12,7 @@ import com.manna.common.BaseActivity
 import com.manna.common.EventObserver
 import com.manna.common.Logger
 import com.manna.databinding.ActivityIntroBinding
+import com.manna.presentation.invitation.InvitationActivity
 import com.manna.presentation.sign_up.SignUpActivity
 import com.manna.util.ViewUtil
 import dagger.hilt.android.AndroidEntryPoint
@@ -75,16 +75,18 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>(R.layout.activity_intro
                     Logger.d("No have dynamic link")
                     return@addOnSuccessListener
                 }
-                val deepLink = pendingDynamicLinkData.link
-                Logger.d("deepLink: $deepLink");
+                val deepLink = pendingDynamicLinkData.link ?: return@addOnSuccessListener
+                Logger.d("deepLink: $deepLink")
 
-                val segment = deepLink?.lastPathSegment
+                val segment = deepLink.lastPathSegment
                 Logger.d("segment $segment")
+
+                val name = deepLink.getQueryParameter("name").orEmpty()
+
                 when (segment) {
-//                        SEGMENT_PROMOTION:
-//                        String code = deepLink.getQueryParameter(KEY_CODE);
-//                        showPromotionDialog(code);
-//                        break;
+                    "invite" -> {
+                        startActivity(InvitationActivity.getIntent(this, name))
+                    }
                 }
             }
             .addOnFailureListener { exception ->

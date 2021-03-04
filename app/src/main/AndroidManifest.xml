@@ -16,9 +16,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".presentation.make_meet.MakeMeetActivity"
-            android:windowSoftInputMode="adjustResize"/>
-
+        <activity android:name=".presentation.invitation.InvitationActivity" />
+        <activity
+            android:name=".presentation.make_meet.MakeMeetActivity"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".presentation.location.MeetDetailActivity"
             android:screenOrientation="portrait"
@@ -33,8 +34,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
-
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -48,11 +47,11 @@
                     android:host="whynotcoming.com"
                     android:scheme="https" />
             </intent-filter>
-
-
         </activity>
         <activity android:name=".presentation.SocketIOTestActivity" />
         <activity android:name=".presentation.settings.NoticeActivity" />
+        <activity android:name=".presentation.settings.FeedbackActivity" />
+        <activity android:name=".presentation.settings.DeleteAccountActivity" />
         <activity android:name=".presentation.settings.NoticeDetailActivity" />
         <activity android:name=".presentation.settings.FeedbackActivity" />
         <activity android:name=".presentation.settings.DeleteAccountActivity" />

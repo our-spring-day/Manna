@@ -31,7 +31,6 @@ import com.manna.databinding.DialogShareBottomSheetBinding
 import com.manna.databinding.ItemShareBottomSheetBinding
 import com.manna.ext.toast
 import com.manna.util.ViewUtil
-import java.util.*
 
 data class Entry(
     @DrawableRes val iconResId: Int,
@@ -137,7 +136,7 @@ class ShareBottomSheetDialog : BottomSheetDialogFragment() {
         val description = "외않와로 모이면 지각자가 없어진다!"
 
         Firebase.dynamicLinks.shortLinkAsync {
-            link = Uri.parse("https://whynotcoming.com/invite")
+            link = Uri.parse("https://whynotcoming.com/invite?name=$name")
             domainUriPrefix = "https://whynotcoming.page.link"
             // Open links with this app on Android
             androidParameters {
