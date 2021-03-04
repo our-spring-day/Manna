@@ -11,7 +11,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:onClick="@{()-> item.onClick.invoke(item)}">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"
@@ -27,6 +28,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="18dp"
                 android:ellipsize="end"
+                android:fontFamily="@font/noto_sans_regular"
                 android:maxLines="1"
                 android:singleLine="true"
                 android:text="@{item.title}"
@@ -41,6 +43,7 @@
                 android:id="@+id/tv_notice_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/noto_sans_regular"
                 android:text="@{item.date}"
                 android:textColor="@color/bebebe"
                 android:textSize="16sp"
