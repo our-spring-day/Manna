@@ -1,12 +1,12 @@
 package com.manna.presentation.settings
 
 import android.os.Bundle
-import android.widget.Toast
+import android.view.View
 import androidx.activity.viewModels
+import androidx.core.widget.doAfterTextChanged
 import androidx.databinding.library.baseAdapters.BR
 import com.manna.R
 import com.manna.common.BaseActivity
-
 import com.manna.databinding.ActivityFeedbackBinding
 import com.manna.databinding.ItemFeedbackCategoryBinding
 import com.wswon.picker.adapter.BaseRecyclerViewAdapter
@@ -29,13 +29,35 @@ class FeedbackActivity : BaseActivity<ActivityFeedbackBinding>(R.layout.activity
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val categoryList = listOf(
-            FeedbackCategory("오류 제보", false, viewModel.onClick),
-            FeedbackCategory("피드백", false, viewModel.onClick),
-            FeedbackCategory("문의", false, viewModel.onClick)
+            FeedbackCategory(getString(R.string.error_report), false, viewModel.onClick),
+            FeedbackCategory(getString(R.string.feedback), false, viewModel.onClick),
+            FeedbackCategory(getString(R.string.inquiry), false, viewModel.onClick)
         )
 
         binding.run {
-            layoutTitleBar.tvTitle.text = "문의 및 피드백 보내기"
+            layoutTitleBar.tvTitle.text = getString(R.string.inquiry_feedback_send)
+            layoutTitleBar.ivBack.setOnClickListener {
+                finish()
+            }
+            tvSend.tvBottom.setOnClickListener {
+                when (viewModel.clickItem.value?.category) {
+                    getString(R.string.error_report) -> CustomToast.toast(
+                        this@FeedbackActivity,
+                        getString(R.string.toast_message_error_report)
+                    )?.show()
+                    getString(R.string.feedback) -> CustomToast.toast(
+                        this@FeedbackActivity,
+                        getString(R.string.toast_message_feedback)
+                    )?.show()
+                    getString(R.string.inquiry) -> CustomToast.toast(
+                        this@FeedbackActivity,
+                        getString(R.string.toast_message_inquiry)
+                    )?.show()
+                }
+                finish()
+            }
+            tvSend.tvBottom.text = getString(R.string.send)
+            tvSend.tvBottom.isEnabled = false
             rvCategory.run {
                 adapter = feedbackAdapter
             }
@@ -44,12 +66,26 @@ class FeedbackActivity : BaseActivity<ActivityFeedbackBinding>(R.layout.activity
         feedbackAdapter.replaceAll(categoryList)
 
         viewModel.clickItem.observe(this, {
+            binding.tvError.visibility = View.INVISIBLE
             categoryList.forEach { category ->
                 category.click = false
             }
             it.click = true
-            Toast.makeText(this, it.category, Toast.LENGTH_SHORT).show()
             feedbackAdapter.replaceAll(categoryList)
+
+            binding.tvSend.tvBottom.isEnabled = !binding.edtInquiryContent.text.isNullOrBlank()
         })
+
+        binding.edtInquiryContent.doAfterTextChanged {
+            if (!binding.edtInquiryContent.text.isNullOrBlank() && viewModel.clickItem.value?.click == true) {
+                binding.tvError.visibility = View.INVISIBLE
+                binding.tvSend.tvBottom.isEnabled = true
+            } else if (viewModel.clickItem.value?.click != true) {
+                binding.tvError.visibility = View.VISIBLE
+                binding.tvSend.tvBottom.isEnabled = false
+            } else {
+                binding.tvSend.tvBottom.isEnabled = false
+            }
+        }
     }
 }

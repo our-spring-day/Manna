@@ -12,7 +12,7 @@
 
         <include
             android:id="@+id/layout_title_bar"
-            layout="@layout/layout_title_bar"
+            layout="@layout/view_title_bar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
@@ -29,38 +29,99 @@
             app:layout_constraintTop_toBottomOf="@+id/layout_title_bar">
 
             <RadioButton
+                android:id="@+id/rb_delete_reason_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="개인정보 유출이 걱정돼요." />
+                android:fontFamily="@font/noto_sans_regular"
+                android:minHeight="24dp"
+                android:text="개인정보 유출이 걱정돼요."
+                android:textColor="@color/black_2"
+                android:textSize="16dp" />
 
             <RadioButton
+                android:id="@+id/rb_delete_reason_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="자주 사용하지 않아요." />
+                android:layout_marginTop="14dp"
+                android:fontFamily="@font/noto_sans_regular"
+                android:minHeight="24dp"
+                android:text="자주 사용하지 않아요."
+                android:textColor="@color/black_2"
+                android:textSize="16dp" />
 
             <RadioButton
+                android:id="@+id/rb_delete_reason_3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="서비스가 만족스럽지 않아요." />
+                android:layout_marginTop="14dp"
+                android:fontFamily="@font/noto_sans_regular"
+                android:minHeight="24dp"
+                android:text="서비스가 만족스럽지 않아요."
+                android:textColor="@color/black_2"
+                android:textSize="16dp" />
 
             <RadioButton
+                android:id="@+id/rb_delete_reason_4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="다른 아이디로 가입하려구요." />
+                android:layout_marginTop="14dp"
+                android:fontFamily="@font/noto_sans_regular"
+                android:minHeight="24dp"
+                android:text="다른 아이디로 가입하려구요."
+                android:textColor="@color/black_2"
+                android:textSize="16dp" />
 
             <RadioButton
+                android:id="@+id/rb_delete_reason_5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="기타" />
+                android:layout_marginTop="14dp"
+                android:fontFamily="@font/noto_sans_regular"
+                android:minHeight="24dp"
+                android:text="기타"
+                android:textColor="@color/black_2"
+                android:textSize="16dp" />
         </RadioGroup>
 
         <EditText
+            android:id="@+id/edt_delete_reason"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="20dp"
+            android:background="@drawable/bg_edit_text_gray"
+            android:enabled="false"
+            android:fontFamily="@font/noto_sans_regular"
+            android:gravity="top"
+            android:hint="@string/hint_delete_account_reason"
+            android:paddingStart="14dp"
+            android:paddingTop="12dp"
+            android:paddingEnd="14dp"
+            android:paddingBottom="12dp"
+            android:textColor="@color/black"
+            android:textColorHint="@color/hint_text_color"
+            android:textSize="14dp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.15"
             app:layout_constraintStart_toStartOf="@+id/rg_delete_reason"
             app:layout_constraintTop_toBottomOf="@+id/rg_delete_reason" />
 
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_delete"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:background="@drawable/selector_round_button_red"
+            android:enabled="false"
+            android:fontFamily="@font/noto_sans_bold"
+            android:gravity="center"
+            android:minHeight="60dp"
+            android:text="@string/delete_account"
+            android:textColor="@color/white"
+            android:textSize="14dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintWidth_percent=".8" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
