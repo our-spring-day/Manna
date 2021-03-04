@@ -7,7 +7,7 @@ object Logger {
     var className: String? = null
     var methodName: String? = null
     private val isDebuggable: Boolean
-        get() = BuildConfig.DEBUG
+        get() = true // BuildConfig.DEBUG
 
     val socketLogging = false
 

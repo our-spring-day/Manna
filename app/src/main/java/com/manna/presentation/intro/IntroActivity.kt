@@ -1,14 +1,17 @@
 package com.manna.presentation.intro
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import com.manna.DeviceUtil
 import com.manna.HomeActivity
 import com.manna.R
 import com.manna.common.BaseActivity
 import com.manna.common.EventObserver
+import com.manna.common.Logger
 import com.manna.databinding.ActivityIntroBinding
 import com.manna.presentation.sign_up.SignUpActivity
 import com.manna.util.ViewUtil
@@ -28,6 +31,7 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>(R.layout.activity_intro
             startActivity(SignUpActivity.getIntent(this@IntroActivity))
             finish()
         }
+        handleDeepLink()
 
         binding.homeButton.setOnClickListener {
             startActivity(HomeActivity.getIntent(this@IntroActivity))
@@ -60,5 +64,32 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>(R.layout.activity_intro
                 viewModel.registerDevice(name, DeviceUtil.getAndroidID(this))
             }
         }
+    }
+
+
+    private fun handleDeepLink() {
+        FirebaseDynamicLinks.getInstance()
+            .getDynamicLink(intent)
+            .addOnSuccessListener { pendingDynamicLinkData ->
+                if (pendingDynamicLinkData == null) {
+                    Logger.d("No have dynamic link")
+                    return@addOnSuccessListener
+                }
+                val deepLink = pendingDynamicLinkData.link
+                Logger.d("deepLink: $deepLink");
+
+                val segment = deepLink?.lastPathSegment
+                Logger.d("segment $segment")
+                when (segment) {
+//                        SEGMENT_PROMOTION:
+//                        String code = deepLink.getQueryParameter(KEY_CODE);
+//                        showPromotionDialog(code);
+//                        break;
+                }
+            }
+            .addOnFailureListener { exception ->
+                Logger.d("$exception")
+            }
+
     }
 }

@@ -116,4 +116,6 @@
     <string name="invite_link_share">초대 링크 공유</string>
     <string name="penalty_empty">벌칙 없음</string>
     <string name="memo_empty">메모 없음</string>
+    <string name="close">닫기</string>
+    <string name="share_list_title">초대 옵션 선택</string>
 </resources>

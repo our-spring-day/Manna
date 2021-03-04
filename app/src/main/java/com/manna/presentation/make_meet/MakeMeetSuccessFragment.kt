@@ -27,7 +27,7 @@ class MakeMeetSuccessFragment :
                 activity?.finish()
             }
             inviteButton.setOnClickListener {
-
+                ShareBottomSheetDialog.newInstance().show(parentFragmentManager, "")
             }
 
             viewModel.date.value?.let {
@@ -66,7 +66,6 @@ class MakeMeetSuccessFragment :
 
     private fun setupViewModel() {
         with(viewModel) {
-
 
         }
     }
