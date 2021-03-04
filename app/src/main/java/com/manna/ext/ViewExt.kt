@@ -37,6 +37,15 @@ fun TextView.setBackground(isClick: Boolean) {
     }
 }
 
+@BindingAdapter("textColor")
+fun TextView.setColor(isClick: Boolean) {
+    if (isClick) {
+        setTextColor(ContextCompat.getColor(context, R.color.keyColor))
+    } else {
+        setTextColor(ContextCompat.getColor(context, R.color.black))
+    }
+}
+
 @BindingAdapter("date")
 fun TextView.setDate(timeStamp: Long?) {
     if (timeStamp != null) {

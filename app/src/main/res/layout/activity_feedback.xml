@@ -13,7 +13,7 @@
 
         <include
             android:id="@+id/layout_title_bar"
-            layout="@layout/layout_title_bar"
+            layout="@layout/view_title_bar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
@@ -24,7 +24,7 @@
             android:id="@+id/rv_category"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="25dp"
+            android:layout_marginStart="19dp"
             android:layout_marginTop="15dp"
             android:orientation="horizontal"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
@@ -33,19 +33,53 @@
             tool:itemCount="3" />
 
         <EditText
+            android:id="@+id/edt_inquiry_content"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginStart="25dp"
             android:layout_marginTop="15dp"
             android:layout_marginEnd="25dp"
             android:background="@drawable/bg_edit_text_gray"
+            android:fontFamily="@font/noto_sans_medium"
             android:gravity="top"
-            android:hint="문의할 종류를 고르고 작성해주세요:)"
-            android:padding="10dp"
+            android:hint="@string/hint_select_inquiry_type"
+            android:overScrollMode="always"
+            android:paddingStart="14dp"
+            android:paddingTop="12dp"
+            android:paddingEnd="14dp"
+            android:paddingBottom="12dp"
+            android:scrollbarStyle="insideInset"
+            android:scrollbars="vertical"
+            android:textColor="@color/black"
+            android:textColorHint="@color/hint_text_color"
             android:textSize="14dp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.45"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/rv_category" />
 
+        <TextView
+            android:id="@+id/tv_error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/noto_sans_medium"
+            android:text="@string/select_inquiry_type_message"
+            android:textColor="@color/e54747"
+            android:textSize="14dp"
+            android:visibility="invisible"
+            app:layout_constraintStart_toStartOf="@+id/edt_inquiry_content"
+            app:layout_constraintTop_toBottomOf="@+id/edt_inquiry_content" />
+
+        <include
+            android:id="@+id/tv_send"
+            layout="@layout/view_bottom_text_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintVertical_chainStyle="packed" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

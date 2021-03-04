@@ -10,21 +10,24 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:onClick="@{()-> item.onClick.invoke(item)}"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:onClick="@{()-> item.onClick.invoke(item)}">
 
         <TextView
+            textColor="@{item.click}"
             textViewBackground="@{item.click}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/noto_sans_medium"
             android:gravity="center"
             android:paddingStart="16dp"
             android:paddingTop="5dp"
             android:paddingEnd="16dp"
             android:paddingBottom="5dp"
             android:text="@{item.category}"
-            android:textColor="@color/black"
+            android:textSize="14dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tool:text="오류 제보" />
