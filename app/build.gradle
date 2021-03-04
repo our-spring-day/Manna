@@ -11,7 +11,7 @@ plugins {
 android {
     signingConfigs {
         release {
-        storeFile file('/Users/wswon/WatchaProjects/keystore/vitamin_key_store')
+            storeFile file('/../../../keystore/vitamin_key_store')
             storePassword 'duswo123'
             keyAlias 'vitamin_mobile'
             keyPassword 'duswo123'
@@ -153,6 +153,7 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:26.0.0')
     implementation 'com.google.firebase:firebase-messaging-ktx'
     implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.firebase:firebase-dynamic-links-ktx'
 
     implementation 'com.google.android:flexbox:2.0.1'
 
