@@ -108,4 +108,6 @@
     <string name="select_inquiry_type_message">문의할 종류를 선택해주세요:)</string>
     <string name="send">보내기</string>
     <string name="toast_inquiry_completion">문의 전송 완료! 빠른 시일내 확인 후 답변드릴게요:)</string>
+    <string name="penalty_button_disable">대상과 벌칙을 선택해주세요</string>
+    <string name="penalty_button_enable">선택 완료</string>
 </resources>

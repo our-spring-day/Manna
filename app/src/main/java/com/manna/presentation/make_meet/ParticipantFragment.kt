@@ -58,13 +58,16 @@ class ParticipantFragment :
             btnBack.setOnClickListener {
                 finish()
             }
-
-            root.setOnTouchListener { _, _ -> true }
         }
     }
 
     private fun finish() {
+        val prevFragment = parentFragmentManager.fragments.find { it is BaseFragment<*> && it !== this }
+
         parentFragmentManager.commit {
+            if (prevFragment!= null) {
+                show(prevFragment)
+            }
             remove(this@ParticipantFragment)
         }
     }

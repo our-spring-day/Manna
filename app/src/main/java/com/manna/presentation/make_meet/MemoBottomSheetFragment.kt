@@ -8,6 +8,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.manna.R
 import com.manna.common.BaseBottomSheetFragment
 import com.manna.databinding.FragmentMemoBinding
+import com.manna.ext.openKeyboard
 import com.manna.ext.toast
 
 class MemoBottomSheetFragment :
@@ -38,6 +39,8 @@ class MemoBottomSheetFragment :
         with(binding) {
             val prevMemo = arguments?.getString(MEMO).orEmpty()
             inputMemo.setText(prevMemo)
+
+            inputMemo.openKeyboard()
 
             close.setOnClickListener {
                 dismiss()
