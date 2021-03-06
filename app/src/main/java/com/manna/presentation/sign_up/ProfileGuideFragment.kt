@@ -29,14 +29,7 @@ class ProfileGuideFragment :
             true
         ) {
             override fun handleOnBackPressed() {
-                val fragment =
-                    parentFragmentManager.fragments.findLast {
-                        it !is ProfileGuideFragment && it is BaseFragment<*>
-                    }
-                if (fragment != null) {
-                    parentFragmentManager.beginTransaction().show(fragment).commit()
-                }
-                parentFragmentManager.beginTransaction().remove(this@ProfileGuideFragment).commit()
+                onBackPressed()
             }
         }
         requireActivity().onBackPressedDispatcher.addCallback(this, callback)

@@ -23,14 +23,7 @@ class ServiceTermsFragment :
             true
         ) {
             override fun handleOnBackPressed() {
-                val fragment =
-                    parentFragmentManager.fragments.findLast {
-                        it !is ServiceTermsFragment && it is BaseFragment<*>
-                    }
-                if (fragment != null) {
-                    parentFragmentManager.beginTransaction().show(fragment).commit()
-                }
-                parentFragmentManager.beginTransaction().remove(this@ServiceTermsFragment).commit()
+                onBackPressed()
             }
         }
         requireActivity().onBackPressedDispatcher.addCallback(this, callback)
@@ -54,6 +47,17 @@ class ServiceTermsFragment :
             startActivity(HomeActivity.getIntent(requireContext(), isWelcome = true))
             requireActivity().finish()
         }
+    }
+
+    private fun onBackPressed() {
+        val fragment =
+            parentFragmentManager.fragments.findLast {
+                it !is ServiceTermsFragment && it is BaseFragment<*>
+            }
+        if (fragment != null) {
+            parentFragmentManager.beginTransaction().show(fragment).commit()
+        }
+        parentFragmentManager.beginTransaction().remove(this@ServiceTermsFragment).commit()
     }
 
     companion object {

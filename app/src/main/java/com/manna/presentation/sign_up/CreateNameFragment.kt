@@ -46,7 +46,7 @@ class CreateNameFragment : BaseFragment<FragmentCreateNameBinding>(R.layout.frag
 
     private fun initButton() {
         binding.ivBack.setOnClickListener {
-
+            requireActivity().finish()
         }
 
         binding.ivClear.setOnClickListener {
@@ -63,7 +63,7 @@ class CreateNameFragment : BaseFragment<FragmentCreateNameBinding>(R.layout.frag
         }
     }
 
-    private fun clearEditText(){
+    private fun clearEditText() {
         binding.ivClear.visibility = View.GONE
         binding.tvError.text = ""
         binding.ivError.visibility = View.GONE
