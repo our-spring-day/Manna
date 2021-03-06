@@ -23,8 +23,10 @@ allprojects {
         jcenter()
 
         maven {
-            url 'https://navercorp.bintray.com/maps'
+            url 'https://naver.jfrog.io/artifactory/maven/'
         }
+
+        maven { url 'https://devrepo.kakao.com/nexus/content/groups/public/' }
     }
 }
 
@@ -51,6 +53,6 @@ ext {
     rxJavaVersion = '2.2.15'
     gsonVersion = '2.8.5'
     retrofitVersion = '2.6.0'
-    naverMapVersion = '3.8.0'
+    naverMapVersion = '3.11.0'
     glideVersion = '4.10.0'
 }

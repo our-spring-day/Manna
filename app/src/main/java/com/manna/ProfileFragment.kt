@@ -23,6 +23,7 @@ import com.manna.ext.toast
 import com.manna.presentation.settings.DeleteAccountActivity
 import com.manna.presentation.settings.FeedbackActivity
 import com.manna.presentation.settings.NoticeActivity
+import com.manna.presentation.settings.ServiceTermsActivity
 import com.manna.util.ViewUtil
 import com.tedpark.tedpermission.rx2.TedRx2Permission
 import com.wswon.picker.ImagePickerFragment
@@ -68,7 +69,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
 
             }
             terms.setOnClickListener {
-
+                startActivity(Intent(requireContext(), ServiceTermsActivity::class.java))
             }
             mapInfoProvider.setOnClickListener {
 

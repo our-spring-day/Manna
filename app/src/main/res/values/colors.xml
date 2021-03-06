@@ -53,4 +53,11 @@
     <color name="ff7f7f7f">#ff7f7f7f</color>
     <color name="black_alpha03">#08000000</color>
     <color name="black_alpha20">#33000000</color>
+    <color name="e54747">#E54747</color>
+    <color name="ee4a4a">#EE4A4A</color>
+    <color name="ee4a4a_alpha80">#CCEE4A4A</color>
+    <color name="hint_text_color">#979797</color>
+    <color name="black_2">#4A4A4A</color>
+    <color name="gray_1">#8A8A8F</color>
+    <color name="gray_2">#C7C7CD</color>
 </resources>

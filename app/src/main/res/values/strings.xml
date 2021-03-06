@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Manna</string>
+    <string name="app_name">외않와</string>
 
     <string name="naver_client_id">djbet5rxjp</string>
 
@@ -79,6 +79,44 @@
     <string name="sign_up_profile_confirm_title">멋진 사진이네요!\n이대로 진행할까요?</string>
     <string name="sign_up_modify">다시 수정할래요</string>
     <string name="sign_up_service_terms_title">서비스 이용약관에\n동의해주세요.</string>
-    <string name="sign_up_service_terms_agree">위 이용약관에 동의합니다(필수)</string>
+    <string name="sign_up_service_terms_agree">위 이용약관에 동의합니다.(필수)</string>
     <string name="sign_up_sign_up">동의하고 가입하기</string>
+
+    <string name="notice">공지사항</string>
+    <string name="service_terms">서비스 이용약관</string>
+    <string name="delete_account_reason">탈퇴하려는 이유를\n알려주세요</string>
+    <string name="inquiry_feedback_send">문의 및 피드백 보내기</string>
+
+    <string name="delete_account_reason_1">개인 정보 유출이 걱정돼요.</string>
+    <string name="delete_account_reason_2">자주 사용하지 않아요.</string>
+    <string name="delete_account_reason_3">서비스가 만족스럽지 않아요.</string>
+    <string name="delete_account_reason_4">다른 아이디로 가입하려고요.</string>
+    <string name="etc">기타</string>
+    <string name="delete_account">탈퇴하기</string>
+    <string name="hint_delete_account_reason">탈퇴 사유를 입력해주세요. 회원님의 소중한 의견이 서비스 개선에 큰 도움이 됩니다.</string>
+    <string name="dialog_delete_account_title">정말 탈퇴하시겠어요?</string>
+    <string name="dialog_delete_account_message">탈퇴 시 계정은 바로 삭제되며 회원님의\n모든 데이터가 완전히 삭제되기까지는 삭제 신청\n날부터 최대 90일 정도 소요될 수 있습니다.</string>
+    <string name="toast_delete_account_completion">탈퇴 처리가 완료되었습니다.\n그동안 외않와를 이용해 주셔서 감사합니다 :)</string>
+
+    <string name="error_report">오류 제보</string>
+    <string name="feedback">피드백</string>
+    <string name="inquiry">문의</string>
+    <string name="toast_message_error_report">문의 전송 완료! 빠른 시일내 확인 후 답변드릴게요 :)</string>
+    <string name="toast_message_feedback">소중한 피드백을 보내주셔서 감사합니다 :)</string>
+    <string name="toast_message_inquiry">오류를 제보해주셔서 감사합니다 :)</string>
+    <string name="hint_select_inquiry_type">문의할 종류를 고르고 작성해주세요:)</string>
+    <string name="select_inquiry_type_message">문의할 종류를 선택해주세요:)</string>
+    <string name="send">보내기</string>
+    <string name="toast_inquiry_completion">문의 전송 완료! 빠른 시일내 확인 후 답변드릴게요:)</string>
+    <string name="penalty_button_disable">대상과 벌칙을 선택해주세요</string>
+    <string name="penalty_button_enable">선택 완료</string>
+    <string name="make_meet_success_title">약속 만들기 완료!</string>
+    <string name="make_meet_title">약속 만들기</string>
+    <string name="go_to_home">홈으로 이동</string>
+    <string name="invite_link_share">초대 링크 공유</string>
+    <string name="penalty_empty">벌칙 없음</string>
+    <string name="memo_empty">메모 없음</string>
+    <string name="close">닫기</string>
+    <string name="share_list_title">초대 옵션 선택</string>
+    <string name="meet_request">참가 요청</string>
 </resources>

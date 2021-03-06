@@ -11,6 +11,7 @@ import com.manna.R
 import com.manna.common.BaseActivity
 import com.manna.databinding.ActivitySearchBinding
 import com.manna.databinding.ItemSearchAddressBinding
+import com.manna.ext.openKeyboard
 import com.wswon.picker.adapter.BaseRecyclerViewAdapter
 import com.wswon.picker.adapter.BaseRecyclerViewHolder
 import dagger.hilt.android.AndroidEntryPoint
@@ -56,7 +57,9 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(R.layout.activity_sea
             rvAddressList.run {
                 adapter = addressAdapter
             }
-            edtKeyword.setOnEditorActionListener { v, actionId, event ->
+
+            edtKeyword.openKeyboard()
+            edtKeyword.setOnEditorActionListener { _, actionId, _ ->
                 when (actionId) {
                     EditorInfo.IME_ACTION_SEARCH -> {
                         viewModel.search(edtKeyword.text.toString())

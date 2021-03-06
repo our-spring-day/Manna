@@ -17,9 +17,15 @@ class DeleteAccountActivity :
         super.onCreate(savedInstanceState)
 
         binding.run {
-            layoutTitleBar.tvTitle.text = "탈퇴하려는 이유를\n알려주세요."
+            layoutTitleBar.tvTitle.text = getString(R.string.delete_account_reason)
+            layoutTitleBar.ivBack.setOnClickListener {
+                finish()
+            }
+
+            rgDeleteReason.setOnCheckedChangeListener { group, checkedId ->
+                edtDeleteReason.isEnabled = checkedId == R.id.rb_delete_reason_5
+                tvDelete.isEnabled = true
+            }
         }
-
-
     }
 }

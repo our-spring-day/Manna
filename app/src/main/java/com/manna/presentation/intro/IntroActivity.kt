@@ -4,12 +4,15 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import com.manna.DeviceUtil
 import com.manna.HomeActivity
 import com.manna.R
 import com.manna.common.BaseActivity
 import com.manna.common.EventObserver
+import com.manna.common.Logger
 import com.manna.databinding.ActivityIntroBinding
+import com.manna.presentation.invitation.InvitationActivity
 import com.manna.presentation.sign_up.SignUpActivity
 import com.manna.util.ViewUtil
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,6 +31,7 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>(R.layout.activity_intro
             startActivity(SignUpActivity.getIntent(this@IntroActivity))
             finish()
         }
+        handleDeepLink()
 
         binding.homeButton.setOnClickListener {
             startActivity(HomeActivity.getIntent(this@IntroActivity))
@@ -60,5 +64,34 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>(R.layout.activity_intro
                 viewModel.registerDevice(name, DeviceUtil.getAndroidID(this))
             }
         }
+    }
+
+
+    private fun handleDeepLink() {
+        FirebaseDynamicLinks.getInstance()
+            .getDynamicLink(intent)
+            .addOnSuccessListener { pendingDynamicLinkData ->
+                if (pendingDynamicLinkData == null) {
+                    Logger.d("No have dynamic link")
+                    return@addOnSuccessListener
+                }
+                val deepLink = pendingDynamicLinkData.link ?: return@addOnSuccessListener
+                Logger.d("deepLink: $deepLink")
+
+                val segment = deepLink.lastPathSegment
+                Logger.d("segment $segment")
+
+                val name = deepLink.getQueryParameter("name").orEmpty()
+
+                when (segment) {
+                    "invite" -> {
+                        startActivity(InvitationActivity.getIntent(this, name))
+                    }
+                }
+            }
+            .addOnFailureListener { exception ->
+                Logger.d("$exception")
+            }
+
     }
 }
