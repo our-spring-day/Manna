@@ -10,6 +10,7 @@ import com.manna.R
 import com.manna.common.BaseFragment
 import com.manna.databinding.FragmentCreateNameBinding
 import com.manna.ext.closeKeyboard
+import com.manna.ext.openKeyboard
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.regex.Pattern
 
@@ -36,6 +37,7 @@ class CreateNameFragment : BaseFragment<FragmentCreateNameBinding>(R.layout.frag
 
     private fun initView() {
         binding.run {
+            edtName.openKeyboard()
             layoutTitleBar.tvTitle.text = getString(R.string.sign_up_create_name_title)
             layoutTitleBar.ivBack.setOnClickListener {
                 requireActivity().finish()
@@ -44,8 +46,7 @@ class CreateNameFragment : BaseFragment<FragmentCreateNameBinding>(R.layout.frag
                 clearEditText()
             }
             tvNext.setOnClickListener {
-                binding.edtName.closeKeyboard()
-
+                edtName.closeKeyboard()
                 parentFragmentManager.beginTransaction().hide(this@CreateNameFragment).commit()
                 val fragment = ProfileGuideFragment.newInstance()
                 parentFragmentManager.beginTransaction()

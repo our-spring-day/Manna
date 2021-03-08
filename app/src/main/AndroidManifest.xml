@@ -58,7 +58,7 @@
         <activity android:name=".presentation.settings.ServiceTermsActivity" />
         <activity
             android:name=".presentation.sign_up.SignUpActivity"
-            android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
+            android:windowSoftInputMode="adjustResize" />
 
         <service
             android:name=".fcm.MyFirebaseMessagingService"
