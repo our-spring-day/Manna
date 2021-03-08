@@ -31,7 +31,6 @@ class ServiceTermsFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.tvContent.movementMethod = ScrollingMovementMethod()
         binding.cbCheck.setOnClickListener {
             if (binding.cbCheck.isChecked) {
                 binding.tvSignUp.isEnabled = true
@@ -47,13 +46,17 @@ class ServiceTermsFragment :
             startActivity(HomeActivity.getIntent(requireContext(), isWelcome = true))
             requireActivity().finish()
         }
+        binding.run {
+            layoutTitleBar.tvTitle.text = getString(R.string.sign_up_service_terms_title)
+            layoutTitleBar.ivBack.setOnClickListener {
+                onBackPressed()
+            }
+            tvContent.movementMethod = ScrollingMovementMethod()
+        }
     }
 
     private fun onBackPressed() {
-        val fragment =
-            parentFragmentManager.fragments.findLast {
-                it !is ServiceTermsFragment && it is BaseFragment<*>
-            }
+        val fragment = parentFragmentManager.fragments.findLast { it is BaseFragment<*> && it !== this }
         if (fragment != null) {
             parentFragmentManager.beginTransaction().show(fragment).commit()
         }

@@ -30,47 +30,50 @@ class CreateNameFragment : BaseFragment<FragmentCreateNameBinding>(R.layout.frag
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initButton()
 
-        binding.edtName.doAfterTextChanged {
-            if (binding.edtName.text.isNotEmpty()) {
-                binding.ivClear.visibility = View.VISIBLE
-                binding.tvError.visibility = View.VISIBLE
-                binding.ivError.visibility = View.VISIBLE
-                checkNickname()
-            } else {
+        initView()
+    }
+
+    private fun initView() {
+        binding.run {
+            layoutTitleBar.tvTitle.text = getString(R.string.sign_up_create_name_title)
+            layoutTitleBar.ivBack.setOnClickListener {
+                requireActivity().finish()
+            }
+            ivClear.setOnClickListener {
                 clearEditText()
+            }
+            tvNext.setOnClickListener {
+                binding.edtName.closeKeyboard()
+
+                parentFragmentManager.beginTransaction().hide(this@CreateNameFragment).commit()
+                val fragment = ProfileGuideFragment.newInstance()
+                parentFragmentManager.beginTransaction()
+                    .add(R.id.fl_sign_up, fragment, fragment::class.java.simpleName).commit()
+            }
+            edtName.doAfterTextChanged {
+                if (binding.edtName.text.isNotEmpty()) {
+                    binding.ivClear.visibility = View.VISIBLE
+                    binding.tvError.visibility = View.VISIBLE
+                    binding.ivError.visibility = View.VISIBLE
+                    checkNickname()
+                } else {
+                    clearEditText()
+                }
             }
         }
     }
 
-    private fun initButton() {
-        binding.ivBack.setOnClickListener {
-            requireActivity().finish()
-        }
-
-        binding.ivClear.setOnClickListener {
-            clearEditText()
-        }
-
-        binding.tvNext.setOnClickListener {
-            binding.edtName.closeKeyboard()
-
-            parentFragmentManager.beginTransaction().hide(this@CreateNameFragment).commit()
-            val fragment = ProfileGuideFragment.newInstance()
-            parentFragmentManager.beginTransaction()
-                .add(R.id.fl_sign_up, fragment, fragment::class.java.simpleName).commit()
-        }
-    }
-
     private fun clearEditText() {
-        binding.ivClear.visibility = View.GONE
-        binding.tvError.text = ""
-        binding.ivError.visibility = View.GONE
-        binding.edtName.text.clear()
-        binding.tvNext.isEnabled = false
-        binding.tvNext.background =
-            ContextCompat.getDrawable(requireContext(), R.drawable.bg_btn_gray)
+        binding.run {
+            ivClear.visibility = View.GONE
+            tvError.text = ""
+            ivError.visibility = View.GONE
+            edtName.text.clear()
+            tvNext.isEnabled = false
+            tvNext.background =
+                ContextCompat.getDrawable(requireContext(), R.drawable.bg_btn_gray)
+        }
     }
 
     private fun checkNickname() {
@@ -93,28 +96,32 @@ class CreateNameFragment : BaseFragment<FragmentCreateNameBinding>(R.layout.frag
                         getString(R.string.sign_up_create_name_error_message_hangul)
                 }
             }
-            binding.tvError.setTextColor(ContextCompat.getColor(requireContext(), R.color.ff0000))
-            binding.ivError.setImageDrawable(
-                ContextCompat.getDrawable(
-                    requireContext(),
-                    R.drawable.ic_error
+            binding.run {
+                tvError.setTextColor(ContextCompat.getColor(requireContext(), R.color.ff0000))
+                ivError.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        requireContext(),
+                        R.drawable.ic_error
+                    )
                 )
-            )
-            binding.tvNext.isEnabled = false
-            binding.tvNext.background =
-                ContextCompat.getDrawable(requireContext(), R.drawable.bg_btn_gray)
+                tvNext.isEnabled = false
+                tvNext.background =
+                    ContextCompat.getDrawable(requireContext(), R.drawable.bg_btn_gray)
+            }
         } else {
-            binding.tvError.text = getString(R.string.sign_up_create_name_available_message)
-            binding.tvError.setTextColor(ContextCompat.getColor(requireContext(), R.color.keyColor))
-            binding.ivError.setImageDrawable(
-                ContextCompat.getDrawable(
-                    requireContext(),
-                    R.drawable.ic_available
+            binding.run {
+                tvError.text = getString(R.string.sign_up_create_name_available_message)
+                tvError.setTextColor(ContextCompat.getColor(requireContext(), R.color.keyColor))
+                ivError.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        requireContext(),
+                        R.drawable.ic_available
+                    )
                 )
-            )
-            binding.tvNext.isEnabled = true
-            binding.tvNext.background =
-                ContextCompat.getDrawable(requireContext(), R.drawable.bg_btn_blue)
+                tvNext.isEnabled = true
+                tvNext.background =
+                    ContextCompat.getDrawable(requireContext(), R.drawable.bg_btn_blue)
+            }
         }
     }
 
