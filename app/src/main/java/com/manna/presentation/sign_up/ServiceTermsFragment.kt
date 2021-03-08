@@ -31,6 +31,7 @@ class ServiceTermsFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         binding.cbCheck.setOnClickListener {
             if (binding.cbCheck.isChecked) {
                 binding.tvSignUp.isEnabled = true
@@ -42,10 +43,26 @@ class ServiceTermsFragment :
                     ContextCompat.getDrawable(requireContext(), R.drawable.bg_btn_gray)
             }
         }
+
+        binding.tvCheck.setOnClickListener {
+            if (binding.cbCheck.isChecked) {
+                binding.cbCheck.isChecked = false
+                binding.tvSignUp.isEnabled = false
+                binding.tvSignUp.background =
+                    ContextCompat.getDrawable(requireContext(), R.drawable.bg_btn_gray)
+            } else {
+                binding.cbCheck.isChecked = true
+                binding.tvSignUp.isEnabled = true
+                binding.tvSignUp.background =
+                    ContextCompat.getDrawable(requireContext(), R.drawable.bg_btn_blue)
+            }
+        }
+
         binding.tvSignUp.setOnClickListener {
             startActivity(HomeActivity.getIntent(requireContext(), isWelcome = true))
             requireActivity().finish()
         }
+
         binding.run {
             layoutTitleBar.tvTitle.text = getString(R.string.sign_up_service_terms_title)
             layoutTitleBar.ivBack.setOnClickListener {
@@ -56,7 +73,8 @@ class ServiceTermsFragment :
     }
 
     private fun onBackPressed() {
-        val fragment = parentFragmentManager.fragments.findLast { it is BaseFragment<*> && it !== this }
+        val fragment =
+            parentFragmentManager.fragments.findLast { it is BaseFragment<*> && it !== this }
         if (fragment != null) {
             parentFragmentManager.beginTransaction().show(fragment).commit()
         }
