@@ -7,6 +7,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.view.animation.AnimationUtils
 import androidx.activity.OnBackPressedCallback
 import com.gun0912.tedpermission.TedPermissionResult
 import com.manna.R
@@ -38,12 +39,19 @@ class ProfileGuideFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.ivBack.setOnClickListener {
+        initView()
+    }
 
-        }
-
-        binding.tvAlbum.setOnClickListener {
-            showImagePicker()
+    private fun initView() {
+        binding.run {
+            layoutTitleBar.tvTitle.text = getString(R.string.sign_up_profile_guide_title)
+            layoutTitleBar.ivBack.setOnClickListener {
+                onBackPressed()
+            }
+            ivImage.animation = AnimationUtils.loadAnimation(requireContext(), R.anim.anim_alpha)
+            tvAlbum.setOnClickListener {
+                showImagePicker()
+            }
         }
     }
 
@@ -100,9 +108,7 @@ class ProfileGuideFragment :
 
     private fun onBackPressed() {
         val fragment =
-            parentFragmentManager.fragments.findLast {
-                it !is ProfileConfirmFragment && it is BaseFragment<*>
-            }
+            parentFragmentManager.fragments.findLast { it is BaseFragment<*> && it !== this }
         if (fragment != null) {
             parentFragmentManager.beginTransaction().show(fragment).commit()
         }
