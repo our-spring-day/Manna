@@ -26,6 +26,10 @@ class DeleteAccountActivity :
                 edtDeleteReason.isEnabled = checkedId == R.id.rb_delete_reason_5
                 tvDelete.isEnabled = true
             }
+
+            tvDelete.setOnClickListener {
+                DeleteAccountDialogFragment().show(supportFragmentManager, "")
+            }
         }
     }
 }
