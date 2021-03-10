@@ -58,6 +58,7 @@
     <color name="ee4a4a_alpha80">#CCEE4A4A</color>
     <color name="hint_text_color">#979797</color>
     <color name="black_2">#4A4A4A</color>
+    <color name="black_3">#3B3B42</color>
     <color name="gray_1">#8A8A8F</color>
     <color name="gray_2">#C7C7CD</color>
 </resources>

@@ -108,4 +108,8 @@
     <string name="select_inquiry_type_message">문의할 종류를 선택해주세요:)</string>
     <string name="send">보내기</string>
     <string name="toast_inquiry_completion">문의 전송 완료! 빠른 시일내 확인 후 답변드릴게요:)</string>
+
+    <string name="dialog_sign_out">로그아웃 하시겠어요?</string>
+    <string name="yes">네</string>
+    <string name="no">아니요</string>
 </resources>
