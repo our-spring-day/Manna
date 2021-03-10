@@ -219,7 +219,7 @@
                 android:fontFamily="@font/noto_sans_bold"
                 android:gravity="center"
                 android:minHeight="57dp"
-                android:text="대상과 벌칙을 선택해주세요"
+                android:text="@string/penalty_button_disable"
                 android:textColor="@color/white"
                 android:textSize="14dp"
                 app:layout_constraintBottom_toBottomOf="parent"

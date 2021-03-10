@@ -112,4 +112,7 @@
     <string name="dialog_sign_out">로그아웃 하시겠어요?</string>
     <string name="yes">네</string>
     <string name="no">아니요</string>
+
+    <string name="penalty_button_disable">대상과 벌칙을 선택해주세요</string>
+    <string name="penalty_button_enable">선택 완료</string>
 </resources>

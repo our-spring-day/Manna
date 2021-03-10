@@ -16,9 +16,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity
-            android:name=".presentation.make_meet.MeetRegisterActivity"
-            android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".presentation.make_meet.MakeMeetActivity"
+            android:windowSoftInputMode="adjustResize"/>
 
         <activity
             android:name=".presentation.location.MeetDetailActivity"
