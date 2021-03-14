@@ -21,6 +21,7 @@ import com.manna.databinding.ItemFriendsBinding
 import com.manna.ext.setImage
 import com.manna.ext.toast
 import com.manna.presentation.settings.*
+import com.manna.presentation.sign_up.SignUpActivity
 import com.manna.util.ViewUtil
 import com.tedpark.tedpermission.rx2.TedRx2Permission
 import com.wswon.picker.ImagePickerFragment
@@ -57,7 +58,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
                 startActivity(Intent(requireContext(), NoticeActivity::class.java))
             }
             questions.setOnClickListener {
-                startActivity(Intent(requireContext(), FeedbackActivity::class.java))
+                startActivity(FeedbackActivity.getIntent(requireContext()))
             }
             storeEvaluate.setOnClickListener {
 

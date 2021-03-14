@@ -8,12 +8,6 @@ import com.manna.data.model.NoticeItem
 class SettingsViewModel @ViewModelInject constructor() :
     BaseViewModel() {
 
-    val onClick: (FeedbackCategory) -> Unit = {
-        clickItem.value = it
-    }
-
-    val clickItem = MutableLiveData<FeedbackCategory>()
-
     val onNoticeClick: (NoticeItem) -> Unit = {
         clickNoticeItem.value = it
     }
