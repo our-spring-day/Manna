@@ -43,18 +43,6 @@ class CustomDialogFragment : DialogFragment() {
             setColor(ContextCompat.getColor(requireContext(), R.color.white))
         }
 
-        binding.tvCancel.background = GradientDrawable().apply {
-            val array = floatArrayOf(tenDp, tenDp, tenDp, tenDp, tenDp, tenDp, tenDp, tenDp)
-            cornerRadii = array
-            setStroke(oneDp, ContextCompat.getColor(requireContext(), R.color.keyColor))
-        }
-
-        binding.tvConfirm.background = GradientDrawable().apply {
-            val array = floatArrayOf(tenDp, tenDp, tenDp, tenDp, tenDp, tenDp, tenDp, tenDp)
-            cornerRadii = array
-            setColor(ContextCompat.getColor(requireContext(), R.color.keyColor))
-        }
-
         binding.tvCancel.setOnClickListener {
             dismiss()
         }

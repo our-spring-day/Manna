@@ -61,4 +61,6 @@
     <color name="black_3">#3B3B42</color>
     <color name="gray_1">#8A8A8F</color>
     <color name="gray_2">#C7C7CD</color>
+    <color name="black_alpha45">#73000000</color>
+    <color name="black_alpha12">#1F000000</color>
 </resources>
