@@ -21,7 +21,6 @@ import com.manna.databinding.ItemFriendsBinding
 import com.manna.ext.setImage
 import com.manna.ext.toast
 import com.manna.presentation.settings.*
-import com.manna.presentation.sign_up.SignUpActivity
 import com.manna.util.ViewUtil
 import com.tedpark.tedpermission.rx2.TedRx2Permission
 import com.wswon.picker.ImagePickerFragment
@@ -32,6 +31,12 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
     private val adapter by lazy {
         FriendsAdapter {
 
+        }
+    }
+
+    private val dialogListener = object : CustomDialogFragment.CustomDialogListener {
+        override fun onDialogPositiveClick() {
+            // 로그아웃
         }
     }
 
@@ -76,7 +81,13 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
 
             }
             logout.setOnClickListener {
-                CustomDialogFragment().show(parentFragmentManager, "")
+                val dialogFragment = CustomDialogFragment.newInstance(
+                    getString(R.string.dialog_sign_out),
+                    getString(R.string.yes),
+                    getString(R.string.no)
+                )
+                dialogFragment.setOnClickListener(dialogListener)
+                dialogFragment.show(parentFragmentManager, "")
             }
             leave.setOnClickListener {
                 startActivity(Intent(requireContext(), DeleteAccountActivity::class.java))

@@ -60,7 +60,7 @@ class DeleteAccountActivity :
             }
 
             tvDelete.setOnClickListener {
-                //DeleteAccountDialogFragment().show(supportFragmentManager, "")
+                CustomDialogFragment().show(supportFragmentManager, "")
             }
         }
     }

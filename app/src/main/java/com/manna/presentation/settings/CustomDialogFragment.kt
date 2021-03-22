@@ -19,12 +19,21 @@ import com.manna.util.ViewUtil
 class CustomDialogFragment : DialogFragment() {
 
     private lateinit var binding: DialogCustomBinding
+    lateinit var listener: CustomDialogListener
+
+    interface CustomDialogListener {
+        fun onDialogPositiveClick()
+    }
+
+    fun setOnClickListener(listener: CustomDialogListener) {
+        this.listener = listener
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.dialog_custom, container, false)
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
@@ -34,12 +43,16 @@ class CustomDialogFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.apply {
+            tvMessage.text = arguments?.getString(MESSAGE)
+            tvConfirm.text = arguments?.getString(POSITIVE)
+            tvCancel.text = arguments?.getString(NEGATIVE)
+        }
+
         val tenDp = ViewUtil.convertDpToPixel(requireContext(), 10f)
-        val oneDp = ViewUtil.convertDpToPixel(requireContext(), 1f).toInt()
 
         binding.clRoot.background = GradientDrawable().apply {
-            val array = floatArrayOf(tenDp, tenDp, tenDp, tenDp, tenDp, tenDp, tenDp, tenDp)
-            cornerRadii = array
+            cornerRadius = tenDp
             setColor(ContextCompat.getColor(requireContext(), R.color.white))
         }
 
@@ -48,7 +61,23 @@ class CustomDialogFragment : DialogFragment() {
         }
 
         binding.tvConfirm.setOnClickListener {
+            listener.onDialogPositiveClick()
             dismiss()
         }
+    }
+
+    companion object {
+        private const val MESSAGE = "message"
+        private const val POSITIVE = "positive"
+        private const val NEGATIVE = "negative"
+
+        fun newInstance(message: String, positive: String, negative: String) =
+            CustomDialogFragment().apply {
+                arguments = Bundle().apply {
+                    putString(MESSAGE, message)
+                    putString(POSITIVE, positive)
+                    putString(NEGATIVE, negative)
+                }
+            }
     }
 }
