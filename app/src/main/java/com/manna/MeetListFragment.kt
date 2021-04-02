@@ -62,6 +62,14 @@ class MeetListFragment : BaseFragment<FragmentMeetListBinding>(R.layout.fragment
                 addItemDecoration(getDecoration())
                 adapter = meetAdapter
             }
+
+            btnApply.setOnClickListener {
+
+            }
+
+            btnAlert.setOnClickListener {
+
+            }
         }
     }
 
