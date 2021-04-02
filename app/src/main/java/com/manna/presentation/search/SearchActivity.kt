@@ -55,6 +55,9 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(R.layout.activity_sea
         }
 
         binding.run {
+            btnBack.setOnClickListener {
+                onBackPressed()
+            }
             rvAddressList.run {
                 adapter = addressAdapter
             }
