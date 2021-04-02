@@ -1,4 +1,4 @@
-package com.manna
+package com.manna.presentation.meet_list
 
 import android.Manifest
 import android.graphics.Rect
@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gun0912.tedpermission.TedPermissionResult
+import com.manna.R
 import com.manna.common.BaseFragment
 import com.manna.common.plusAssign
 import com.manna.databinding.FragmentMeetListBinding

@@ -19,6 +19,8 @@ import com.manna.common.BaseActivity
 import com.manna.databinding.ActivityHomeBinding
 import com.manna.databinding.DialogWelcomeBinding
 import com.manna.presentation.make_meet.MakeMeetActivity
+import com.manna.presentation.meet_list.MeetListFragment
+import com.manna.presentation.profile.ProfileFragment
 import com.manna.util.ViewUtil
 import dagger.hilt.android.AndroidEntryPoint
 
