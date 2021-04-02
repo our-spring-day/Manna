@@ -119,4 +119,6 @@
     <string name="close">닫기</string>
     <string name="share_list_title">초대 옵션 선택</string>
     <string name="meet_request">참가 요청</string>
+    <string name="alert">알림</string>
+    <string name="apply_request">참가 요청</string>
 </resources>
