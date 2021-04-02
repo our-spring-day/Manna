@@ -121,4 +121,7 @@
     <string name="meet_request">참가 요청</string>
     <string name="alert">알림</string>
     <string name="apply_request">참가 요청</string>
+    <string name="open_map">지도 열기</string>
+    <string name="reject">거절</string>
+    <string name="accept">수락</string>
 </resources>
