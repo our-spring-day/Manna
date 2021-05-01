@@ -20,10 +20,7 @@ import com.manna.databinding.FragmentProfileBinding
 import com.manna.databinding.ItemFriendsBinding
 import com.manna.ext.setImage
 import com.manna.ext.toast
-import com.manna.presentation.settings.DeleteAccountActivity
-import com.manna.presentation.settings.FeedbackActivity
-import com.manna.presentation.settings.NoticeActivity
-import com.manna.presentation.settings.ServiceTermsActivity
+import com.manna.presentation.settings.*
 import com.manna.util.ViewUtil
 import com.tedpark.tedpermission.rx2.TedRx2Permission
 import com.wswon.picker.ImagePickerFragment
@@ -34,6 +31,12 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
     private val adapter by lazy {
         FriendsAdapter {
 
+        }
+    }
+
+    private val dialogListener = object : CustomDialogFragment.CustomDialogListener {
+        override fun onDialogPositiveClick() {
+            // 로그아웃
         }
     }
 
@@ -60,7 +63,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
                 startActivity(Intent(requireContext(), NoticeActivity::class.java))
             }
             questions.setOnClickListener {
-                startActivity(Intent(requireContext(), FeedbackActivity::class.java))
+                startActivity(FeedbackActivity.getIntent(requireContext()))
             }
             storeEvaluate.setOnClickListener {
 
@@ -78,7 +81,13 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
 
             }
             logout.setOnClickListener {
-
+                val dialogFragment = CustomDialogFragment.newInstance(
+                    getString(R.string.dialog_sign_out),
+                    getString(R.string.yes),
+                    getString(R.string.no)
+                )
+                dialogFragment.setOnClickListener(dialogListener)
+                dialogFragment.show(parentFragmentManager, "")
             }
             leave.setOnClickListener {
                 startActivity(Intent(requireContext(), DeleteAccountActivity::class.java))

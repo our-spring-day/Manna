@@ -1,7 +1,7 @@
 package com.manna.presentation.settings
 
-data class FeedbackCategory(
-    val category: String,
-    var click: Boolean,
-    var onClick: (FeedbackCategory) -> Unit
-)
+object FeedbackCategory{
+    const val ERROR = "error"
+    const val FEEDBACK = "feedback"
+    const val INQUIRY = "inquiry"
+}

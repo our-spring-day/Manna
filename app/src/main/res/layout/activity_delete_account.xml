@@ -5,123 +5,155 @@
 
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ScrollView
+        android:id="@+id/sv_root"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white">
+        android:layout_height="match_parent">
 
-        <include
-            android:id="@+id/layout_title_bar"
-            layout="@layout/view_title_bar"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:paddingBottom="20dp">
 
-        <RadioGroup
-            android:id="@+id/rg_delete_reason"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="25dp"
-            android:layout_marginTop="22dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/layout_title_bar">
+            <include
+                android:id="@+id/layout_title_bar"
+                layout="@layout/view_title_bar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <RadioButton
+            <TextView
+                android:id="@+id/tv_guide"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="7dp"
+                android:fontFamily="@font/noto_sans_medium"
+                android:text="@string/multiple_select_possible"
+                android:textColor="@color/keyColor"
+                android:textSize="14dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/layout_title_bar" />
+
+            <androidx.appcompat.widget.AppCompatCheckBox
                 android:id="@+id/rb_delete_reason_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="12dp"
+                android:button="@drawable/selector_cb_oval"
                 android:fontFamily="@font/noto_sans_regular"
                 android:minHeight="24dp"
+                android:paddingStart="6dp"
                 android:text="개인정보 유출이 걱정돼요."
                 android:textColor="@color/black_2"
-                android:textSize="16dp" />
+                android:textSize="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_guide" />
 
-            <RadioButton
+            <androidx.appcompat.widget.AppCompatCheckBox
                 android:id="@+id/rb_delete_reason_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
+                android:button="@drawable/selector_cb_oval"
                 android:fontFamily="@font/noto_sans_regular"
                 android:minHeight="24dp"
+                android:paddingStart="6dp"
                 android:text="자주 사용하지 않아요."
                 android:textColor="@color/black_2"
-                android:textSize="16dp" />
+                android:textSize="16dp"
+                app:layout_constraintStart_toStartOf="@+id/rb_delete_reason_1"
+                app:layout_constraintTop_toBottomOf="@+id/rb_delete_reason_1" />
 
-            <RadioButton
+            <androidx.appcompat.widget.AppCompatCheckBox
                 android:id="@+id/rb_delete_reason_3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
+                android:button="@drawable/selector_cb_oval"
                 android:fontFamily="@font/noto_sans_regular"
                 android:minHeight="24dp"
+                android:paddingStart="6dp"
                 android:text="서비스가 만족스럽지 않아요."
                 android:textColor="@color/black_2"
-                android:textSize="16dp" />
+                android:textSize="16dp"
+                app:layout_constraintStart_toStartOf="@+id/rb_delete_reason_2"
+                app:layout_constraintTop_toBottomOf="@+id/rb_delete_reason_2" />
 
-            <RadioButton
+            <androidx.appcompat.widget.AppCompatCheckBox
                 android:id="@+id/rb_delete_reason_4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
+                android:button="@drawable/selector_cb_oval"
                 android:fontFamily="@font/noto_sans_regular"
                 android:minHeight="24dp"
+                android:paddingStart="6dp"
                 android:text="다른 아이디로 가입하려구요."
                 android:textColor="@color/black_2"
-                android:textSize="16dp" />
+                android:textSize="16dp"
+                app:layout_constraintStart_toStartOf="@+id/rb_delete_reason_3"
+                app:layout_constraintTop_toBottomOf="@+id/rb_delete_reason_3" />
 
-            <RadioButton
+            <androidx.appcompat.widget.AppCompatCheckBox
                 android:id="@+id/rb_delete_reason_5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
+                android:button="@drawable/selector_cb_oval"
                 android:fontFamily="@font/noto_sans_regular"
                 android:minHeight="24dp"
+                android:paddingStart="6dp"
                 android:text="기타"
                 android:textColor="@color/black_2"
-                android:textSize="16dp" />
-        </RadioGroup>
+                android:textSize="16dp"
+                app:layout_constraintStart_toStartOf="@+id/rb_delete_reason_4"
+                app:layout_constraintTop_toBottomOf="@+id/rb_delete_reason_4" />
 
-        <EditText
-            android:id="@+id/edt_delete_reason"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="20dp"
-            android:background="@drawable/bg_edit_text_gray"
-            android:enabled="false"
-            android:fontFamily="@font/noto_sans_regular"
-            android:gravity="top"
-            android:hint="@string/hint_delete_account_reason"
-            android:paddingStart="14dp"
-            android:paddingTop="12dp"
-            android:paddingEnd="14dp"
-            android:paddingBottom="12dp"
-            android:textColor="@color/black"
-            android:textColorHint="@color/hint_text_color"
-            android:textSize="14dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_percent="0.15"
-            app:layout_constraintStart_toStartOf="@+id/rg_delete_reason"
-            app:layout_constraintTop_toBottomOf="@+id/rg_delete_reason" />
+            <EditText
+                android:id="@+id/edt_delete_reason"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="20dp"
+                android:background="@drawable/bg_edit_text_gray"
+                android:enabled="false"
+                android:fontFamily="@font/noto_sans_regular"
+                android:gravity="top"
+                android:hint="@string/hint_delete_account_reason"
+                android:minHeight="109dp"
+                android:paddingStart="14dp"
+                android:paddingTop="12dp"
+                android:paddingEnd="14dp"
+                android:paddingBottom="12dp"
+                android:textColor="@color/black"
+                android:textColorHint="@color/hint_text_color"
+                android:textSize="14dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/rb_delete_reason_5"
+                app:layout_constraintTop_toBottomOf="@+id/rb_delete_reason_5" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_delete"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="30dp"
-            android:background="@drawable/selector_round_button_red"
-            android:enabled="false"
-            android:fontFamily="@font/noto_sans_bold"
-            android:gravity="center"
-            android:minHeight="60dp"
-            android:text="@string/delete_account"
-            android:textColor="@color/white"
-            android:textSize="14dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintWidth_percent=".8" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/tv_delete"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/selector_button_red"
+                android:enabled="false"
+                android:fontFamily="@font/noto_sans_bold"
+                android:gravity="center"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp"
+                android:text="@string/delete_account"
+                android:textColor="@color/white"
+                android:textSize="14dp"
+                app:layout_constraintEnd_toEndOf="@+id/edt_delete_reason"
+                app:layout_constraintStart_toStartOf="@+id/edt_delete_reason"
+                app:layout_constraintTop_toBottomOf="@+id/edt_delete_reason" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 </layout>
