@@ -40,6 +40,13 @@ class ProfileConfirmFragment :
             onBackPressed()
         }
 
+        binding.run {
+            layoutTitleBar.tvTitle.text = getString(R.string.sign_up_profile_guide_title)
+            layoutTitleBar.ivBack.setOnClickListener {
+                onBackPressed()
+            }
+        }
+
         binding.tvNext.setOnClickListener {
             parentFragmentManager.beginTransaction().hide(this@ProfileConfirmFragment).commit()
             val fragment = ServiceTermsFragment.newInstance()
@@ -49,10 +56,7 @@ class ProfileConfirmFragment :
     }
 
     private fun onBackPressed() {
-        val fragment =
-            parentFragmentManager.fragments.findLast {
-                it !is ProfileConfirmFragment && it is BaseFragment<*>
-            }
+        val fragment = parentFragmentManager.fragments.findLast { it is BaseFragment<*> && it !== this }
         if (fragment != null) {
             parentFragmentManager.beginTransaction().show(fragment).commit()
         }

@@ -11,42 +11,32 @@
         android:layout_height="match_parent"
         android:background="@color/white">
 
-        <ImageView
-            android:id="@+id/iv_back"
-            android:layout_width="wrap_content"
+        <include
+            android:id="@+id/layout_title_bar"
+            layout="@layout/view_title_bar"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="15.75dp"
-            android:padding="10dp"
-            android:src="@drawable/ic_iconbackblack"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/tv_name_guide"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="14.13dp"
-            android:text="@string/sign_up_create_name_title"
-            android:textColor="@color/black"
-            android:textSize="26dp"
-            app:layout_constraintStart_toStartOf="@+id/edt_name"
-            app:layout_constraintTop_toBottomOf="@+id/iv_back" />
 
         <EditText
             android:id="@+id/edt_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="41dp"
+            android:fontFamily="@font/noto_sans_regular"
             android:hint="@string/sign_up_create_name_edt_hint"
             android:maxLines="1"
             android:paddingBottom="16dp"
             android:singleLine="true"
+            android:textColor="@color/black"
+            android:textColorHint="@color/hint_text_color"
             android:textSize="18dp"
             android:theme="@style/EditTextTheme"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_name_guide"
+            app:layout_constraintTop_toBottomOf="@+id/layout_title_bar"
             app:layout_constraintWidth_percent="0.83" />
 
         <ImageView
@@ -76,6 +66,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
+            android:fontFamily="@font/noto_sans_regular"
             android:text="@string/sign_up_create_name_available_message"
             android:textColor="@color/keyColor"
             android:textSize="12dp"
@@ -92,6 +83,7 @@
             android:layout_marginBottom="30dp"
             android:background="@drawable/bg_btn_gray"
             android:enabled="false"
+            android:fontFamily="@font/noto_sans_bold"
             android:gravity="center"
             android:text="@string/sign_up_next"
             android:textColor="@color/white"
