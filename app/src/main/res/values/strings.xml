@@ -1,11 +1,7 @@
 <resources>
     <string name="app_name">외않와</string>
 
-    <string name="naver_client_id">djbet5rxjp</string>
-
-
     <string name="default_notification_channel_id">WhereAreYou</string>
-
 
     <string name="memo_list_title">메모장</string>
     <string name="add_memo">메모 추가</string>

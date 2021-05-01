@@ -1,19 +1,19 @@
-package com.manna
+package com.manna.network.model.chat
+
 
 import com.google.gson.annotations.SerializedName
-import com.manna.network.model.chat.Sender
 
-data class LocationResponse(
-    @SerializedName("location")
-    val latLng: MyLatLng?,
+data class ChatResponse(
     @SerializedName("sender")
     val sender: Sender?,
+    @SerializedName("message")
+    val message: Message?,
     @SerializedName("type")
     val type: Type?
 ) {
     enum class Type {
-        @SerializedName("LOCATION")
-        LOCATION,
+        @SerializedName("CHAT")
+        CHAT,
         @SerializedName("JOIN")
         JOIN,
         @SerializedName("LEAVE")

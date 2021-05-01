@@ -26,10 +26,10 @@
             android:name=".presentation.location.MeetDetailActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing" />
-        <activity android:name=".SettingActivity" />
+        <activity android:name=".presentation.settings.SettingActivity" />
         <activity android:name=".presentation.search.SearchActivity" />
         <activity android:name=".presentation.search.RouteActivity" />
-        <activity android:name=".HomeActivity" />
+        <activity android:name=".presentation.HomeActivity" />
         <activity android:name=".presentation.intro.IntroActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -50,7 +50,6 @@
                     android:scheme="https" />
             </intent-filter>
         </activity>
-        <activity android:name=".presentation.SocketIOTestActivity" />
         <activity android:name=".presentation.settings.NoticeActivity" />
         <activity android:name=".presentation.settings.FeedbackActivity" />
         <activity android:name=".presentation.settings.NoticeDetailActivity" />

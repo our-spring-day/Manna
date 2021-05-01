@@ -9,7 +9,7 @@ import javax.inject.Inject
 
 class AddressRemoteDataSourceImpl @Inject constructor(private val addressApi: AddressApi) : AddressRemoteDataSource {
 
-    private val authorization = "KakaoAK ${BuildConfig.KAKAO_KEY}"
+    private val authorization = "KakaoAK ${BuildConfig.KAKAO_REST_KEY}"
 
     override fun getAddress(latitude: Double, longitude: Double): Single<CoordAddressResponse> {
         return addressApi.getCoordAddress(authorization, latitude, longitude)

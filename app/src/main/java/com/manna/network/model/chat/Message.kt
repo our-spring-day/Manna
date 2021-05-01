@@ -1,5 +1,4 @@
-package com.manna
-
+package com.manna.network.model.chat
 
 import com.google.gson.annotations.SerializedName
 

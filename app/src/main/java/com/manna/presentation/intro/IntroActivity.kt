@@ -5,15 +5,15 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
-import com.manna.DeviceUtil
-import com.manna.HomeActivity
 import com.manna.R
 import com.manna.common.BaseActivity
 import com.manna.common.EventObserver
 import com.manna.common.Logger
 import com.manna.databinding.ActivityIntroBinding
+import com.manna.presentation.HomeActivity
 import com.manna.presentation.invitation.InvitationActivity
 import com.manna.presentation.sign_up.SignUpActivity
+import com.manna.util.DeviceUtil
 import com.manna.util.ViewUtil
 import dagger.hilt.android.AndroidEntryPoint
 
