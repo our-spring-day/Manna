@@ -6,12 +6,11 @@ import androidx.activity.viewModels
 import androidx.databinding.library.baseAdapters.BR
 import com.manna.R
 import com.manna.common.BaseActivity
-
+import com.manna.common.BaseRecyclerViewAdapter
+import com.manna.common.BaseRecyclerViewHolder
 import com.manna.data.model.NoticeItem
 import com.manna.databinding.ActivityNoticeBinding
 import com.manna.databinding.ItemNoticeBinding
-import com.wswon.picker.adapter.BaseRecyclerViewAdapter
-import com.wswon.picker.adapter.BaseRecyclerViewHolder
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
