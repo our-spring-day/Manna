@@ -1,4 +1,4 @@
-package com.manna
+package com.manna.presentation.meet_list
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -8,6 +8,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.manna.R
 import com.manna.databinding.ItemMeetBinding
 import com.manna.network.model.meet.MeetResponseItem
 import java.text.SimpleDateFormat

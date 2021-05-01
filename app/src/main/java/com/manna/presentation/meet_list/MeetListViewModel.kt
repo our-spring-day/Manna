@@ -1,4 +1,4 @@
-package com.manna
+package com.manna.presentation.meet_list
 
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData

@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.inputmethod.EditorInfo
 import androidx.activity.viewModels
+import androidx.core.widget.doOnTextChanged
 import androidx.databinding.library.baseAdapters.BR
 import com.manna.R
 import com.manna.common.BaseActivity
@@ -54,11 +55,17 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(R.layout.activity_sea
         }
 
         binding.run {
+            btnBack.setOnClickListener {
+                onBackPressed()
+            }
             rvAddressList.run {
                 adapter = addressAdapter
             }
 
             edtKeyword.openKeyboard()
+            edtKeyword.doOnTextChanged { text, _, _, _ ->
+                viewModel.search(text.toString())
+            }
             edtKeyword.setOnEditorActionListener { _, actionId, _ ->
                 when (actionId) {
                     EditorInfo.IME_ACTION_SEARCH -> {

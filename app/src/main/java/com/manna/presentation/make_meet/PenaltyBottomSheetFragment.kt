@@ -127,7 +127,7 @@ class PenaltyBottomSheetFragment :
     private fun checkSubmitState() {
         val isEnable = target.isNotEmpty() && penalty.isNotEmpty()
         binding.submitButton.isEnabled = isEnable
-        binding.submitButton.setText(if (isEnable) R.string.penalty_button_enable else R.string.penalty_button_enable)
+        binding.submitButton.setText(if (isEnable) R.string.penalty_button_enable else R.string.penalty_button_disable)
     }
 
     private fun setTarget(target: String) {

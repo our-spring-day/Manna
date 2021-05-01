@@ -37,7 +37,7 @@
     <string name="input_chat_hint">메시지 작성</string>
     <string name="dda_bong">👍</string>
     <string name="sign_up_success_title">가입을 축하드려요!</string>
-    <string name="sign_up_success_message">친구들을 추가해서 약속을 만들어보세요 :D</string>
+    <string name="sign_up_success_message">약속을 만들고 링크를 공유하세요!</string>
     <string name="optional_title">추가 정보</string>
     <string name="required_title">필수 정보</string>
 
@@ -126,4 +126,9 @@
     <string name="close">닫기</string>
     <string name="share_list_title">초대 옵션 선택</string>
     <string name="meet_request">참가 요청</string>
+    <string name="alert">알림</string>
+    <string name="apply_request">참가 요청</string>
+    <string name="open_map">지도 열기</string>
+    <string name="reject">거절</string>
+    <string name="accept">수락</string>
 </resources>

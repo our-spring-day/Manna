@@ -1,4 +1,4 @@
-package com.manna
+package com.manna.presentation.meet_list
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil

@@ -1,4 +1,4 @@
-package com.manna
+package com.manna.presentation.profile
 
 import android.Manifest
 import android.app.Activity
@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.gun0912.tedpermission.TedPermissionResult
+import com.manna.BuildConfig
+import com.manna.R
 import com.manna.common.BaseFragment
 import com.manna.common.plusAssign
 import com.manna.databinding.FragmentProfileBinding
@@ -24,7 +26,6 @@ import com.manna.presentation.settings.*
 import com.manna.util.ViewUtil
 import com.tedpark.tedpermission.rx2.TedRx2Permission
 import com.wswon.picker.ImagePickerFragment
-
 
 class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_profile) {
 

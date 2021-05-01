@@ -9,6 +9,8 @@ import com.manna.common.plusAssign
 import com.manna.data.source.repo.AddressRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.PublishSubject
+import java.util.concurrent.TimeUnit
 
 class SearchViewModel @ViewModelInject constructor(private val addressRepository: AddressRepository) :
     BaseViewModel() {
@@ -29,6 +31,32 @@ class SearchViewModel @ViewModelInject constructor(private val addressRepository
 //        )
     }
 
+    private val searchSubject: PublishSubject<String> =
+        PublishSubject.create()
+
+    init {
+        compositeDisposable += searchSubject
+            .debounce(500, TimeUnit.MILLISECONDS)
+            .subscribe({ keyWord ->
+
+                compositeDisposable += addressRepository.getAddressByKeyword(keyWord, 0.0, 0.0)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        val list = it.searchAddresses.map { response ->
+                            SearchAddressItem.of(response, keyWord, onClick, onMapClick)
+                        }
+                        _addressItems.value = list
+                    }, {
+                        Logger.d("$it")
+                    })
+
+            }, {
+                Logger.d("$it")
+            })
+    }
+
+
     val clickItem = MutableLiveData<SearchAddressItem>()
 
     private val _addressItems = MutableLiveData<List<SearchAddressItem>>()
@@ -36,18 +64,6 @@ class SearchViewModel @ViewModelInject constructor(private val addressRepository
 
 
     fun search(keyWord: String) {
-        compositeDisposable += addressRepository.getAddressByKeyword(keyWord, 0.0, 0.0)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                val list = it.searchAddresses.map {response ->
-                    SearchAddressItem.of(response, keyWord, onClick, onMapClick)
-                }
-                _addressItems.value = list
-            }, {
-                Logger.d("$it")
-            })
+        searchSubject.onNext(keyWord)
     }
-
-
 }
