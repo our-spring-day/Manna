@@ -44,9 +44,14 @@ class CustomDialogFragment : DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.apply {
-            tvMessage.text = arguments?.getString(MESSAGE)
+            tvTitle.text = arguments?.getString(TITLE)
+            tvSubtitle.text = arguments?.getString(SUBTITLE)
             tvConfirm.text = arguments?.getString(POSITIVE)
             tvCancel.text = arguments?.getString(NEGATIVE)
+        }
+
+        if (binding.tvSubtitle.text.isNotEmpty()) {
+            binding.tvSubtitle.visibility = View.VISIBLE
         }
 
         val tenDp = ViewUtil.convertDpToPixel(requireContext(), 10f)
@@ -67,14 +72,16 @@ class CustomDialogFragment : DialogFragment() {
     }
 
     companion object {
-        private const val MESSAGE = "message"
+        private const val TITLE = "title"
+        private const val SUBTITLE = "subtitle"
         private const val POSITIVE = "positive"
         private const val NEGATIVE = "negative"
 
-        fun newInstance(message: String, positive: String, negative: String) =
+        fun newInstance(title: String, subtitle: String? = "", positive: String, negative: String) =
             CustomDialogFragment().apply {
                 arguments = Bundle().apply {
-                    putString(MESSAGE, message)
+                    putString(TITLE, title)
+                    putString(SUBTITLE, subtitle)
                     putString(POSITIVE, positive)
                     putString(NEGATIVE, negative)
                 }

@@ -15,6 +15,12 @@ class DeleteAccountActivity :
 
     private val viewModel by viewModels<SettingsViewModel>()
 
+    private val dialogListener = object : CustomDialogFragment.CustomDialogListener {
+        override fun onDialogPositiveClick() {
+            // 로그아웃
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -60,7 +66,14 @@ class DeleteAccountActivity :
             }
 
             tvDelete.setOnClickListener {
-                CustomDialogFragment().show(supportFragmentManager, "")
+                val dialogFragment = CustomDialogFragment.newInstance(
+                    getString(R.string.dialog_title_delete_account),
+                    getString(R.string.dialog_subtitle_delete_account),
+                    getString(R.string.yes),
+                    getString(R.string.no)
+                )
+                dialogFragment.setOnClickListener(dialogListener)
+                dialogFragment.show(supportFragmentManager, "")
             }
         }
     }

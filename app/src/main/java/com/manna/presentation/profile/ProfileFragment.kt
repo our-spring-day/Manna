@@ -84,8 +84,8 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
             logout.setOnClickListener {
                 val dialogFragment = CustomDialogFragment.newInstance(
                     getString(R.string.dialog_sign_out),
-                    getString(R.string.yes),
-                    getString(R.string.no)
+                    positive = getString(R.string.yes),
+                    negative = getString(R.string.no)
                 )
                 dialogFragment.setOnClickListener(dialogListener)
                 dialogFragment.show(parentFragmentManager, "")
