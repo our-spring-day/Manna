@@ -15,8 +15,8 @@ class MannaApp : Application() {
         super.onCreate()
         instance = this
         NaverMapSdk.getInstance(this).client =
-            NaverCloudPlatformClient(getString(R.string.naver_client_id))
-        KakaoSdk.init(this, "b4851266cf226144d1a0f2e6f4002167")
+            NaverCloudPlatformClient(BuildConfig.NAVER_CLIENT_ID)
+        KakaoSdk.init(this, BuildConfig.KAKAO_SDK_KEY)
     }
 
     companion object {

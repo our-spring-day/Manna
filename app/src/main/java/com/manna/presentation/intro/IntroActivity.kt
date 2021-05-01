@@ -3,6 +3,7 @@ package com.manna.presentation.intro
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.core.view.isVisible
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import com.manna.R
 import com.manna.common.BaseActivity

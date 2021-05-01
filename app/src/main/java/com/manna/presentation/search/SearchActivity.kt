@@ -10,11 +10,11 @@ import androidx.core.widget.doOnTextChanged
 import androidx.databinding.library.baseAdapters.BR
 import com.manna.R
 import com.manna.common.BaseActivity
+import com.manna.common.BaseRecyclerViewAdapter
+import com.manna.common.BaseRecyclerViewHolder
 import com.manna.databinding.ActivitySearchBinding
 import com.manna.databinding.ItemSearchAddressBinding
 import com.manna.ext.openKeyboard
-import com.wswon.picker.adapter.BaseRecyclerViewAdapter
-import com.wswon.picker.adapter.BaseRecyclerViewHolder
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
