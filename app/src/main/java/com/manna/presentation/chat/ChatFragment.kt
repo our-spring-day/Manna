@@ -11,6 +11,7 @@ import com.manna.common.BaseFragment
 import com.manna.common.Logger
 import com.manna.databinding.FragmentChatBinding
 import com.manna.network.api.MeetApi
+import com.manna.network.model.chat.ChatResponse
 import com.manna.util.HeightProvider
 import com.manna.util.UserHolder
 import com.manna.util.ViewUtil

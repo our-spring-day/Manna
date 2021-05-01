@@ -1,11 +1,13 @@
-package com.manna
+package com.manna.presentation.settings
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import com.manna.R
 import com.manna.databinding.ActivitySettingBinding
+import com.manna.presentation.dialog.DateNotationDialog
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
