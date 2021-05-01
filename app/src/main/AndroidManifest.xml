@@ -53,9 +53,7 @@
         <activity android:name=".presentation.SocketIOTestActivity" />
         <activity android:name=".presentation.settings.NoticeActivity" />
         <activity android:name=".presentation.settings.FeedbackActivity" />
-        <activity android:name=".presentation.settings.DeleteAccountActivity" />
         <activity android:name=".presentation.settings.NoticeDetailActivity" />
-        <activity android:name=".presentation.settings.FeedbackActivity" />
         <activity
             android:name=".presentation.settings.DeleteAccountActivity"
             android:windowSoftInputMode="adjustResize" />
