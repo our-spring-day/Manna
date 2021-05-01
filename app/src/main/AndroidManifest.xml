@@ -10,16 +10,16 @@
 
     <application
         android:name=".MannaApp"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_logo"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_logo_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".presentation.invitation.InvitationActivity" />
         <activity
             android:name=".presentation.make_meet.MakeMeetActivity"
             android:windowSoftInputMode="adjustResize" />
-
         <activity
             android:name=".presentation.location.MeetDetailActivity"
             android:screenOrientation="portrait"
@@ -34,9 +34,24 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="whynotcoming.com"
+                    android:scheme="http" />
+                <data
+                    android:host="whynotcoming.com"
+                    android:scheme="https" />
+            </intent-filter>
         </activity>
         <activity android:name=".presentation.SocketIOTestActivity" />
         <activity android:name=".presentation.settings.NoticeActivity" />
+        <activity android:name=".presentation.settings.FeedbackActivity" />
+        <activity android:name=".presentation.settings.DeleteAccountActivity" />
         <activity android:name=".presentation.settings.NoticeDetailActivity" />
         <activity android:name=".presentation.settings.FeedbackActivity" />
         <activity
@@ -45,7 +60,7 @@
         <activity android:name=".presentation.settings.ServiceTermsActivity" />
         <activity
             android:name=".presentation.sign_up.SignUpActivity"
-            android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
+            android:windowSoftInputMode="adjustResize" />
 
         <service
             android:name=".fcm.MyFirebaseMessagingService"

@@ -4,10 +4,11 @@ import android.app.Activity
 import android.os.Bundle
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
-import androidx.fragment.app.viewModels
 import com.manna.R
 import com.manna.common.BaseFragment
+import com.manna.common.EventObserver
 import com.manna.databinding.FragmentMakeMeetBinding
 import com.manna.presentation.search.SearchActivity
 import com.manna.presentation.search.SearchAddressResult
@@ -16,7 +17,7 @@ import java.util.*
 
 class MakeMeetFragment : BaseFragment<FragmentMakeMeetBinding>(R.layout.fragment_make_meet) {
 
-    private val viewModel by viewModels<MeetRegisterViewModel>()
+    private val viewModel by activityViewModels<MakeMeetViewModel>()
 
     private val requestSearchAddressActivity = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -54,6 +55,7 @@ class MakeMeetFragment : BaseFragment<FragmentMakeMeetBinding>(R.layout.fragment
             binding.dateLayout.content.text =
                 SimpleDateFormat("MM.dd E요일 ・ a h시", Locale.KOREA).format(date)
 
+            viewModel.date.value = date
             checkState()
         }
 
@@ -79,6 +81,7 @@ class MakeMeetFragment : BaseFragment<FragmentMakeMeetBinding>(R.layout.fragment
             val count = data.getInt(ParticipantFragment.PARTICIPANT_COUNT)
 
             binding.participantLayout.content.text = "${count}명 참석"
+            viewModel.participantCount.value = count
         }
 
         parentFragmentManager.commit {
@@ -100,6 +103,7 @@ class MakeMeetFragment : BaseFragment<FragmentMakeMeetBinding>(R.layout.fragment
 
             if (memo.isNotEmpty()) {
                 binding.memoLayout.content.text = memo
+                viewModel.memo.value = memo
             }
         }
 
@@ -119,6 +123,7 @@ class MakeMeetFragment : BaseFragment<FragmentMakeMeetBinding>(R.layout.fragment
 
             if (penalty != null) {
                 binding.penaltyLayout.content.text = "벌칙: ${penalty.target}가 ${penalty.penalty}"
+                viewModel.penalty.value = penalty
             }
         }
 
@@ -156,7 +161,7 @@ class MakeMeetFragment : BaseFragment<FragmentMakeMeetBinding>(R.layout.fragment
             penaltyLayout.root.setOnClickListener(clickPenalty)
 
             sendButton.setOnClickListener {
-
+                viewModel.make()
             }
 
             close.setOnClickListener {
@@ -166,7 +171,13 @@ class MakeMeetFragment : BaseFragment<FragmentMakeMeetBinding>(R.layout.fragment
     }
 
     private fun setupViewModel() {
-        viewModel
+        with(viewModel) {
+            success.observe(viewLifecycleOwner, EventObserver {
+                parentFragmentManager.commit {
+                    replace(R.id.container, MakeMeetSuccessFragment.newInstance())
+                }
+            })
+        }
 
     }
 
