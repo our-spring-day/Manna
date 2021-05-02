@@ -15,14 +15,15 @@ class DeleteAccountActivity :
 
     private val viewModel by viewModels<SettingsViewModel>()
 
-    private val dialogListener = object : CustomDialogFragment.CustomDialogListener {
-        override fun onDialogPositiveClick() {
-            // 로그아웃
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        supportFragmentManager.setFragmentResultListener(REQUEST_KEY, this) { _, bundle ->
+            val type = bundle.getString(TYPE)
+            if (type == POSITIVE) {
+                // 회원탈퇴
+            }
+        }
 
         binding.run {
             layoutTitleBar.tvTitle.text = getString(R.string.delete_account_reason)
@@ -72,7 +73,6 @@ class DeleteAccountActivity :
                     getString(R.string.yes),
                     getString(R.string.no)
                 )
-                dialogFragment.setOnClickListener(dialogListener)
                 dialogFragment.show(supportFragmentManager, "")
             }
         }
@@ -83,5 +83,11 @@ class DeleteAccountActivity :
             tvDelete.isEnabled =
                 rbDeleteReason1.isChecked || rbDeleteReason2.isChecked || rbDeleteReason3.isChecked || rbDeleteReason4.isChecked || rbDeleteReason5.isChecked
         }
+    }
+
+    companion object {
+        private const val POSITIVE = "positive"
+        private const val REQUEST_KEY = "requestKey"
+        private const val TYPE = "type"
     }
 }
