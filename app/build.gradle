@@ -10,7 +10,7 @@ plugins {
 
 android {
     compileSdkVersion 30
-    buildToolsVersion "30.0.1"
+    buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.manna"
@@ -42,10 +42,14 @@ android {
     buildTypes {
 
         def STRING = "String"
-        def KAKAO_KEY = "KAKAO_KEY"
-        def KAKAO_KEY_RELEASE = "\"830ccadff66e5e1e978234df2c24b439\""
+        def KAKAO_REST_KEY = "KAKAO_REST_KEY"
+        def KAKAO_SDK_KEY = "KAKAO_SDK_KEY"
+        def KAKAO_REST_KEY_RELEASE = "\"830ccadff66e5e1e978234df2c24b439\""
+        def KAKAO_SDK_KEY_RELEASE = "\"b4851266cf226144d1a0f2e6f4002167\""
 
+        def NAVER_CLIENT_ID = "NAVER_CLIENT_ID"
         def NAVER_KEY = "NAVER_KEY"
+        def NAVER_CLIENT_ID_RELEASE = "\"djbet5rxjp\""
         def NAVER_KEY_RELEASE = "\"KQhgkdup9nX6uAf7L3kKpC7510EaZxdwwu0SOLtR\""
 
         release {
@@ -53,7 +57,9 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
-            buildConfigField STRING, KAKAO_KEY, KAKAO_KEY_RELEASE
+            buildConfigField STRING, KAKAO_REST_KEY, KAKAO_REST_KEY_RELEASE
+            buildConfigField STRING, KAKAO_SDK_KEY, KAKAO_SDK_KEY_RELEASE
+            buildConfigField STRING, NAVER_CLIENT_ID, NAVER_CLIENT_ID_RELEASE
             buildConfigField STRING, NAVER_KEY, NAVER_KEY_RELEASE
             signingConfig signingConfigs.release
         }
@@ -62,7 +68,9 @@ android {
             debuggable true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
-            buildConfigField STRING, KAKAO_KEY, KAKAO_KEY_RELEASE
+            buildConfigField STRING, KAKAO_REST_KEY, KAKAO_REST_KEY_RELEASE
+            buildConfigField STRING, KAKAO_SDK_KEY, KAKAO_SDK_KEY_RELEASE
+            buildConfigField STRING, NAVER_CLIENT_ID, NAVER_CLIENT_ID_RELEASE
             buildConfigField STRING, NAVER_KEY, NAVER_KEY_RELEASE
 
             applicationIdSuffix = ".dev"

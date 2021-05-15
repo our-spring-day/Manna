@@ -22,8 +22,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.google.gson.JsonObject
-import com.manna.LocationResponse
-import com.manna.MyLatLng
 import com.manna.R
 import com.manna.common.BaseActivity
 import com.manna.common.EventObserver
@@ -31,6 +29,8 @@ import com.manna.common.Logger
 import com.manna.databinding.ActivityMeetDetailBinding
 import com.manna.databinding.ViewImageMarkerBinding
 import com.manna.network.model.chat.Sender
+import com.manna.network.model.location.LocationResponse
+import com.manna.network.model.location.MyLatLng
 import com.manna.presentation.CheckInFragment
 import com.manna.presentation.User
 import com.manna.presentation.chat.ChatFragment
