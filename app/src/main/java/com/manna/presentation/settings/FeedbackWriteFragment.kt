@@ -13,6 +13,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class FeedbackWriteFragment :
     BaseFragment<FragmentFeedbackWriteBinding>(R.layout.fragment_feedback_write) {
+    lateinit var feedbackCategory : FeedbackCategory
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -29,6 +30,12 @@ class FeedbackWriteFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        FeedbackCategory.values().forEach {
+            if (it.category == arguments?.getString(CATEGORY)) {
+                feedbackCategory = it
+            }
+        }
+
         binding.apply {
             ivBack.setOnClickListener {
                 onBackPressed()
@@ -37,29 +44,12 @@ class FeedbackWriteFragment :
                 tvSend.isEnabled = edtContent.text.isNotBlank() && edtContent.text.isNotEmpty()
             }
             tvSend.setOnClickListener {
-                when (arguments?.getString(CATEGORY)) {
-                    FeedbackCategory.ERROR -> CustomToast.toast(
-                        requireContext(),
-                        getString(R.string.toast_error_report)
-                    )?.show()
-                    FeedbackCategory.FEEDBACK -> CustomToast.toast(
-                        requireContext(),
-                        getString(R.string.toast_feedback)
-                    )?.show()
-                    FeedbackCategory.INQUIRY -> CustomToast.toast(
-                        requireContext(),
-                        getString(R.string.toast_inquiry)
-                    )?.show()
-                }
+                CustomToast.toast(requireContext(), getString(feedbackCategory.message))?.show()
                 requireActivity().finish()
             }
         }
 
-        when (arguments?.getString(CATEGORY)) {
-            FeedbackCategory.ERROR -> binding.tvTitle.text = getString(R.string.error_report)
-            FeedbackCategory.FEEDBACK -> binding.tvTitle.text = getString(R.string.feedback)
-            FeedbackCategory.INQUIRY -> binding.tvTitle.text = getString(R.string.inquiry)
-        }
+        binding.tvTitle.text = getString(feedbackCategory.title)
     }
 
     private fun onBackPressed() {
