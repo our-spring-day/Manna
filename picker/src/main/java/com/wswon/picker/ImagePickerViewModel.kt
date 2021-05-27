@@ -31,8 +31,8 @@ class ImagePickerViewModel @ViewModelInject constructor(private val imageLoadMan
     val selectedPositionList: LiveData<List<Int>>
         get() = _selectedPositionList
 
-    private val _loadFailedItemPosition = MutableLiveData<Int>()
-    val loadFailedItemPosition: LiveData<Int>
+    private val _loadFailedItemPosition = MutableLiveData<Int?>()
+    val loadFailedItemPosition: MutableLiveData<Int?>
         get() = _loadFailedItemPosition
 
     private val imgLoadError: (uri: Uri) -> Unit = { uri ->
