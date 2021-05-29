@@ -127,4 +127,6 @@
     <string name="open_map">지도 열기</string>
     <string name="reject">거절</string>
     <string name="accept">수락</string>
+    <string name="location_permission_title">위치정보 권한 요청</string>
+    <string name="location_permission_message">항상 허용으로 해주세요</string>
 </resources>

@@ -110,8 +110,8 @@ class MeetListFragment : BaseFragment<FragmentMeetListBinding>(R.layout.fragment
 
     private fun checkPermissions(success: () -> Unit) {
         compositeDisposable += TedRx2Permission.with(requireContext())
-            .setRationaleTitle("위치정보 권한 요청")
-            .setRationaleMessage("항상 허용으로 해주세요")
+            .setRationaleTitle(R.string.location_permission_title)
+            .setRationaleMessage(R.string.location_permission_message)
             .setPermissions(
                 if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) Manifest.permission.ACCESS_FINE_LOCATION else Manifest.permission.ACCESS_BACKGROUND_LOCATION
             )
