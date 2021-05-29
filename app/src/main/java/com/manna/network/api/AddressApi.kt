@@ -28,7 +28,9 @@ interface AddressApi {
         @Query("query") keyword: String,
 //        @Query("y") latitude: Double,
 //        @Query("x") longitude: Double,
-        @Query("sort") sort: String = "accuracy"
+        @Query("page") page: String,
+        @Query("size") size: String,
+        @Query("sort") sort: String = "accuracy",
     ): Single<SearchAddressResponse>
 
 }

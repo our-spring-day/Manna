@@ -22,10 +22,15 @@ object ApiModule {
     @Singleton
     @Provides
     fun provideAddressApi(): AddressApi {
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
+
         return Retrofit.Builder()
             .baseUrl(AddressApi.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .client(client)
             .build()
             .create(AddressApi::class.java)
     }
