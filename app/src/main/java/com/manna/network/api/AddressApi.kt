@@ -28,8 +28,8 @@ interface AddressApi {
         @Query("query") keyword: String,
 //        @Query("y") latitude: Double,
 //        @Query("x") longitude: Double,
-        @Query("page") page: String,
-        @Query("size") size: String,
+        @Query("page") page: Int,
+        @Query("size") size: Int,
         @Query("sort") sort: String = "accuracy",
     ): Single<SearchAddressResponse>
 
