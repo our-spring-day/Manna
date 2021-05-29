@@ -20,59 +20,74 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
-                android:id="@+id/tv_message"
+                android:id="@+id/tv_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="35dp"
                 android:fontFamily="@font/noto_sans_bold"
                 android:gravity="center"
                 android:minHeight="40dp"
-                tool:text="@string/dialog_sign_out"
                 android:textColor="@color/black_3"
                 android:textSize="18dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tool:text="@string/dialog_sign_out" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tv_cancel"
+            <TextView
+                android:id="@+id/tv_subtitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
+                android:fontFamily="@font/noto_sans_regular"
+                android:gravity="center"
+                android:minHeight="20dp"
+                android:textColor="@color/hint_text_color"
+                android:textSize="14dp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_title"
+                tool:text="@string/dialog_sign_out" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_negative"
+                android:layout_width="0dp"
+
+                android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:fontFamily="@font/noto_sans_medium"
                 android:gravity="center"
                 android:minHeight="65dp"
-                tool:text="@string/no"
                 android:textColor="@color/black_alpha45"
                 android:textSize="16dp"
-                app:layout_constraintEnd_toStartOf="@+id/tv_confirm"
+                app:layout_constraintEnd_toStartOf="@+id/tv_positive"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_message" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_subtitle"
+                tool:text="@string/no" />
 
             <View
                 android:layout_width="1dp"
                 android:layout_height="24dp"
                 android:background="@color/black_alpha12"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_cancel"
-                app:layout_constraintStart_toEndOf="@+id/tv_cancel"
-                app:layout_constraintTop_toTopOf="@+id/tv_cancel" />
+                app:layout_constraintBottom_toBottomOf="@+id/tv_negative"
+                app:layout_constraintStart_toEndOf="@+id/tv_negative"
+                app:layout_constraintTop_toTopOf="@+id/tv_negative" />
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tv_confirm"
+
+                android:id="@+id/tv_positive"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:layout_marginEnd="10dp"
                 android:fontFamily="@font/noto_sans_medium"
                 android:gravity="center"
                 android:minHeight="65dp"
-                tool:text="@string/yes"
                 android:textColor="@color/keyColor"
                 android:textSize="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tv_cancel"
-                app:layout_constraintTop_toBottomOf="@+id/tv_message" />
+                app:layout_constraintStart_toEndOf="@+id/tv_negative"
+                app:layout_constraintTop_toBottomOf="@+id/tv_subtitle"
+                tool:text="@string/yes" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

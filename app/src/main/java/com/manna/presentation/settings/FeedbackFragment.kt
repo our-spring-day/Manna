@@ -35,15 +35,15 @@ class FeedbackFragment :
             }
 
             clError.setOnClickListener {
-                addFragment(FeedbackCategory.ERROR)
+                addFragment(FeedbackCategory.ERROR.category)
             }
 
             clFeedback.setOnClickListener {
-                addFragment(FeedbackCategory.FEEDBACK)
+                addFragment(FeedbackCategory.FEEDBACK.category)
             }
 
             clInquiry.setOnClickListener {
-                addFragment(FeedbackCategory.INQUIRY)
+                addFragment(FeedbackCategory.INQUIRY.category)
             }
         }
     }

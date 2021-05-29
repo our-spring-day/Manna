@@ -9,8 +9,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.setFragmentResult
 import com.manna.R
 import com.manna.databinding.DialogCustomBinding
 import com.manna.util.ViewUtil
@@ -19,15 +21,6 @@ import com.manna.util.ViewUtil
 class CustomDialogFragment : DialogFragment() {
 
     private lateinit var binding: DialogCustomBinding
-    lateinit var listener: CustomDialogListener
-
-    interface CustomDialogListener {
-        fun onDialogPositiveClick()
-    }
-
-    fun setOnClickListener(listener: CustomDialogListener) {
-        this.listener = listener
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,9 +37,14 @@ class CustomDialogFragment : DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.apply {
-            tvMessage.text = arguments?.getString(MESSAGE)
-            tvConfirm.text = arguments?.getString(POSITIVE)
-            tvCancel.text = arguments?.getString(NEGATIVE)
+            tvTitle.text = arguments?.getString(TITLE)
+            tvSubtitle.text = arguments?.getString(SUBTITLE)
+            tvPositive.text = arguments?.getString(POSITIVE)
+            tvNegative.text = arguments?.getString(NEGATIVE)
+        }
+
+        if (binding.tvSubtitle.text.isNotEmpty()) {
+            binding.tvSubtitle.visibility = View.VISIBLE
         }
 
         val tenDp = ViewUtil.convertDpToPixel(requireContext(), 10f)
@@ -56,25 +54,30 @@ class CustomDialogFragment : DialogFragment() {
             setColor(ContextCompat.getColor(requireContext(), R.color.white))
         }
 
-        binding.tvCancel.setOnClickListener {
+        binding.tvNegative.setOnClickListener {
+            setFragmentResult(REQUEST_KEY, bundleOf(TYPE to NEGATIVE))
             dismiss()
         }
 
-        binding.tvConfirm.setOnClickListener {
-            listener.onDialogPositiveClick()
+        binding.tvPositive.setOnClickListener {
+            setFragmentResult(REQUEST_KEY, bundleOf(TYPE to POSITIVE))
             dismiss()
         }
     }
 
     companion object {
-        private const val MESSAGE = "message"
+        private const val TITLE = "title"
+        private const val SUBTITLE = "subtitle"
         private const val POSITIVE = "positive"
         private const val NEGATIVE = "negative"
+        private const val REQUEST_KEY = "requestKey"
+        private const val TYPE = "type"
 
-        fun newInstance(message: String, positive: String, negative: String) =
+        fun newInstance(title: String, subtitle: String? = "", positive: String, negative: String) =
             CustomDialogFragment().apply {
                 arguments = Bundle().apply {
-                    putString(MESSAGE, message)
+                    putString(TITLE, title)
+                    putString(SUBTITLE, subtitle)
                     putString(POSITIVE, positive)
                     putString(NEGATIVE, negative)
                 }

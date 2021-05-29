@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.updatePadding
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.setFragmentResultListener
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -35,18 +36,18 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
         }
     }
 
-    private val dialogListener = object : CustomDialogFragment.CustomDialogListener {
-        override fun onDialogPositiveClick() {
-            // 로그아웃
-        }
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         setupView()
         setupViewModel()
+
+        setFragmentResultListener(REQUEST_KEY) { _, bundle ->
+            val type = bundle.getString(TYPE)
+            if (type == POSITIVE) {
+                // 로그아웃
+            }
+        }
     }
 
     private fun setupView() {
@@ -84,10 +85,9 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
             logout.setOnClickListener {
                 val dialogFragment = CustomDialogFragment.newInstance(
                     getString(R.string.dialog_sign_out),
-                    getString(R.string.yes),
-                    getString(R.string.no)
+                    positive = getString(R.string.yes),
+                    negative = getString(R.string.no)
                 )
-                dialogFragment.setOnClickListener(dialogListener)
                 dialogFragment.show(parentFragmentManager, "")
             }
             leave.setOnClickListener {
@@ -145,6 +145,9 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
 
     companion object {
         private const val REQ_IMAGE_PICKER = 100
+        private const val POSITIVE = "positive"
+        private const val REQUEST_KEY = "requestKey"
+        private const val TYPE = "type"
 
         fun newInstance() =
             ProfileFragment()
