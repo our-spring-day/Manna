@@ -12,13 +12,13 @@ import com.manna.R
 import com.manna.common.BaseActivity
 import com.manna.common.BaseRecyclerViewAdapter
 import com.manna.common.BaseRecyclerViewHolder
-import com.manna.databinding.ActivitySearchBinding
+import com.manna.databinding.ActivitySearchAddressBinding
 import com.manna.databinding.ItemSearchAddressBinding
 import com.manna.ext.openKeyboard
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class SearchActivity : BaseActivity<ActivitySearchBinding>(R.layout.activity_search) {
+class SearchAddressActivity : BaseActivity<ActivitySearchAddressBinding>(R.layout.activity_search_address) {
 
     private val viewModel by viewModels<SearchViewModel>()
 
@@ -36,18 +36,18 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(R.layout.activity_sea
         super.onCreate(savedInstanceState)
 
         viewModel.run {
-            addressItems.observe(this@SearchActivity, {
+            addressItems.observe(this@SearchAddressActivity, {
                 addressAdapter.replaceAll(it)
             })
 
-            clickItem.observe(this@SearchActivity, {
+            clickItem.observe(this@SearchAddressActivity, {
                 val data = Intent().putExtra(ADDRESS_ITEM, SearchAddressResult.of(it))
                 setResult(Activity.RESULT_OK, data)
                 finish()
 
 //                startActivity(
 //                    RouteActivity.getIntent(
-//                        this@SearchActivity,
+//                        this@SearchAddressActivity,
 //                        LatLng(it.latitude.toDouble(), it.longitude.toDouble())
 //                    )
 //                )
@@ -81,6 +81,6 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(R.layout.activity_sea
         const val ADDRESS_ITEM = "address_item"
 
         fun getIntent(context: Context) =
-            Intent(context, SearchActivity::class.java)
+            Intent(context, SearchAddressActivity::class.java)
     }
 }
