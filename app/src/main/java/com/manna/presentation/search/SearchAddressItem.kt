@@ -3,6 +3,7 @@ package com.manna.presentation.search
 import com.manna.network.model.search_address.SearchAddress
 
 data class SearchAddressItem(
+    val id: String,
     val addressName: String,
     val keyWord: String,
     val placeName: String,
@@ -20,6 +21,7 @@ data class SearchAddressItem(
             onMapClick: (SearchAddressItem) -> Unit
         ): SearchAddressItem =
             SearchAddressItem(
+                id = searchAddress.id,
                 addressName = if (searchAddress.addressName.isNotEmpty()) searchAddress.addressName else searchAddress.roadAddressName.orEmpty(),
                 keyWord = keyWord,
                 placeName = searchAddress.placeName,
