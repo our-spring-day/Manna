@@ -14,7 +14,6 @@ import com.manna.common.BaseFragment
 import com.manna.common.plusAssign
 import com.manna.databinding.FragmentMeetListBinding
 import com.manna.ext.toast
-import com.manna.network.model.meet.MeetResponseItem
 import com.manna.presentation.location.MeetDetailActivity
 import com.manna.util.SpacingDecoration
 import com.manna.util.UserHolder
@@ -41,32 +40,6 @@ class MeetListFragment : BaseFragment<FragmentMeetListBinding>(R.layout.fragment
 
         setupView()
         setupViewModel()
-
-        val meetResponseList = listOf(
-            MeetResponseItem(
-                mannaName = "테스트용 아이템",
-                createTimestamp = System.currentTimeMillis(),
-                uuid = "roomId",
-                locationJoinUserList = "",
-                chatJoinUserList = ""
-            ),
-            MeetResponseItem(
-                mannaName = "테스트용 아이템",
-                createTimestamp = System.currentTimeMillis(),
-                uuid = "roomId",
-                locationJoinUserList = "",
-                chatJoinUserList = ""
-            ),
-            MeetResponseItem(
-                mannaName = "테스트용 아이템",
-                createTimestamp = System.currentTimeMillis(),
-                uuid = "roomId",
-                locationJoinUserList = "",
-                chatJoinUserList = ""
-            )
-        )
-
-        meetAdapter.submitList(meetResponseList.map { it.toMeetListItem() })
     }
 
     private fun setupView() {
