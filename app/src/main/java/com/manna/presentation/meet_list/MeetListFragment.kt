@@ -3,9 +3,7 @@ package com.manna.presentation.meet_list
 import android.Manifest
 import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.children
 import androidx.core.view.updatePadding
@@ -42,7 +40,7 @@ class MeetListFragment : BaseFragment<FragmentMeetListBinding>(R.layout.fragment
     }
 
     private val onClickApply: () -> Unit = {
-
+        activity?.invalidateOptionsMenu()
     }
 
     private val onClickAlert: () -> Unit = {
@@ -56,6 +54,7 @@ class MeetListFragment : BaseFragment<FragmentMeetListBinding>(R.layout.fragment
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        setHasOptionsMenu(true)
         val view = super.onCreateView(inflater, container, savedInstanceState)
         initToolbarHelper()
         return view
@@ -65,7 +64,7 @@ class MeetListFragment : BaseFragment<FragmentMeetListBinding>(R.layout.fragment
         super.onViewCreated(view, savedInstanceState)
 
         view.updatePadding(top = ViewUtil.getStatusBarHeight(requireContext()))
-
+        activity?.invalidateOptionsMenu()
         setupView()
         setupViewModel()
     }
@@ -90,14 +89,6 @@ class MeetListFragment : BaseFragment<FragmentMeetListBinding>(R.layout.fragment
                 addItemDecoration(getDecoration())
                 adapter = meetAdapter
             }
-
-//            btnApply.setOnClickListener {
-//
-//            }
-//
-//            btnAlert.setOnClickListener {
-//
-//            }
         }
     }
 
@@ -142,6 +133,26 @@ class MeetListFragment : BaseFragment<FragmentMeetListBinding>(R.layout.fragment
 
             })
     }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_meet_list, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.apply -> {
+                onClickApply()
+            }
+
+            R.id.alert -> {
+                onClickAlert()
+            }
+
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
 
     companion object {
         fun newInstance() =
