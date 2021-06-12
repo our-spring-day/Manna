@@ -342,7 +342,7 @@ class RouteActivity : BaseActivity<ActivityRouteBinding>(R.layout.activity_route
         }
 
         binding.btnMenu.setOnClickListener {
-            binding.drawer.openDrawer(binding.sidePanel)
+            binding.drawer.openDrawer(binding.sidePanel.root)
         }
 
         BottomSheetBehavior.from(binding.bottomSheet)

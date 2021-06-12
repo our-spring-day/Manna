@@ -36,6 +36,11 @@ class MeetListViewModel @Inject constructor(private val repository: MeetReposito
 
 
         val meetList = listOf(
+            MeetListItem.Header(
+                "오늘 1개의\n약속이 있어요!",
+                isNewApply = true,
+                isNewAlert = true
+            ),
             MeetListItem.MeetItem(
                 uuid = "roomId",
                 meetName = "테스트용 아이템",

@@ -11,60 +11,15 @@
         android:layout_height="match_parent"
         android:background="@color/fffafafa">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/header_container"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintDimensionRatio="W, 1:1.933"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <TextView
-                android:id="@+id/title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="25dp"
-                android:fontFamily="@font/noto_sans_medium"
-                android:letterSpacing="-0.05"
-                android:text="오늘 1개의\n약속이 있어요!"
-                android:textColor="@color/black"
-                android:textSize="24dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias=".56" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/btn_apply"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:background="?android:selectableItemBackgroundBorderless"
-                app:layout_constraintEnd_toStartOf="@id/btn_alert"
-                app:layout_constraintTop_toTopOf="@id/title"
-                app:srcCompat="@drawable/ic_mail_new" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/btn_alert"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:background="?android:selectableItemBackgroundBorderless"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/title"
-                app:srcCompat="@drawable/ic_bell" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/meet_list"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:overScrollMode="never"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/header_container"
+            app:layout_constraintTop_toTopOf="parent"
             tools:listitem="@layout/item_meet" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

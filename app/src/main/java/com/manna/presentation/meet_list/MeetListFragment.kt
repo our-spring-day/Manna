@@ -51,13 +51,13 @@ class MeetListFragment : BaseFragment<FragmentMeetListBinding>(R.layout.fragment
                 adapter = meetAdapter
             }
 
-            btnApply.setOnClickListener {
-
-            }
-
-            btnAlert.setOnClickListener {
-
-            }
+//            btnApply.setOnClickListener {
+//
+//            }
+//
+//            btnAlert.setOnClickListener {
+//
+//            }
         }
     }
 

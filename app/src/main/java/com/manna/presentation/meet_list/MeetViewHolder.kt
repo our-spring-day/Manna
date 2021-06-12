@@ -8,8 +8,10 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.manna.R
 import com.manna.databinding.ItemMeetBinding
 import com.manna.databinding.ItemMeetDateTitleBinding
+import com.manna.databinding.ItemMeetHeaderBinding
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -17,13 +19,25 @@ import java.util.*
 sealed class MeetListViewHolder(view: View) :
     RecyclerView.ViewHolder(view) {
 
+    class Header(
+        parent: ViewGroup,
+        private val binding: ItemMeetHeaderBinding =
+            ItemMeetHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+    ) : MeetListViewHolder(binding.root) {
+
+        fun bind(item: MeetListItem.Header) {
+            binding.title.text = item.title
+            binding.btnApply.setImageResource(if (item.isNewApply) R.drawable.ic_mail_new else R.drawable.ic_mail)
+            binding.btnAlert.setImageResource(if (item.isNewAlert) R.drawable.ic_bell_new else R.drawable.ic_bell)
+        }
+    }
+
     class Meet(
         parent: ViewGroup,
         private val onClickItem: (MeetListItem.MeetItem) -> Unit,
         private val binding: ItemMeetBinding =
             ItemMeetBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-    ) :
-        MeetListViewHolder(binding.root) {
+    ) : MeetListViewHolder(binding.root) {
 
         fun bind(item: MeetListItem.MeetItem) {
             binding.run {
