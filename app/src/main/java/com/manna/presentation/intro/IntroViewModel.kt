@@ -1,6 +1,5 @@
 package com.manna.presentation.intro
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.tasks.OnCompleteListener
@@ -12,10 +11,13 @@ import com.manna.common.plusAssign
 import com.manna.data.source.repo.MeetRepository
 import com.manna.network.api.MeetApi
 import com.manna.util.UserHolder
+import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
-class IntroViewModel @ViewModelInject constructor(
+@HiltViewModel
+class IntroViewModel @Inject constructor(
     private val repository: MeetRepository,
     private val meetApi: MeetApi
 ) :

@@ -1,14 +1,16 @@
 package com.manna.presentation.make_meet
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.manna.common.BaseViewModel
 import com.manna.common.Event
 import com.manna.presentation.search.SearchAddressResult
+import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.*
+import javax.inject.Inject
 
-class MakeMeetViewModel @ViewModelInject constructor() : BaseViewModel() {
+@HiltViewModel
+class MakeMeetViewModel @Inject constructor() : BaseViewModel() {
 
     val date = MutableLiveData<Date>()
     val addressItem = MutableLiveData<SearchAddressResult>()

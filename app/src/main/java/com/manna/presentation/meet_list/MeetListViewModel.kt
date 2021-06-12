@@ -1,13 +1,15 @@
 package com.manna.presentation.meet_list
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.manna.data.source.repo.MeetRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.disposables.CompositeDisposable
+import javax.inject.Inject
 
-class MeetListViewModel @ViewModelInject constructor(private val repository: MeetRepository) :
+@HiltViewModel
+class MeetListViewModel @Inject constructor(private val repository: MeetRepository) :
     ViewModel() {
 
     private val compositeDisposable = CompositeDisposable()

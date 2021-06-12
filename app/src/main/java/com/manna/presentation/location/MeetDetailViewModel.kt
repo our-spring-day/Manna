@@ -1,6 +1,5 @@
 package com.manna.presentation.location
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.manna.common.BaseViewModel
@@ -12,10 +11,13 @@ import com.manna.network.api.MeetApi
 import com.manna.presentation.User
 import com.manna.util.UserHolder
 import com.naver.maps.geometry.LatLng
+import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
-class MeetDetailViewModel @ViewModelInject constructor(
+@HiltViewModel
+class MeetDetailViewModel @Inject constructor(
     private val repository: BingApi,
     private val meetApi: MeetApi
 ) :

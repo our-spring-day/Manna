@@ -1,6 +1,5 @@
 package com.manna.presentation.search
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -11,13 +10,16 @@ import com.manna.common.BaseViewModel
 import com.manna.common.Logger
 import com.manna.common.plusAssign
 import com.manna.data.source.repo.AddressRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
-class SearchViewModel @ViewModelInject constructor(private val addressRepository: AddressRepository) :
+@HiltViewModel
+class SearchViewModel @Inject constructor(private val addressRepository: AddressRepository) :
     BaseViewModel() {
 
 
