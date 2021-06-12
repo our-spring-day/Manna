@@ -39,5 +39,4 @@
         <item name="colorControlNormal">@color/c6c6c6</item>
         <item name="colorControlActivated">@color/keyColor</item>
     </style>
-
 </resources>

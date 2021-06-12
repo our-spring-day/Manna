@@ -3,11 +3,16 @@ package com.manna.presentation.meet_list
 import android.Manifest
 import android.os.Build
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.children
 import androidx.core.view.updatePadding
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.appbar.AppBarLayout
 import com.gun0912.tedpermission.TedPermissionResult
 import com.manna.R
 import com.manna.common.BaseFragment
@@ -16,6 +21,7 @@ import com.manna.databinding.FragmentMeetListBinding
 import com.manna.ext.toast
 import com.manna.presentation.location.MeetDetailActivity
 import com.manna.util.SpacingDecoration
+import com.manna.util.ToolbarHelper
 import com.manna.util.UserHolder
 import com.manna.util.ViewUtil
 import com.tedpark.tedpermission.rx2.TedRx2Permission
@@ -43,6 +49,18 @@ class MeetListFragment : BaseFragment<FragmentMeetListBinding>(R.layout.fragment
 
     }
 
+    private var toolbarHelper: ToolbarHelper? = null
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view = super.onCreateView(inflater, container, savedInstanceState)
+        initToolbarHelper()
+        return view
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -50,6 +68,18 @@ class MeetListFragment : BaseFragment<FragmentMeetListBinding>(R.layout.fragment
 
         setupView()
         setupViewModel()
+    }
+
+    private fun initToolbarHelper() {
+        val appBarLayout =
+            (binding.root as ViewGroup).children.find { it is AppBarLayout } as? AppBarLayout
+
+        if (appBarLayout != null) {
+            toolbarHelper =
+                ToolbarHelper(requireActivity() as AppCompatActivity, appBarLayout).apply {
+                    setToolbarTitle("약속 목록")
+                }
+        }
     }
 
     private fun setupView() {
@@ -113,9 +143,11 @@ class MeetListFragment : BaseFragment<FragmentMeetListBinding>(R.layout.fragment
             })
     }
 
-
     companion object {
         fun newInstance() =
             MeetListFragment()
     }
 }
+
+
+
