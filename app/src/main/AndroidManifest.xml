@@ -16,8 +16,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".presentation.ApplyListActivity" />
-        <activity android:name=".presentation.AlertListActivity" />
+        <activity android:name=".presentation.apply.ApplyListActivity" />
+        <activity android:name=".presentation.alert.AlertListActivity" />
         <activity android:name=".presentation.invitation.InvitationActivity" />
         <activity
             android:name=".presentation.make_meet.MakeMeetActivity"
