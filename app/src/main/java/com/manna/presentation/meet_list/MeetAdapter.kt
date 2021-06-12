@@ -14,13 +14,13 @@ class MeetAdapter(
             oldItem: MeetResponseItem,
             newItem: MeetResponseItem
         ): Boolean =
-            oldItem == newItem
+            oldItem.uuid == newItem.uuid
 
         override fun areContentsTheSame(
             oldItem: MeetResponseItem,
             newItem: MeetResponseItem
         ): Boolean =
-            oldItem.uuid == newItem.uuid
+            oldItem == newItem
     }) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MeetViewHolder {
