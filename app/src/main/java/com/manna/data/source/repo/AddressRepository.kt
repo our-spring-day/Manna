@@ -1,7 +1,9 @@
 package com.manna.data.source.repo
 
+import androidx.paging.PagingData
 import com.manna.network.model.coord_address.CoordAddressResponse
-import com.manna.network.model.search_address.SearchAddressResponse
+import com.manna.network.model.search_address.SearchAddress
+import io.reactivex.Flowable
 import io.reactivex.Single
 
 interface AddressRepository {
@@ -12,6 +14,6 @@ interface AddressRepository {
         keyword: String,
         latitude: Double,
         longitude: Double
-    ): Single<SearchAddressResponse>
+    ): Flowable<PagingData<SearchAddress>>
 
 }

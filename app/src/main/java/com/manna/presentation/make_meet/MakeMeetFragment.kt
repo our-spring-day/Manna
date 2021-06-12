@@ -10,7 +10,7 @@ import com.manna.R
 import com.manna.common.BaseFragment
 import com.manna.common.EventObserver
 import com.manna.databinding.FragmentMakeMeetBinding
-import com.manna.presentation.search.SearchActivity
+import com.manna.presentation.search.SearchAddressActivity
 import com.manna.presentation.search.SearchAddressResult
 import java.text.SimpleDateFormat
 import java.util.*
@@ -24,7 +24,7 @@ class MakeMeetFragment : BaseFragment<FragmentMakeMeetBinding>(R.layout.fragment
     ) { activityResult ->
         if (activityResult.resultCode == Activity.RESULT_OK) {
             val result = activityResult.data?.getParcelableExtra<SearchAddressResult>(
-                SearchActivity.ADDRESS_ITEM
+                SearchAddressActivity.ADDRESS_ITEM
             )
 
             if (result != null) {
@@ -66,7 +66,7 @@ class MakeMeetFragment : BaseFragment<FragmentMakeMeetBinding>(R.layout.fragment
     }
 
     private val clickLocation: (View) -> Unit = {
-        requestSearchAddressActivity.launch(SearchActivity.getIntent(requireContext()))
+        requestSearchAddressActivity.launch(SearchAddressActivity.getIntent(requireContext()))
     }
 
     private val clickParticipant: (View) -> Unit = {

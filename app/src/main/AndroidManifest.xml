@@ -27,7 +27,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing" />
         <activity android:name=".presentation.settings.SettingActivity" />
-        <activity android:name=".presentation.search.SearchActivity" />
+        <activity android:name=".presentation.search.SearchAddressActivity" />
         <activity android:name=".presentation.search.RouteActivity" />
         <activity android:name=".presentation.HomeActivity" />
         <activity android:name=".presentation.intro.IntroActivity">

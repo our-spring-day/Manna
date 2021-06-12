@@ -7,47 +7,47 @@ import android.os.Bundle
 import android.view.inputmethod.EditorInfo
 import androidx.activity.viewModels
 import androidx.core.widget.doOnTextChanged
-import androidx.databinding.library.baseAdapters.BR
 import com.manna.R
 import com.manna.common.BaseActivity
-import com.manna.common.BaseRecyclerViewAdapter
-import com.manna.common.BaseRecyclerViewHolder
-import com.manna.databinding.ActivitySearchBinding
-import com.manna.databinding.ItemSearchAddressBinding
+import com.manna.common.Logger
+import com.manna.databinding.ActivitySearchAddressBinding
 import com.manna.ext.openKeyboard
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @AndroidEntryPoint
-class SearchActivity : BaseActivity<ActivitySearchBinding>(R.layout.activity_search) {
+class SearchAddressActivity :
+    BaseActivity<ActivitySearchAddressBinding>(R.layout.activity_search_address) {
 
     private val viewModel by viewModels<SearchViewModel>()
 
     private val addressAdapter by lazy {
-        object :
-            BaseRecyclerViewAdapter<SearchAddressItem, ItemSearchAddressBinding, BaseRecyclerViewHolder<ItemSearchAddressBinding>>(
-                R.layout.item_search_address,
-                variableId = BR.item
-            ) {
-
-        }
+        SearchAddressAdapter()
     }
 
+    @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         viewModel.run {
-            addressItems.observe(this@SearchActivity, {
-                addressAdapter.replaceAll(it)
+            addressPagingData.observe(this@SearchAddressActivity, { pagingData ->
+                Logger.d("$pagingData")
+                pagingData
+                    .subscribe({
+                        addressAdapter.submitData(lifecycle, it)
+                    }, {
+                        Logger.d("$it")
+                    })
             })
 
-            clickItem.observe(this@SearchActivity, {
+            clickItem.observe(this@SearchAddressActivity, {
                 val data = Intent().putExtra(ADDRESS_ITEM, SearchAddressResult.of(it))
                 setResult(Activity.RESULT_OK, data)
                 finish()
 
 //                startActivity(
 //                    RouteActivity.getIntent(
-//                        this@SearchActivity,
+//                        this@SearchAddressActivity,
 //                        LatLng(it.latitude.toDouble(), it.longitude.toDouble())
 //                    )
 //                )
@@ -69,7 +69,8 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(R.layout.activity_sea
             edtKeyword.setOnEditorActionListener { _, actionId, _ ->
                 when (actionId) {
                     EditorInfo.IME_ACTION_SEARCH -> {
-                        viewModel.search(edtKeyword.text.toString())
+                        val keyword = edtKeyword.text.toString()
+                        viewModel.search(keyword)
                     }
                 }
                 true
@@ -81,6 +82,6 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(R.layout.activity_sea
         const val ADDRESS_ITEM = "address_item"
 
         fun getIntent(context: Context) =
-            Intent(context, SearchActivity::class.java)
+            Intent(context, SearchAddressActivity::class.java)
     }
 }
