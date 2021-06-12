@@ -16,6 +16,8 @@ import com.manna.common.plusAssign
 import com.manna.databinding.FragmentMeetListBinding
 import com.manna.ext.toast
 import com.manna.network.model.meet.MeetResponseItem
+import com.manna.presentation.alert.AlertListActivity
+import com.manna.presentation.apply.ApplyListActivity
 import com.manna.presentation.location.MeetDetailActivity
 import com.manna.util.UserHolder
 import com.manna.util.ViewUtil
@@ -65,11 +67,11 @@ class MeetListFragment : BaseFragment<FragmentMeetListBinding>(R.layout.fragment
             }
 
             btnApply.setOnClickListener {
-
+                startActivity(ApplyListActivity.getIntent(requireContext()))
             }
 
             btnAlert.setOnClickListener {
-
+                startActivity(AlertListActivity.getIntent(requireContext()))
             }
         }
     }

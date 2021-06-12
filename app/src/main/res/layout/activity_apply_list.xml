@@ -10,54 +10,26 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".presentation.ApplyListActivity">
+        tools:context=".presentation.apply.ApplyListActivity">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/top_bar"
+        <include
+            android:id="@+id/layout_title_bar"
+            layout="@layout/view_title_bar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:paddingBottom="30dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <ImageView
-                android:id="@+id/btn_back"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="19dp"
-                android:layout_marginBottom="19dp"
-                android:padding="10dp"
-                android:src="@drawable/ic_back"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="5dp"
-                android:fontFamily="@font/noto_sans_medium"
-                android:letterSpacing="-0.06"
-                android:text="@string/apply_request"
-                android:textColor="@color/black"
-                android:textSize="24dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/btn_back" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_applylist"
+            android:id="@+id/rv_apply_list"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/top_bar"
+            app:layout_constraintTop_toBottomOf="@id/layout_title_bar"
             tools:listitem="@layout/item_apply" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
