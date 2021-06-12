@@ -162,7 +162,7 @@ class ImagePickerFragment : BottomSheetDialogFragment() {
             selectedPositionList.observe(viewLifecycleOwner, Observer {
                 selectorAdapter.replaceSelectedPositionList(it)
             })
-            loadFailedItemPosition.observe(viewLifecycleOwner, Observer { position ->
+            loadFailedItemPosition.observe(viewLifecycleOwner, Observer { position: Int ->
                 selectorAdapter.setItemLoadFailed(position)
             })
         }
