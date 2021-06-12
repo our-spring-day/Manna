@@ -4,6 +4,9 @@
 
     <data>
 
+        <variable
+            name="alert"
+            type="com.manna.data.model.AlertItem" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -28,6 +31,7 @@
             android:layout_marginStart="12dp"
             android:fontFamily="@font/noto_sans_regular"
             android:letterSpacing="-0.02"
+            android:text="@{alert.date}"
             android:textColor="@color/black_alpha20"
             android:textSize="13dp"
             app:layout_constraintBottom_toTopOf="@id/description"
@@ -42,6 +46,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/noto_sans_regular"
             android:letterSpacing="-0.02"
+            android:text="@{alert.content}"
             android:textColor="@color/black"
             android:textSize="14dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -59,12 +64,21 @@
             android:gravity="center"
             android:minWidth="84dp"
             android:minHeight="30dp"
-            android:text="@string/open_map"
+            android:text="@{alert.status}"
             android:textColor="@color/white"
             android:textSize="13dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginStart="25dp"
+            android:background="@color/fff6f6f6"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

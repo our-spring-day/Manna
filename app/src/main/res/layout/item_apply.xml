@@ -1,68 +1,78 @@
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:minHeight="66dp">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <com.manna.view.CircleImageView
-        android:id="@+id/image"
-        android:layout_width="44dp"
-        android:layout_height="44dp"
-        android:layout_marginStart="25dp"
-        android:src="@drawable/image_1"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <data>
 
-    <TextView
-        android:id="@+id/remain_time"
-        android:layout_width="wrap_content"
+        <variable
+            name="user"
+            type="com.manna.data.model.UserItem" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:fontFamily="@font/noto_sans_regular"
-        android:textColor="@color/black"
-        android:textSize="14dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/image"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="10분 소요" />
+        android:minHeight="66dp">
+
+        <com.manna.view.CircleImageView
+            android:id="@+id/image"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_marginStart="25dp"
+            android:src="@drawable/image_1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:text="@{user.nickname}"
+            android:id="@+id/remain_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:fontFamily="@font/noto_sans_regular"
+            android:textColor="@color/black"
+            android:textSize="14dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/image"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="연쟁" />
 
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/reject_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="3dp"
-        android:background="@drawable/selector_button"
-        android:backgroundTint="@color/ffebedff"
-        android:fontFamily="@font/noto_sans_medium"
-        android:gravity="center"
-        android:minWidth="84dp"
-        android:minHeight="30dp"
-        android:text="@string/reject"
-        android:textColor="@color/keyColor"
-        android:textSize="13dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/accept_button"
-        app:layout_constraintTop_toTopOf="parent" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/reject_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="3dp"
+            android:background="@drawable/selector_button"
+            android:backgroundTint="@color/ffebedff"
+            android:fontFamily="@font/noto_sans_medium"
+            android:gravity="center"
+            android:minWidth="84dp"
+            android:minHeight="30dp"
+            android:text="@string/reject"
+            android:textColor="@color/keyColor"
+            android:textSize="13dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/accept_button"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/accept_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="19dp"
-        android:background="@drawable/selector_button"
-        android:fontFamily="@font/noto_sans_medium"
-        android:gravity="center"
-        android:minWidth="84dp"
-        android:minHeight="30dp"
-        android:text="@string/accept"
-        android:textColor="@color/white"
-        android:textSize="13dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/accept_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="19dp"
+            android:background="@drawable/selector_button"
+            android:fontFamily="@font/noto_sans_medium"
+            android:gravity="center"
+            android:minWidth="84dp"
+            android:minHeight="30dp"
+            android:text="@string/accept"
+            android:textColor="@color/white"
+            android:textSize="13dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
