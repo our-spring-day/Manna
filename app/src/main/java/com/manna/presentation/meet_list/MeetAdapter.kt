@@ -5,7 +5,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 
 class MeetAdapter(
-    private val onClickItem: (MeetListItem.MeetItem) -> Unit
+    private val onClickItem: (MeetListItem.MeetItem) -> Unit,
+    private val onClickApply: () -> Unit,
+    private val onClickAlert: () -> Unit
 ) :
     ListAdapter<MeetListItem, MeetListViewHolder>(object :
         DiffUtil.ItemCallback<MeetListItem>() {
@@ -35,7 +37,7 @@ class MeetAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MeetListViewHolder {
         return when (viewType) {
-            KEY_HEADER -> MeetListViewHolder.Header(parent)
+            KEY_HEADER -> MeetListViewHolder.Header(parent, onClickApply, onClickAlert)
             KEY_MEET_RESPONSE -> MeetListViewHolder.Meet(parent, onClickItem)
             KEY_DATE_TITLE -> MeetListViewHolder.DateTitle(parent)
             else -> error("Invalid ViewType")

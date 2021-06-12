@@ -28,9 +28,19 @@ class MeetListFragment : BaseFragment<FragmentMeetListBinding>(R.layout.fragment
     private val viewModel by viewModels<MeetListViewModel>()
 
     private val meetAdapter: MeetAdapter by lazy {
-        MeetAdapter { clickedItem ->
-            showMeetDetail(clickedItem)
-        }
+        MeetAdapter(onClickMeetItem, onClickApply, onClickAlert)
+    }
+
+    private val onClickMeetItem: (MeetListItem.MeetItem) -> Unit = { clickedItem ->
+        showMeetDetail(clickedItem)
+    }
+
+    private val onClickApply: () -> Unit = {
+
+    }
+
+    private val onClickAlert: () -> Unit = {
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -12,6 +12,7 @@ import com.manna.R
 import com.manna.databinding.ItemMeetBinding
 import com.manna.databinding.ItemMeetDateTitleBinding
 import com.manna.databinding.ItemMeetHeaderBinding
+import com.manna.util.ViewUtil
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -21,14 +22,25 @@ sealed class MeetListViewHolder(view: View) :
 
     class Header(
         parent: ViewGroup,
+        private val onClickApply: () -> Unit,
+        private val onClickAlert: () -> Unit,
         private val binding: ItemMeetHeaderBinding =
             ItemMeetHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false)
     ) : MeetListViewHolder(binding.root) {
 
         fun bind(item: MeetListItem.Header) {
-            binding.title.text = item.title
-            binding.btnApply.setImageResource(if (item.isNewApply) R.drawable.ic_mail_new else R.drawable.ic_mail)
-            binding.btnAlert.setImageResource(if (item.isNewAlert) R.drawable.ic_bell_new else R.drawable.ic_bell)
+            binding.run {
+                title.text = item.title
+                btnApply.setImageResource(if (item.isNewApply) R.drawable.ic_mail_new else R.drawable.ic_mail)
+                btnAlert.setImageResource(if (item.isNewAlert) R.drawable.ic_bell_new else R.drawable.ic_bell)
+
+                btnApply.setOnClickListener {
+                    onClickApply()
+                }
+                btnAlert.setOnClickListener {
+                    onClickAlert()
+                }
+            }
         }
     }
 
@@ -54,11 +66,16 @@ sealed class MeetListViewHolder(view: View) :
 
                 participantContainer.post {
                     (0..4).forEach {
-                        val imageView = ImageView(itemView.context)
-                        imageView.layoutParams = LinearLayout.LayoutParams(
-                            participantContainer.height,
-                            participantContainer.height
-                        )
+                        val imageView = ImageView(itemView.context).apply {
+                            layoutParams = LinearLayout.LayoutParams(
+                                participantContainer.height,
+                                participantContainer.height
+                            ).apply {
+                                if (it > 0) {
+                                    marginStart = ViewUtil.convertDpToPixel(itemView.context, 7f).toInt()
+                                }
+                            }
+                        }
 
                         Glide.with(itemView.context)
                             .applyDefaultRequestOptions(RequestOptions.circleCropTransform())
