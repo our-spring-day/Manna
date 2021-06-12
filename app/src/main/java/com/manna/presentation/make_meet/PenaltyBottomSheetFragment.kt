@@ -14,7 +14,7 @@ import com.manna.R
 import com.manna.common.BaseBottomSheetFragment
 import com.manna.databinding.FragmentPenaltyBinding
 import com.manna.ext.toast
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Penalty(

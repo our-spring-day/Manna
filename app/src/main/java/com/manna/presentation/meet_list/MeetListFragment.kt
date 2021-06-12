@@ -1,7 +1,6 @@
 package com.manna.presentation.meet_list
 
 import android.Manifest
-import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -17,6 +16,7 @@ import com.manna.databinding.FragmentMeetListBinding
 import com.manna.ext.toast
 import com.manna.network.model.meet.MeetResponseItem
 import com.manna.presentation.location.MeetDetailActivity
+import com.manna.util.SpacingDecoration
 import com.manna.util.UserHolder
 import com.manna.util.ViewUtil
 import com.tedpark.tedpermission.rx2.TedRx2Permission
@@ -42,17 +42,31 @@ class MeetListFragment : BaseFragment<FragmentMeetListBinding>(R.layout.fragment
         setupView()
         setupViewModel()
 
-        meetAdapter.submitList(
-            listOf(
-                MeetResponseItem(
-                    mannaName = "테스트용 아이템",
-                    createTimestamp = System.currentTimeMillis(),
-                    uuid = "roomId",
-                    locationJoinUserList = "",
-                    chatJoinUserList = ""
-                )
+        val meetResponseList = listOf(
+            MeetResponseItem(
+                mannaName = "테스트용 아이템",
+                createTimestamp = System.currentTimeMillis(),
+                uuid = "roomId",
+                locationJoinUserList = "",
+                chatJoinUserList = ""
+            ),
+            MeetResponseItem(
+                mannaName = "테스트용 아이템",
+                createTimestamp = System.currentTimeMillis(),
+                uuid = "roomId",
+                locationJoinUserList = "",
+                chatJoinUserList = ""
+            ),
+            MeetResponseItem(
+                mannaName = "테스트용 아이템",
+                createTimestamp = System.currentTimeMillis(),
+                uuid = "roomId",
+                locationJoinUserList = "",
+                chatJoinUserList = ""
             )
         )
+
+        meetAdapter.submitList(meetResponseList.map { it.toMeetListItem() })
     }
 
     private fun setupView() {
@@ -84,25 +98,14 @@ class MeetListFragment : BaseFragment<FragmentMeetListBinding>(R.layout.fragment
     }
 
     private fun getDecoration(): RecyclerView.ItemDecoration =
-        object : RecyclerView.ItemDecoration() {
-            override fun getItemOffsets(
-                outRect: Rect,
-                view: View,
-                parent: RecyclerView,
-                state: RecyclerView.State
-            ) {
-                super.getItemOffsets(outRect, view, parent, state)
+        SpacingDecoration(bottom = ViewUtil.convertDpToPixel(requireContext(), 16f).toInt())
 
-                outRect.bottom = ViewUtil.convertDpToPixel(requireContext(), 14f).toInt()
-            }
-        }
-
-    private fun showMeetDetail(clickedItem: MeetResponseItem) {
+    private fun showMeetDetail(clickedItem: MeetListItem.MeetItem) {
         checkPermissions {
             startActivity(
                 MeetDetailActivity.getIntent(
                     requireContext(),
-                    clickedItem.uuid.orEmpty()
+                    clickedItem.uuid
                 )
             )
         }
